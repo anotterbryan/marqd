@@ -458,18 +458,76 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 .sp-audio-preview { background: #0e1118; border: 1px solid rgba(255,255,255,0.07); border-radius: 2px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; margin-top: 12px; }
 .sp-audio-play-btn { width: 30px; height: 30px; border-radius: 50%; background: #e8c97a; border: none; cursor: pointer; font-size: 0.8rem; color: #07090f; flex-shrink: 0; }
 
+/* ── GLOBE MODE TOGGLE ─────────────────────────────────────────── */
+.globe-toggle {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  background: rgba(14,17,24,0.88);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 2px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  animation: rise 1.4s 1.5s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.gt-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(240,236,228,0.45);
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.22s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.gt-btn + .gt-btn { border-left: 1px solid rgba(255,255,255,0.08); }
+.gt-btn:hover { color: rgba(240,236,228,0.75); }
+.gt-btn.active { color: #e8c97a; background: rgba(232,201,122,0.08); }
+.gt-mode-hint {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(240,236,228,0.4);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.gt-mode-hint.show { opacity: 1; }
+
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: NAV
+     Edit links here. To add/remove nav items, add/remove <li> elements.
+     The "Leave a Marq" button opens the submission panel.
+     ═══════════════════════════════════════════════════════════════════ -->
 <nav id="nav">
   <a href="#" class="wordmark">Marq<span>'</span>d</a>
   <ul class="nav-links">
     <li><a href="about.html">About</a></li>
     <li><a href="#how-it-works">How It Works</a></li>
-    <li><a href="#support">Support</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="contact.html">Contact</a></li>
     <li><a href="#" class="nav-submit-btn" onclick="spOpen(event)">Leave a Marq</a></li>
   </ul>
   <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
@@ -477,12 +535,20 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 <div class="nav-mobile" id="nav-mobile">
   <a href="about.html">About</a>
   <a href="#how-it-works">How It Works</a>
-  <a href="#support">Support</a>
-  <a href="#contact">Contact</a>
+  <a href="support.html">Support</a>
+  <a href="contact.html">Contact</a>
   <a href="#" onclick="spOpen(event)">Leave a Marq →</a>
 </div>
 
-<!-- HERO -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: HERO (Full-screen globe + tagline)
+     EDITABLE TEXT:
+       - .hero-eyebrow  → the small line above the wordmark ("A Living Queer Archive · Est. 2025")
+       - .hero-tagline  → italic tagline under the wordmark ("Q marks the spot.")
+       - .hero-mission  → the short mission paragraph
+       - .btn-gold text → primary CTA button label
+       - .btn-outline text → secondary CTA button label
+     ═══════════════════════════════════════════════════════════════════ -->
 <section id="hero">
   <div id="globe-container"></div>
   <div class="hero-overlay"></div>
@@ -501,6 +567,11 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
   <div class="live-counter">
     <div class="live-dot"></div>
     <span id="marq-count">—</span> stories in the archive
+  </div>
+  <div class="gt-mode-hint" id="gt-hint">Click anywhere on the globe to drop a pin</div>
+  <div class="globe-toggle">
+    <button class="gt-btn active" id="gt-explore" onclick="setGlobeMode('explore')">◎ &nbsp;Explore</button>
+    <button class="gt-btn" id="gt-marq" onclick="setGlobeMode('marq')">+ &nbsp;Leave a Marq</button>
   </div>
   <div class="scroll-cue">
     <span class="scroll-cue-label">Scroll</span>
@@ -756,7 +827,14 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 
 <hr class="pride-rule">
 
-<!-- MISSION -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: MISSION ("What is Marq'd?")
+     EDITABLE TEXT:
+       - .eyebrow text → "About the Archive"
+       - .section-heading → main heading
+       - .body-text paragraphs → the three body paragraphs below the heading
+       - The "Read more about why this exists →" link text
+     ═══════════════════════════════════════════════════════════════════ -->
 <section id="mission" class="page-section">
   <div class="container">
     <div class="mission-grid">
@@ -776,7 +854,14 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 
 <hr class="pride-rule">
 
-<!-- STAT -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: STAT (Big number + impact statement)
+     EDITABLE TEXT:
+       - .eyebrow text → "Why This Matters"
+       - .stat-number  → the big "64" number
+       - .stat-label   → "countries criminalize same-sex relationships."
+       - .stat-sub     → the supporting paragraph beneath
+     ═══════════════════════════════════════════════════════════════════ -->
 <div id="stat">
   <div class="stat-inner reveal">
     <div class="eyebrow" style="justify-content:center;">Why This Matters</div>
@@ -788,7 +873,13 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 
 <hr class="pride-rule">
 
-<!-- HOW IT WORKS -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: HOW IT WORKS (Three-step explainer)
+     EDITABLE TEXT:
+       - .section-heading → main heading
+       - Each .step block → .step-num / .step-title / .step-body
+         Step 01, Step 02, Step 03 — edit title and description paragraph
+     ═══════════════════════════════════════════════════════════════════ -->
 <section id="how-it-works" class="page-section">
   <div class="container">
     <div class="reveal" style="text-align:center;">
@@ -823,7 +914,18 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 
 <hr class="pride-rule">
 
-<!-- SUPPORT -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: SUPPORT (Donation tiers)
+     EDITABLE TEXT:
+       - .section-heading → "Free to use. Not free to run."
+       - .body-text → the paragraph below the heading
+       - Each .tier block → .tier-name / .tier-amount / .tier-desc
+         (Reader, Contributor, Archivist, Patron)
+       - .support-note → "Every dollar goes toward keeping the record intact."
+     EDITABLE LINKS:
+       - "Donate via Open Collective" → href points to your Open Collective URL
+       - "Institutional Inquiry" → href is a mailto link
+     ═══════════════════════════════════════════════════════════════════ -->
 <section id="support" class="page-section">
   <div class="container">
     <div class="support-inner" style="margin:0 auto;">
@@ -840,7 +942,7 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
       </div>
       <div class="support-ctas reveal">
         <a href="https://opencollective.com/marqdthespot" target="_blank" rel="noopener" class="btn btn-gold">Donate via Open Collective</a>
-        <a href="/cdn-cgi/l/email-protection#7b161a090a1f55141d1d1218121a173b1c161a12175518141644080e19111e180f462b1a090f151e090813120b" class="btn btn-outline">Institutional Inquiry</a>
+        <a href="mailto:marqd.official@gmail.com?subject=Institutional%20Inquiry" class="btn btn-outline">Institutional Inquiry</a>
       </div>
       <p class="support-note reveal">Every dollar goes toward keeping the record intact.</p>
     </div>
@@ -849,7 +951,18 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 
 <hr class="pride-rule">
 
-<!-- CONTACT -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: CONTACT (Form + direct email)
+     EDITABLE TEXT:
+       - .section-heading → "We're listening."
+       - .body-text → the intro sentence below the heading
+       - .contact-note → the "Direct: [email]" line and note below form
+       - Form subject <option> values → edit the dropdown choices
+       - Submit button text → "Send it"
+     EDITABLE LINKS:
+       - The mailto href in .contact-note → change the email address
+       - form action → your Formspree endpoint (https://formspree.io/f/...)
+     ═══════════════════════════════════════════════════════════════════ -->
 <section id="contact" class="page-section-alt">
   <div class="container">
     <div class="contact-grid">
@@ -858,7 +971,7 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
         <h2 class="section-heading">We're <em>listening.</em></h2>
         <p class="body-text">Whether you want to get involved, propose a partnership, or just say something — reach out.</p>
         <div class="contact-note">
-          Direct: <a href="/cdn-cgi/l/email-protection#472a26353623692821212e242e262b07202a262e2b6924282a"><span class="__cf_email__" data-cfemail="deb3bfacafbaf0b1b8b8b7bdb7bfb29eb9b3bfb7b2f0bdb1b3">[email&#160;protected]</span></a><br><br>
+          Direct: <a href="mailto:marqd.official@gmail.com">marqd.official@gmail.com</a><br><br>
           We read everything.
         </div>
       </div>
@@ -883,20 +996,24 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 
 <hr class="pride-rule">
 
-<!-- FOOTER -->
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: FOOTER
+     EDITABLE TEXT:
+       - .footer-copy → "© 2025 Marq'd · Built for the record" (update year here)
+       - .footer-links → page navigation links
+     ═══════════════════════════════════════════════════════════════════ -->
 <footer>
   <div class="footer-mark">Marq<span>'</span>d</div>
   <ul class="footer-links">
     <li><a href="about.html">About</a></li>
-    <li><a href="#how-it-works">How It Works</a></li>
-    <li><a href="#support">Support</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="contact.html">Contact</a></li>
     <li><a href="#" onclick="spOpen(event)">Leave a Marq</a></li>
   </ul>
   <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ── CONFIG ──────────────────────────────────────────────────────────
 var SUPABASE_URL  = 'https://aeazbkmrtjsizrjytuwz.supabase.co';
 var SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFlYXpia21ydGpzaXpyanl0dXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NjYzNTUsImV4cCI6MjA4ODQ0MjM1NX0.1cA_UiHZckcTV_Wdh58ASoigs_ADIKpu5wmDIirfMUk';
@@ -904,17 +1021,58 @@ var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Seed data shown before real stories arrive
 var SEED = [
-  { id:'seed-1', record_number:12, lat:-23.55, lng:-46.63, location_display:'São Paulo, Brazil', story:"Walking back from a bar I'd never been brave enough to enter before, I caught eyes with someone across the street. We stood there for a long moment. Neither of us moved. The city kept going around us.", tags:['outdoor','spontaneous'], submitted_at:'2024-03-01' },
-  { id:'seed-2', record_number:31, lat:52.52, lng:13.40, location_display:'Berlin, Germany', story:"It was the last train of the night. He sat across from me with a book I recognized. We talked until the train ended and kept talking after. I never saw him again. I think about that conversation still.", tags:['tender','unexpected'], submitted_at:'2024-01-15' },
-  { id:'seed-3', record_number:47, lat:35.68, lng:139.69, location_display:'Location withheld', location_withheld:true, story:"I can't say where this happened. In my country, it is not possible to say where. But it happened, and it was real, and I want someone to know that it happened.", tags:['anonymous'], submitted_at:'2023-09-01' },
-  { id:'seed-4', record_number:58, lat:51.51, lng:-0.12, location_display:'London, United Kingdom', story:"We danced for three hours straight. I don't know most of their names. But for those three hours we were the same. The DJ played one more song and we all screamed.", tags:['joy','community'], submitted_at:'2024-06-01' },
-  { id:'seed-5', record_number:73, lat:40.74, lng:-73.99, location_display:'New York City, USA', story:"My grandmother asked me to explain it to her. I expected the worst. She was quiet for a long time, then she said: 'So you just love people.' Yes. That's it exactly.", tags:['family','tender'], submitted_at:'2023-11-20' },
-  { id:'seed-6', record_number:89, lat:-33.87, lng:151.21, location_display:'Sydney, Australia', story:"The march came around the corner and I started crying before I even knew why. My friend put her arm around me. Later I understood: I had never seen that many of us in one place before.", tags:['pride','community'], submitted_at:'2024-02-14' }
+
+  // ── FOUNDER'S ENTRY ──────────────────────────────────────────────────
+  // Entry #MQ-000001 — The first official Marq. Bryan will record audio
+  // for this entry. Update audio_url below once the recording is ready.
+  // To edit the text of this entry, change the 'story' field below.
+  // ─────────────────────────────────────────────────────────────────────
+  {
+    id: 'founder',
+    record_number: 1,
+    lat: 40.74, lng: -73.99,
+    location_display: 'New York City, USA',
+    // ↓ EDIT THIS TEXT — this is the founder's welcome message ↓
+    story: "Hello, and welcome to Marq'd.\n\nI built this because I believe queer stories deserve to be kept — not in private collections that can be lost or destroyed, not in archives that require credentials to access, but here. On a globe. Searchable, citable, and permanent.\n\nQueer history has always been at risk. Letters burned. Meeting places demolished. Government websites scrubbed. The record, when it exists at all, was written by people who wanted us gone.\n\nMarq'd is an answer to that. Every dot on this globe is a firsthand account — a story as it was actually lived, pinned to the real place where it happened. Primary source history, contributed by the people who were there.\n\nThis is entry number one. The archive is open.\n\nLeave your Marq.",
+    // ↑ END EDITABLE TEXT ↑
+    tags: ['founding', 'welcome', 'mission'],
+    submitted_at: '2025-01-01',
+    is_founder: true,
+    // audio_url: '' ← Add your recording URL here once ready
+    views: 0, reactions_fire: 0, reactions_heart: 0
+  },
+
+  // ── DEMONSTRATION ENTRIES ─────────────────────────────────────────────
+  // These are sample entries showing what the archive will look like.
+  // They are clearly labeled as demonstrations when viewed on the globe.
+  // To edit demonstration story text, change the 'story' fields below.
+  // ─────────────────────────────────────────────────────────────────────
+  { id:'seed-1', record_number:12, lat:-23.55, lng:-46.63, location_display:'São Paulo, Brazil', story:"Walking back from a bar I'd never been brave enough to enter before, I caught eyes with someone across the street. We stood there for a long moment. Neither of us moved. The city kept going around us.", tags:['outdoor','spontaneous'], submitted_at:'2024-03-01', is_mock:true },
+  { id:'seed-2', record_number:31, lat:52.52, lng:13.40, location_display:'Berlin, Germany', story:"It was the last train of the night. He sat across from me with a book I recognized. We talked until the train ended and kept talking after. I never saw him again. I think about that conversation still.", tags:['tender','unexpected'], submitted_at:'2024-01-15', is_mock:true },
+  { id:'seed-3', record_number:47, lat:35.68, lng:139.69, location_display:'Location withheld', location_withheld:true, story:"I can't say where this happened. In my country, it is not possible to say where. But it happened, and it was real, and I want someone to know that it happened.", tags:['anonymous'], submitted_at:'2023-09-01', is_mock:true },
+  { id:'seed-4', record_number:58, lat:51.51, lng:-0.12, location_display:'London, United Kingdom', story:"We danced for three hours straight. I don't know most of their names. But for those three hours we were the same. The DJ played one more song and we all screamed.", tags:['joy','community'], submitted_at:'2024-06-01', is_mock:true },
+  { id:'seed-5', record_number:73, lat:40.74, lng:-73.99, location_display:'New York City, USA', story:"My grandmother asked me to explain it to her. I expected the worst. She was quiet for a long time, then she said: 'So you just love people.' Yes. That's it exactly.", tags:['family','tender'], submitted_at:'2023-11-20', is_mock:true },
+  { id:'seed-6', record_number:89, lat:-33.87, lng:151.21, location_display:'Sydney, Australia', story:"The march came around the corner and I started crying before I even knew why. My friend put her arm around me. Later I understood: I had never seen that many of us in one place before.", tags:['pride','community'], submitted_at:'2024-02-14', is_mock:true }
 ];
 
 var allMarqs = [];
 var currentMarq = null;
 var globeInstance = null;
+var globeMode = 'explore'; // 'explore' | 'marq'
+
+function setGlobeMode(mode) {
+  globeMode = mode;
+  document.getElementById('gt-explore').classList.toggle('active', mode === 'explore');
+  document.getElementById('gt-marq').classList.toggle('active', mode === 'marq');
+  var hint = document.getElementById('gt-hint');
+  if (mode === 'marq') {
+    hint.classList.add('show');
+    if (globeInstance) globeInstance.controls().autoRotate = false;
+  } else {
+    hint.classList.remove('show');
+    if (globeInstance) globeInstance.controls().autoRotate = true;
+  }
+}
 
 // ── SUPABASE ─────────────────────────────────────────────────────────
 async function loadMarqs() {
@@ -945,12 +1103,29 @@ function initGlobe() {
     .pointAltitude(0.01)
     .pointRadius(0.4)
     .pointLabel(function(d) { return d.location_display || 'Location withheld'; })
-    .onPointClick(function(point) { openDrawer(point); })
+    .onPointClick(function(point) {
+      if (globeMode === 'marq') {
+        spLat = point.lat;
+        spLng = point.lng;
+        document.getElementById('sp-loc').value = point.location_display || '';
+        spOpen(null);
+      } else {
+        openDrawer(point);
+      }
+    })
+    .onGlobeClick(function(coords) {
+      if (globeMode === 'marq') {
+        spLat = coords.lat;
+        spLng = coords.lng;
+        document.getElementById('sp-loc').value = '';
+        spOpen(null);
+      }
+    })
     (el);
 
   globeInstance.controls().autoRotate = true;
   globeInstance.controls().autoRotateSpeed = 0.4;
-  globeInstance.controls().enableZoom = true;
+  globeInstance.controls().enableZoom = false; // Disabled: allows page to scroll when hovering globe
 
   // Sizing
   function sizeGlobe() {
@@ -973,6 +1148,24 @@ function openDrawer(marq) {
   var num = String(marq.record_number || 0).padStart(6,'0');
   document.getElementById('drawer-id').textContent = '#MQ-' + num;
   document.getElementById('drawer-location').textContent = marq.location_withheld ? 'Location withheld' : (marq.location_display || 'Unknown location');
+
+  // Show badge for founder / demo entries
+  var existingBadge = document.getElementById('drawer-entry-badge');
+  if (existingBadge) existingBadge.remove();
+  var drawerHdrDiv = document.querySelector('.drawer-header > div');
+  if (marq.is_founder) {
+    var b = document.createElement('div');
+    b.id = 'drawer-entry-badge';
+    b.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:0.52rem;text-transform:uppercase;letter-spacing:0.14em;color:#e8c97a;background:rgba(232,201,122,0.1);border:1px solid rgba(232,201,122,0.25);padding:3px 9px;border-radius:1px;margin-top:7px;display:inline-block;';
+    b.textContent = 'λ Founder\'s Entry — Official Record';
+    drawerHdrDiv.appendChild(b);
+  } else if (marq.is_mock || (marq.id && String(marq.id).startsWith('seed'))) {
+    var b = document.createElement('div');
+    b.id = 'drawer-entry-badge';
+    b.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:0.52rem;text-transform:uppercase;letter-spacing:0.14em;color:#7a7d8a;border:1px solid rgba(255,255,255,0.1);padding:3px 9px;border-radius:1px;margin-top:7px;display:inline-block;';
+    b.textContent = 'Demonstration Entry';
+    drawerHdrDiv.appendChild(b);
+  }
 
   // Meta
   var date = marq.submitted_at ? new Date(marq.submitted_at).getFullYear() : '';

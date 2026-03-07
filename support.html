@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07090f">
+<title>Support — Marq'd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #07090f; scroll-behavior: smooth; }
+body {
+  background: #07090f;
+  color: #f0ece4;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 48px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(7,9,15,0.94);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.wordmark { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-style: italic; font-weight: 600; color: #f0ece4; }
+.wordmark span { color: #e8c97a; }
+.nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+.nav-links a { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.13em; color: #7a7d8a; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: #e8c97a; }
+.nav-submit-btn { padding: 8px 18px; background: #e8c97a; color: #07090f !important; border-radius: 2px; font-size: 0.62rem !important; font-weight: 400; transition: background 0.2s; }
+.nav-submit-btn:hover { background: #f0d896 !important; }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+.nav-toggle span { display: block; width: 22px; height: 1px; background: #f0ece4; }
+.nav-mobile { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(7,9,15,0.98); border-bottom: 1px solid rgba(255,255,255,0.07); z-index: 99; padding: 20px 48px; flex-direction: column; }
+.nav-mobile.open { display: flex; }
+.nav-mobile a { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.13em; color: #a8a5a0; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.2s; }
+.nav-mobile a:last-child { border-bottom: none; }
+.nav-mobile a:hover { color: #e8c97a; }
+
+/* ── PRIDE RULE ── */
+.pride-rule { display: block; width: 100%; height: 1px; border: none; background: linear-gradient(to right, #c0392b, #d4651a, #c9a227, #2e7d52, #2471a3, #7d3c98); opacity: 0.3; }
+
+/* ── PAGE HEADER ── */
+#page-header { padding: 140px 48px 80px; max-width: 1200px; margin: 0 auto; }
+.page-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.22em; color: #4ecdc4; margin-bottom: 18px; }
+.page-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 400; line-height: 1.15; color: #f0ece4; margin-bottom: 28px; }
+.page-title em { font-style: italic; color: #e8c97a; }
+.page-intro { font-size: clamp(1rem, 1.8vw, 1.15rem); font-weight: 300; line-height: 1.85; color: #a8a5a0; max-width: 700px; }
+.page-intro strong { color: #f0ece4; font-weight: 400; }
+
+/* ── LAYOUT ── */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+.page-section { padding: 96px 0; }
+.page-section-alt { background: #0a0c13; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 96px 0; }
+.eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.2em; color: #7a7d8a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: 'λ'; color: #e8c97a; font-family: 'Playfair Display', serif; font-size: 0.95rem; font-style: italic; }
+.section-heading { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 400; line-height: 1.2; color: #f0ece4; margin-bottom: 20px; }
+.section-heading em { font-style: italic; color: #e8c97a; }
+.body-text { font-size: 0.95rem; font-weight: 300; line-height: 1.9; color: #a8a5a0; margin-bottom: 18px; }
+.body-text strong { color: #f0ece4; font-weight: 400; }
+.btn { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.14em; border-radius: 2px; padding: 13px 28px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+.btn-gold { background: #e8c97a; color: #07090f; border-color: #e8c97a; }
+.btn-gold:hover { background: #f0d896; border-color: #f0d896; transform: translateY(-1px); }
+.btn-outline { background: transparent; color: rgba(240,236,228,0.7); border-color: rgba(255,255,255,0.2); }
+.btn-outline:hover { border-color: #e8c97a; color: #e8c97a; transform: translateY(-1px); }
+
+/* ── DONATE SECTION ── */
+.donate-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+
+/* ── TIERS ── */
+.tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); }
+.tier { background: #0e1118; padding: 28px 24px; transition: background 0.25s; }
+.tier:hover { background: #161b27; }
+.tier-name { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.16em; color: #e8c97a; margin-bottom: 8px; }
+.tier-amount { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; color: #f0ece4; margin-bottom: 8px; }
+.tier-desc { font-size: 0.78rem; line-height: 1.65; color: #7a7d8a; }
+
+/* ── OC WIDGET PLACEHOLDER ── */
+.oc-placeholder {
+  background: #0e1118;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 2px;
+  padding: 40px 32px;
+  text-align: center;
+}
+.oc-lambda { font-family: 'Playfair Display', serif; font-size: 2rem; color: #e8c97a; opacity: 0.4; margin-bottom: 12px; }
+.oc-label { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: #7a7d8a; margin-bottom: 18px; }
+.oc-cta-group { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+
+/* ── FUNDS LIST ── */
+.funds-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); margin-top: 48px; }
+.fund-item { background: #0e1118; padding: 26px 22px; transition: background 0.2s; }
+.fund-item:hover { background: #161b27; }
+.fund-icon { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #e8c97a; opacity: 0.3; margin-bottom: 10px; }
+.fund-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.14em; color: #f0ece4; margin-bottom: 6px; }
+.fund-desc { font-size: 0.78rem; line-height: 1.65; color: #7a7d8a; }
+
+/* ── PULL QUOTE ── */
+.pull-quote { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.1rem, 2.2vw, 1.5rem); font-style: italic; font-weight: 400; line-height: 1.6; color: rgba(240,236,228,0.75); padding: 36px 48px; border-left: 3px solid rgba(232,201,122,0.35); margin: 0; }
+.pull-quote strong { color: #e8c97a; font-style: normal; font-weight: 400; }
+
+/* ── INVOLVE BLOCK ── */
+.involve-block { background: #0e1118; border: 1px solid rgba(255,255,255,0.07); border-radius: 2px; padding: 48px; }
+.involve-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+
+/* ── FOOTER ── */
+footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padding: 44px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.footer-mark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: #7a7d8a; }
+.footer-mark span { color: #e8c97a; }
+.footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
+.footer-links a { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: #7a7d8a; transition: color 0.2s; }
+.footer-links a:hover { color: #e8c97a; }
+.footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; opacity: 0.4; }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  #page-header { padding: 110px 24px 60px; }
+  .container { padding: 0 24px; }
+  .page-section, .page-section-alt { padding: 64px 0; }
+  .donate-layout { grid-template-columns: 1fr; gap: 48px; }
+  .funds-grid { grid-template-columns: 1fr 1fr; }
+  footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
+  .involve-block { padding: 32px 24px; }
+}
+@media (max-width: 560px) {
+  .tiers { grid-template-columns: 1fr; }
+  .funds-grid { grid-template-columns: 1fr; }
+  .pull-quote { padding: 28px 24px; }
+  .involve-ctas { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="wordmark">Marq<span>'</span>d</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="support.html" class="active">Support</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="index.html" class="nav-submit-btn">Leave a Marq</a></li>
+  </ul>
+  <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="support.html">Support</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PAGE HEADER
+     EDITABLE TEXT:
+       - .page-kicker → small label above heading
+       - .page-title  → main heading
+       - .page-intro  → the intro paragraph
+     ═══════════════════════════════════════════════════════════════════ -->
+<div id="page-header">
+  <div class="page-kicker">Support the Archive</div>
+  <h1 class="page-title">Free to use.<br><em>Not free to run.</em></h1>
+  <p class="page-intro">
+    Marq'd will always be <strong>free to read and contribute to</strong> — that's a commitment, not a marketing line.
+    But the infrastructure that keeps the archive alive costs real money. Your support funds a project
+    that doesn't answer to advertisers, investors, or anyone but the community it serves.
+  </p>
+</div>
+
+<hr class="pride-rule">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: WHY SUPPORT MATTERS
+     EDITABLE TEXT: heading, body paragraphs
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="page-section">
+  <div class="container">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start;" class="two-col-grid">
+      <div class="reveal">
+        <div class="eyebrow">Why It Matters</div>
+        <h2 class="section-heading">An archive that lasts<br>requires <em>real investment.</em></h2>
+        <p class="body-text">
+          Queer history has been systematically erased — letters burned, diaries destroyed, institutions
+          defunded, and websites scrubbed. What survives is a fraction of what existed.
+          Marq'd exists to make sure that doesn't happen again.
+        </p>
+        <p class="body-text">
+          Building something that lasts means paying for servers, storage, moderation, security,
+          legal protections, and eventually, the people who maintain it.
+          <strong>This doesn't happen on good intentions alone.</strong>
+        </p>
+        <p class="body-text">
+          Every dollar donated goes directly toward the infrastructure and development
+          that keeps this archive alive, independent, and accessible — permanently.
+        </p>
+      </div>
+      <div class="reveal" style="transition-delay:0.12s; padding-top:8px;">
+        <blockquote class="pull-quote" style="padding-left:32px;">
+          "In 64 countries, same-sex relationships are criminalized. In most of them,
+          <strong>no official record of queer life exists.</strong>
+          Marq'd is that record."
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: DONATE
+     EDITABLE:
+       - .oc-label text → donation widget label
+       - Open Collective URL in the .btn-gold link
+       - Tier names, amounts, descriptions in .tier blocks
+     NOTE: Replace the oc-placeholder div with the Open Collective embed
+           widget once your OC page is live at opencollective.com/marqdthespot
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="page-section-alt">
+  <div class="container">
+    <div class="reveal" style="margin-bottom:56px; text-align:center;">
+      <div class="eyebrow" style="justify-content:center;">Donate</div>
+      <h2 class="section-heading" style="text-align:center;">Choose your level<br>of <em>investment.</em></h2>
+    </div>
+
+    <div class="donate-layout reveal" style="transition-delay:0.1s;">
+
+      <!-- LEFT: OC Widget / CTA -->
+      <div>
+        <!-- EDITABLE: Replace this block with Open Collective embed widget
+             once your page is live at opencollective.com/marqdthespot -->
+        <div class="oc-placeholder">
+          <div class="oc-lambda">λ</div>
+          <!-- EDITABLE: Change the label below -->
+          <div class="oc-label">Donate via Open Collective</div>
+          <div class="oc-cta-group">
+            <!-- EDITABLE: Update href to your Open Collective URL -->
+            <a href="https://opencollective.com/marqdthespot" target="_blank" rel="noopener" class="btn btn-gold">
+              Support on Open Collective →
+            </a>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:0.56rem; color:#7a7d8a; letter-spacing:0.08em;">
+              Secure · Transparent · Tax-deductible in eligible countries
+            </span>
+          </div>
+        </div>
+
+        <div style="margin-top:20px; font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#7a7d8a; line-height:1.8;">
+          <!-- EDITABLE: Closing note under the donation widget -->
+          Every dollar goes toward keeping the record intact.<br>
+          No investor pressure. No advertiser obligations. Just the archive.
+        </div>
+      </div>
+
+      <!-- RIGHT: Tiers -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:0.6rem; text-transform:uppercase; letter-spacing:0.14em; color:#7a7d8a; margin-bottom:16px;">
+          Support tiers
+        </div>
+        <!-- EDITABLE: Tier names, amounts, descriptions -->
+        <div class="tiers">
+          <div class="tier">
+            <div class="tier-name">Reader</div>
+            <div class="tier-amount">Any amount</div>
+            <p class="tier-desc">One-time. You found us and you believe in us. That means something.</p>
+          </div>
+          <div class="tier">
+            <div class="tier-name">Contributor</div>
+            <div class="tier-amount">$5 / mo</div>
+            <p class="tier-desc">You're part of keeping the lights on. Recurring support is the most reliable kind.</p>
+          </div>
+          <div class="tier">
+            <div class="tier-name">Archivist</div>
+            <div class="tier-amount">$15 / mo</div>
+            <p class="tier-desc">You understand what this is for. You're investing in permanence.</p>
+          </div>
+          <div class="tier">
+            <div class="tier-name">Patron</div>
+            <div class="tier-amount">$50 / mo</div>
+            <p class="tier-desc">You're investing in queer history itself. This level funds real infrastructure.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: WHERE FUNDS GO
+     EDITABLE TEXT: heading, fund items (icon, label, description)
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="page-section">
+  <div class="container">
+    <div class="reveal" style="max-width:640px; margin-bottom:0;">
+      <div class="eyebrow">Transparency</div>
+      <h2 class="section-heading">What your support<br><em>actually funds.</em></h2>
+      <p class="body-text">
+        Marq'd operates transparently. Here is where the money goes, honestly and without spin.
+        As the project grows, a full financial report will be published annually on Open Collective.
+      </p>
+    </div>
+
+    <!-- EDITABLE: Fund items — add, remove, or edit as needed -->
+    <div class="funds-grid reveal" style="transition-delay:0.1s;">
+      <div class="fund-item">
+        <div class="fund-icon">λ</div>
+        <div class="fund-label">Hosting & Infrastructure</div>
+        <p class="fund-desc">Server costs, CDN, database hosting, and the compute that keeps the globe running.</p>
+      </div>
+      <div class="fund-item">
+        <div class="fund-icon">λ</div>
+        <div class="fund-label">Storage</div>
+        <p class="fund-desc">Audio recordings, photographs, and archive data stored durably for the long term.</p>
+      </div>
+      <div class="fund-item">
+        <div class="fund-icon">λ</div>
+        <div class="fund-label">Content Moderation</div>
+        <p class="fund-desc">Keeping the archive safe and aligned with community values requires ongoing human review.</p>
+      </div>
+      <div class="fund-item">
+        <div class="fund-icon">λ</div>
+        <div class="fund-label">Legal & Privacy</div>
+        <p class="fund-desc">Legal protections for contributors, terms of service, privacy compliance, and DMCA infrastructure.</p>
+      </div>
+      <div class="fund-item">
+        <div class="fund-icon">λ</div>
+        <div class="fund-label">Development</div>
+        <p class="fund-desc">Building Phase 1 features: live submission flow, search, voice recordings, and the full archive interface.</p>
+      </div>
+      <div class="fund-item">
+        <div class="fund-icon">λ</div>
+        <div class="fund-label">Translations</div>
+        <p class="fund-desc">Making the archive accessible in multiple languages — because queer stories exist in every one of them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: GET INVOLVED (non-financial support)
+     EDITABLE TEXT: heading, body text, CTA button text
+     EDITABLE LINKS: href on the "Get in Touch" button
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="page-section-alt">
+  <div class="container">
+    <div class="involve-block reveal">
+      <div class="eyebrow">Other Ways to Help</div>
+      <h2 class="section-heading" style="max-width:560px;">You don't have to donate<br>to <em>make a difference.</em></h2>
+      <p class="body-text" style="max-width:620px;">
+        Marq'd is one person with a vision and a lot of work ahead. If you're a developer, designer,
+        archivist, translator, human rights advocate, educator, or just someone who believes in this —
+        reach out. We'd love to have you.
+      </p>
+      <p class="body-text" style="max-width:620px;">
+        You can also help by sharing Marq'd with people who need to know it exists.
+        The archive grows when the community grows. Every share matters.
+      </p>
+      <div class="involve-ctas">
+        <!-- EDITABLE: Button text and link -->
+        <a href="contact.html?subject=Get%20Involved" class="btn btn-gold">Get in Touch</a>
+        <a href="about.html" class="btn btn-outline">Read About the Project</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: ORGANIZATIONAL SUPPORT
+     EDITABLE TEXT: heading, body text, email link
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="page-section">
+  <div class="container">
+    <div style="max-width:720px;" class="reveal">
+      <div class="eyebrow">Organizations & Institutions</div>
+      <h2 class="section-heading">Institutional support<br>is <em>welcome.</em></h2>
+      <p class="body-text">
+        If you represent a foundation, library, university, advocacy organization, or other institution
+        interested in supporting or partnering with Marq'd — we want to hear from you.
+        Marq'd is in active conversation with potential institutional partners in the archival,
+        academic, and human rights spaces.
+      </p>
+      <p class="body-text">
+        We're especially interested in connections with organizations working at the intersection of
+        LGBTQ+ rights, digital preservation, and access to history. If that's you, please get in touch.
+      </p>
+      <!-- EDITABLE: Link text and mailto -->
+      <a href="contact.html?subject=Partnership" class="btn btn-outline" style="margin-top:8px;">
+        Institutional Inquiry →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FOOTER
+     EDITABLE TEXT: copyright year, nav links
+     ═══════════════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-mark">Marq<span>'</span>d</div>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="mailto:marqd.official@gmail.com">Email</a></li>
+  </ul>
+  <!-- EDITABLE: Update copyright year here -->
+  <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
+</footer>
+
+<script>
+(function() {
+  var toggle = document.getElementById('nav-toggle');
+  var menu   = document.getElementById('nav-mobile');
+  toggle.addEventListener('click', function() { menu.classList.toggle('open'); });
+  document.querySelectorAll('.nav-mobile a').forEach(function(link) {
+    link.addEventListener('click', function() { menu.classList.remove('open'); });
+  });
+
+  // Reveal on scroll
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+  // Responsive two-col grid
+  var twoCol = document.querySelector('.two-col-grid');
+  function checkGrid() {
+    if (twoCol) twoCol.style.gridTemplateColumns = window.innerWidth < 960 ? '1fr' : '1fr 1fr';
+  }
+  checkGrid();
+  window.addEventListener('resize', checkGrid);
+})();
+</script>
+
+</body>
+</html>
