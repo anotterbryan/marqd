@@ -8,12 +8,35 @@
 <title>Marq'd — Q Marks the Spot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── RESET ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: #07090f; scroll-behavior: smooth; }
+:root {
+–bg-base:        #07090f;
+–bg-surface:     #0e1118;
+–bg-elevated:    #161b27;
+–accent-gold:    #e8c97a;
+–accent-teal:    #4ecdc4;
+–accent-rose:    #c97a8e;
+–pride-red:      #c0392b;
+–pride-orange:   #d4651a;
+–pride-yellow:   #c9a227;
+–pride-green:    #2e7d52;
+–pride-blue:     #2471a3;
+–pride-violet:   #7d3c98;
+–text-primary:   #f0ece4;
+–text-secondary: #a8a5a0;
+–text-muted:     #7a7d8a;
+–border-subtle:  rgba(255,255,255,0.07);
+–border-visible: rgba(255,255,255,0.13);
+–font-display:   ‘Playfair Display’, Georgia, serif;
+–font-ui:        ‘DM Sans’, sans-serif;
+–font-mono:      ‘JetBrains Mono’, monospace;
+}
+
+html { scroll-behavior: smooth; background: #07090f; }
+
 body {
 background: #07090f;
 color: #f0ece4;
@@ -22,37 +45,40 @@ font-weight: 300;
 overflow-x: hidden;
 -webkit-font-smoothing: antialiased;
 }
+
 a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
-img { display: block; max-width: 100%; }
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.04’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 9999;
+opacity: 0.4;
+}
 
 /* ── NAV ── */
-#nav {
+nav {
 position: fixed;
 top: 0; left: 0; right: 0;
-z-index: 500;
-padding: 0 48px;
-height: 64px;
+z-index: 100;
+padding: 24px 48px;
 display: flex;
-align-items: center;
 justify-content: space-between;
-background: rgba(7,9,15,0);
-transition: background 0.4s, border-color 0.4s;
-border-bottom: 1px solid rgba(255,255,255,0);
+align-items: center;
+background: linear-gradient(to bottom, rgba(7,9,15,0.9) 0%, transparent 100%);
+transition: background 0.4s;
 }
-#nav.scrolled {
-background: rgba(7,9,15,0.96);
-border-bottom: 1px solid rgba(255,255,255,0.07);
-backdrop-filter: blur(12px);
--webkit-backdrop-filter: blur(12px);
-}
+
 .wordmark {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 1.4rem;
+font-size: 1.5rem;
 font-style: italic;
 font-weight: 600;
 color: #f0ece4;
 letter-spacing: -0.01em;
-flex-shrink: 0;
 }
 .wordmark span { color: #e8c97a; }
 
@@ -63,582 +89,377 @@ list-style: none;
 }
 .nav-links a {
 font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.65rem;
+font-size: 0.72rem;
 text-transform: uppercase;
-letter-spacing: 0.14em;
-color: rgba(240,236,228,0.6);
+letter-spacing: 0.12em;
+color: #7a7d8a;
 transition: color 0.2s;
-padding: 4px 0;
-position: relative;
-}
-.nav-links a::after {
-content: ‘’;
-position: absolute;
-bottom: 0; left: 0; right: 0;
-height: 1px;
-background: #e8c97a;
-transform: scaleX(0);
-transition: transform 0.2s;
 }
 .nav-links a:hover { color: #e8c97a; }
-.nav-links a:hover::after { transform: scaleX(1); }
-
-/* Hamburger for mobile */
-.nav-toggle {
-display: none;
-flex-direction: column;
-gap: 5px;
-cursor: pointer;
-padding: 4px;
-}
-.nav-toggle span {
-display: block;
-width: 22px;
-height: 1px;
-background: #f0ece4;
-transition: all 0.3s;
-}
-
-/* Mobile menu */
-.nav-mobile {
-display: none;
-position: fixed;
-top: 64px; left: 0; right: 0;
-background: rgba(7,9,15,0.98);
-border-bottom: 1px solid rgba(255,255,255,0.07);
-z-index: 499;
-padding: 24px 48px;
-flex-direction: column;
-gap: 0;
-}
-.nav-mobile.open { display: flex; }
-.nav-mobile a {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.7rem;
-text-transform: uppercase;
-letter-spacing: 0.14em;
-color: #a8a5a0;
-padding: 16px 0;
-border-bottom: 1px solid rgba(255,255,255,0.06);
-transition: color 0.2s;
-}
-.nav-mobile a:hover { color: #e8c97a; }
-.nav-mobile a:last-child { border-bottom: none; }
 
 /* ── HERO ── */
 #hero {
+position: relative;
 width: 100%;
 height: 100vh;
-min-height: 640px;
+min-height: 600px;
 background: #07090f;
-position: relative;
 display: flex;
+flex-direction: column;
 align-items: center;
 justify-content: center;
 overflow: hidden;
 }
 
-/* Globe sits behind everything */
-#globe-wrap {
-position: absolute;
-inset: 0;
-z-index: 1;
-}
 #globe-canvas {
-display: block;
+position: absolute;
+top: 0; left: 0;
 width: 100%;
 height: 100%;
+display: block;
+z-index: 1;
 }
 
-/* Dark vignette over globe so text is readable */
-.hero-vignette {
-position: absolute;
-inset: 0;
-z-index: 2;
-background: radial-gradient(ellipse at center, rgba(7,9,15,0.3) 0%, rgba(7,9,15,0.7) 100%);
-}
-
-/* Hero text on top of globe */
 .hero-content {
 position: relative;
-z-index: 10;
+z-index: 2;
 text-align: center;
-padding: 0 32px;
-max-width: 800px;
+padding: 0 24px;
+animation: hero-in 1.8s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes hero-in {
+from { opacity: 0; transform: translateY(24px); }
+to   { opacity: 1; transform: translateY(0); }
 }
 
 .hero-eyebrow {
 font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.65rem;
+font-size: 0.7rem;
 text-transform: uppercase;
 letter-spacing: 0.22em;
 color: #4ecdc4;
 margin-bottom: 20px;
-opacity: 0;
-animation: rise 1.4s 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
+animation: hero-in 1.8s 0.2s cubic-bezier(0.16,1,0.3,1) both;
 }
 
 .hero-title {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: clamp(5rem, 14vw, 9rem);
+font-size: clamp(3.5rem, 8vw, 7rem);
 font-weight: 600;
 font-style: italic;
 line-height: 1;
 letter-spacing: -0.02em;
 color: #f0ece4;
-margin-bottom: 16px;
-opacity: 0;
-animation: rise 1.4s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
+margin-bottom: 8px;
+animation: hero-in 1.8s 0.1s cubic-bezier(0.16,1,0.3,1) both;
 }
 .hero-title span { color: #e8c97a; }
 
 .hero-tagline {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: clamp(1rem, 2.5vw, 1.35rem);
+font-size: clamp(1rem, 2.5vw, 1.4rem);
 font-style: italic;
-color: rgba(240,236,228,0.65);
-margin-bottom: 28px;
-opacity: 0;
-animation: rise 1.4s 0.45s cubic-bezier(0.16,1,0.3,1) forwards;
+color: #a8a5a0;
+margin-bottom: 48px;
+animation: hero-in 1.8s 0.35s cubic-bezier(0.16,1,0.3,1) both;
 }
-
-.hero-mission {
-font-size: clamp(0.85rem, 1.5vw, 0.98rem);
-font-weight: 300;
-line-height: 1.85;
-color: rgba(240,236,228,0.7);
-max-width: 560px;
-margin: 0 auto 40px;
-opacity: 0;
-animation: rise 1.4s 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.hero-mission strong { color: #f0ece4; font-weight: 400; }
 
 .hero-ctas {
 display: flex;
-gap: 12px;
+gap: 16px;
 justify-content: center;
 flex-wrap: wrap;
-opacity: 0;
-animation: rise 1.4s 0.75s cubic-bezier(0.16,1,0.3,1) forwards;
+animation: hero-in 1.8s 0.5s cubic-bezier(0.16,1,0.3,1) both;
 }
 
-@keyframes rise {
-from { opacity: 0; transform: translateY(16px); }
-to   { opacity: 1; transform: translateY(0); }
+.btn-primary {
+padding: 14px 32px;
+background: #e8c97a;
+color: #07090f;
+border: none;
+border-radius: 2px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.72rem;
+font-weight: 400;
+text-transform: uppercase;
+letter-spacing: 0.14em;
+cursor: pointer;
+transition: all 0.2s;
+display: inline-block;
+-webkit-appearance: none;
 }
+.btn-primary:hover { background: #f0d896; transform: translateY(-1px); box-shadow: 0 8px 32px rgba(232,201,122,0.25); }
 
-/* Scroll indicator */
-.scroll-cue {
+.btn-ghost {
+padding: 13px 32px;
+background: transparent;
+color: #a8a5a0;
+border: 1px solid rgba(255,255,255,0.15);
+border-radius: 2px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.72rem;
+font-weight: 400;
+text-transform: uppercase;
+letter-spacing: 0.14em;
+cursor: pointer;
+transition: all 0.2s;
+display: inline-block;
+-webkit-appearance: none;
+}
+.btn-ghost:hover { border-color: #e8c97a; color: #e8c97a; transform: translateY(-1px); }
+
+.scroll-hint {
 position: absolute;
-bottom: 32px;
+bottom: 40px;
 left: 50%;
 transform: translateX(-50%);
-z-index: 10;
+z-index: 2;
 display: flex;
 flex-direction: column;
 align-items: center;
 gap: 8px;
-opacity: 0;
-animation: rise 1.4s 1.4s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.scroll-cue-label {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.58rem;
-text-transform: uppercase;
-letter-spacing: 0.18em;
-color: rgba(240,236,228,0.35);
-}
-.scroll-cue-bar {
-width: 1px;
-height: 40px;
-background: linear-gradient(to bottom, rgba(232,201,122,0.5), transparent);
-animation: scroll-bob 2s ease-in-out infinite;
-}
-@keyframes scroll-bob {
-0%,100% { opacity: 0.4; transform: scaleY(1); }
-50%      { opacity: 1;   transform: scaleY(1.15); }
-}
-
-/* ── BUTTONS ── */
-.btn {
-display: inline-block;
 font-family: ‘JetBrains Mono’, monospace;
 font-size: 0.65rem;
-font-weight: 400;
 text-transform: uppercase;
-letter-spacing: 0.14em;
-border-radius: 2px;
-padding: 13px 28px;
-cursor: pointer;
-transition: all 0.2s;
--webkit-appearance: none;
+letter-spacing: 0.15em;
+color: #7a7d8a;
+animation: hero-in 2s 1.2s cubic-bezier(0.16,1,0.3,1) both;
 }
-.btn-gold {
-background: #e8c97a;
-color: #07090f;
-border: 1px solid #e8c97a;
+.scroll-line {
+width: 1px;
+height: 40px;
+background: linear-gradient(to bottom, #7a7d8a, transparent);
+animation: scroll-pulse 2s ease-in-out infinite;
 }
-.btn-gold:hover { background: #f0d896; border-color: #f0d896; transform: translateY(-1px); }
-.btn-outline {
-background: transparent;
-color: rgba(240,236,228,0.7);
-border: 1px solid rgba(255,255,255,0.2);
+@keyframes scroll-pulse {
+0%, 100% { opacity: 0.4; transform: scaleY(1); }
+50%       { opacity: 1;   transform: scaleY(1.2); }
 }
-.btn-outline:hover { border-color: #e8c97a; color: #e8c97a; transform: translateY(-1px); }
 
 /* ── PRIDE RULE ── */
 .pride-rule {
-display: block;
 width: 100%;
 height: 1px;
-border: none;
 background: linear-gradient(to right, #c0392b, #d4651a, #c9a227, #2e7d52, #2471a3, #7d3c98);
-opacity: 0.3;
+opacity: 0.35;
+border: none;
+display: block;
 }
 
 /* ── SECTIONS ── */
-.page-section {
-padding: 108px 0;
-}
-.container {
-max-width: 1160px;
+section {
+padding: 120px 48px;
+max-width: 1200px;
 margin: 0 auto;
-padding: 0 48px;
 }
 
-/* Eyebrow label */
 .eyebrow {
 font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.62rem;
+font-size: 0.68rem;
 text-transform: uppercase;
 letter-spacing: 0.2em;
 color: #7a7d8a;
-margin-bottom: 20px;
+margin-bottom: 24px;
 display: flex;
 align-items: center;
-gap: 10px;
+gap: 12px;
 }
-.eyebrow::before {
-content: ‘λ’;
-color: #e8c97a;
-font-family: ‘Playfair Display’, serif;
-font-size: 0.95rem;
-font-style: italic;
-}
+.eyebrow::before { content: ‘λ’; color: #e8c97a; font-size: 0.9rem; font-family: ‘Playfair Display’, serif; }
+.eyebrow::after  { content: ‘’; flex: 1; height: 1px; background: rgba(255,255,255,0.07); max-width: 60px; }
 
-/* Section heading */
-.section-heading {
+/* ── MISSION ── */
+#mission { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+
+.mission-left .display-text {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: clamp(2rem, 4vw, 3rem);
+font-size: clamp(2rem, 3.5vw, 3rem);
 font-weight: 400;
-line-height: 1.2;
+line-height: 1.25;
 color: #f0ece4;
-margin-bottom: 24px;
+margin-bottom: 32px;
 }
-.section-heading em { font-style: italic; color: #e8c97a; }
+.mission-left .display-text em { font-style: italic; color: #e8c97a; }
 
-/* Body text */
-.body-text {
-font-size: 0.95rem;
-font-weight: 300;
-line-height: 1.9;
-color: #a8a5a0;
-}
-.body-text strong { color: #f0ece4; font-weight: 400; }
-.body-text + .body-text { margin-top: 16px; }
+.mission-right { padding-top: 16px; }
+.mission-body { font-size: 1rem; font-weight: 300; line-height: 1.85; color: #a8a5a0; margin-bottom: 20px; }
+.mission-body strong { color: #f0ece4; font-weight: 400; }
 
-/* ── ABOUT ── */
-#about { background: #07090f; }
-.about-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 80px;
-align-items: start;
-}
-.about-left {}
-.about-right { padding-top: 12px; }
-
-/* Stat callout */
-.stat-callout {
+/* ── STAT SECTION ── */
+#stat {
 background: #0e1118;
-border: 1px solid rgba(255,255,255,0.07);
-border-left: 3px solid #e8c97a;
-padding: 32px 36px;
-margin-top: 48px;
+border-top: 1px solid rgba(255,255,255,0.07);
+border-bottom: 1px solid rgba(255,255,255,0.07);
+text-align: center;
+padding: 100px 48px;
 }
-.stat-num {
+.stat-inner { max-width: 800px; margin: 0 auto; }
+.stat-number {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 4rem;
+font-size: clamp(4rem, 10vw, 8rem);
 font-weight: 600;
 color: #e8c97a;
 line-height: 1;
-margin-bottom: 8px;
+margin-bottom: 16px;
 }
-.stat-desc {
+.stat-label {
 font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 1rem;
-font-style: italic;
-color: #a8a5a0;
-line-height: 1.5;
+font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+font-weight: 400;
+color: #f0ece4;
+margin-bottom: 24px;
+line-height: 1.4;
 }
-.stat-sub {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.68rem;
-color: #7a7d8a;
-margin-top: 10px;
-line-height: 1.6;
+.stat-sub { font-size: 1rem; font-weight: 300; line-height: 1.8; color: #a8a5a0; max-width: 560px; margin: 0 auto; }
+.stat-sub em { font-family: ‘Playfair Display’, serif; font-style: italic; color: #f0ece4; }
+
+/* ── HOW IT WORKS ── */
+.steps-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1px;
+background: rgba(255,255,255,0.07);
+margin-top: 64px;
+border: 1px solid rgba(255,255,255,0.07);
 }
+.step-card { background: #0e1118; padding: 48px 40px; transition: background 0.3s; }
+.step-card:hover { background: #161b27; }
+.step-lambda { font-family: ‘Playfair Display’, serif; font-size: 2.5rem; color: #e8c97a; opacity: 0.3; margin-bottom: 24px; display: block; transition: opacity 0.3s; }
+.step-card:hover .step-lambda { opacity: 0.7; }
+.step-num { font-family: ‘JetBrains Mono’, monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.18em; color: #7a7d8a; margin-bottom: 12px; }
+.step-title { font-family: ‘Playfair Display’, Georgia, serif; font-size: 1.3rem; font-weight: 400; color: #f0ece4; margin-bottom: 16px; line-height: 1.3; }
+.step-body { font-size: 0.9rem; font-weight: 300; line-height: 1.75; color: #7a7d8a; }
+
+/* ── ARCHIVE PREVIEW ── */
+.preview-header { text-align: center; margin-bottom: 64px; }
+.preview-header .display-text { font-family: ‘Playfair Display’, Georgia, serif; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 400; color: #f0ece4; margin-bottom: 16px; }
+.preview-header p { font-size: 0.95rem; font-weight: 300; color: #7a7d8a; font-family: ‘JetBrains Mono’, monospace; letter-spacing: 0.04em; }
+
+.cards-row {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1px;
+background: rgba(255,255,255,0.07);
+border: 1px solid rgba(255,255,255,0.07);
+}
+.archive-card { background: #0e1118; position: relative; overflow: hidden; transition: background 0.3s; }
+.archive-card:hover { background: #161b27; }
+
+.card-header {
+padding: 18px 24px 14px;
+border-bottom: 1px solid rgba(255,255,255,0.07);
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: #0e1118;
+}
+.record-id { font-family: ‘JetBrains Mono’, monospace; font-size: 0.65rem; color: #7a7d8a; letter-spacing: 0.08em; }
+.record-id span { color: #e8c97a; }
+.card-tag-row { display: flex; gap: 6px; }
+.card-tag { font-family: ‘JetBrains Mono’, monospace; font-size: 0.6rem; color: #7a7d8a; border: 1px solid rgba(255,255,255,0.1); padding: 2px 7px; border-radius: 2px; }
+.card-body { padding: 24px; }
+.card-location { font-family: ‘Playfair Display’, Georgia, serif; font-style: italic; font-size: 1.1rem; color: #e8c97a; margin-bottom: 6px; }
+.card-meta { font-family: ‘JetBrains Mono’, monospace; font-size: 0.65rem; color: #7a7d8a; margin-bottom: 18px; letter-spacing: 0.05em; }
+.card-quote { position: relative; padding-left: 20px; }
+.card-quote::before { content: ‘\201C’; position: absolute; left: 0; top: -4px; font-family: ‘Playfair Display’, serif; font-size: 2rem; color: #e8c97a; opacity: 0.6; line-height: 1; }
+.card-text { font-size: 0.88rem; font-weight: 300; line-height: 1.8; color: #a8a5a0; font-style: italic; }
+.card-footer { padding: 14px 24px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; }
+.card-reactions { font-family: ‘JetBrains Mono’, monospace; font-size: 0.68rem; color: #7a7d8a; display: flex; gap: 14px; }
+.card-cite { font-family: ‘JetBrains Mono’, monospace; font-size: 0.62rem; color: #7a7d8a; opacity: 0.6; transition: all 0.2s; }
+.card-cite:hover { color: #e8c97a; opacity: 1; }
+
+.coming-soon-overlay {
+position: absolute; inset: 0;
+background: rgba(7,9,15,0.7);
+display: flex; align-items: center; justify-content: center;
+opacity: 0; transition: opacity 0.3s;
+backdrop-filter: blur(2px);
+-webkit-backdrop-filter: blur(2px);
+}
+.archive-card:hover .coming-soon-overlay { opacity: 1; }
+.coming-soon-text { font-family: ‘JetBrains Mono’, monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.18em; color: #e8c97a; border: 1px solid rgba(232,201,122,0.3); padding: 10px 20px; border-radius: 2px; }
 
 /* ── GET INVOLVED ── */
-#get-involved { background: #0a0c13; }
-
-.how-steps {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 1px;
-background: rgba(255,255,255,0.07);
-border: 1px solid rgba(255,255,255,0.07);
-margin-top: 56px;
-margin-bottom: 80px;
-}
-.step {
+#get-involved {
 background: #0e1118;
-padding: 40px 32px;
-transition: background 0.25s;
+border-top: 1px solid rgba(255,255,255,0.07);
+border-bottom: 1px solid rgba(255,255,255,0.07);
+max-width: none;
+padding: 120px 48px;
 }
-.step:hover { background: #161b27; }
-.step-lambda {
-font-family: ‘Playfair Display’, serif;
-font-size: 2rem;
-color: #e8c97a;
-opacity: 0.25;
-display: block;
-margin-bottom: 18px;
-transition: opacity 0.25s;
-}
-.step:hover .step-lambda { opacity: 0.65; }
-.step-num {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.58rem;
-text-transform: uppercase;
-letter-spacing: 0.18em;
-color: #7a7d8a;
-margin-bottom: 10px;
-}
-.step-title {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 1.1rem;
-font-weight: 400;
-color: #f0ece4;
-margin-bottom: 12px;
-line-height: 1.3;
-}
-.step-body { font-size: 0.85rem; line-height: 1.75; color: #7a7d8a; }
+#get-involved-inner { max-width: 1200px; margin: 0 auto; }
 
-/* Support tiers */
-.support-intro {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 72px;
-align-items: start;
-margin-bottom: 48px;
-}
+.involved-header { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-bottom: 80px; align-items: end; }
+.involved-header .display-text { font-family: ‘Playfair Display’, Georgia, serif; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 400; line-height: 1.2; color: #f0ece4; }
+.involved-header .display-text em { font-style: italic; color: #e8c97a; }
+.involved-header p { font-size: 0.95rem; font-weight: 300; line-height: 1.85; color: #a8a5a0; }
 
-.tiers {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 1px;
-background: rgba(255,255,255,0.07);
-border: 1px solid rgba(255,255,255,0.07);
-margin-bottom: 36px;
-}
-.tier {
-background: #0e1118;
-padding: 28px 22px;
-transition: background 0.25s;
-}
-.tier:hover { background: #161b27; }
-.tier-name {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.58rem;
-text-transform: uppercase;
-letter-spacing: 0.16em;
-color: #e8c97a;
-margin-bottom: 8px;
-}
-.tier-amount {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 1.25rem;
-color: #f0ece4;
-margin-bottom: 8px;
-}
-.tier-desc { font-size: 0.75rem; line-height: 1.6; color: #7a7d8a; }
+.roles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); }
+.role-card { background: #07090f; padding: 36px 32px; transition: background 0.3s; }
+.role-card:hover { background: #161b27; }
+.role-icon { font-size: 1.4rem; margin-bottom: 16px; display: block; opacity: 0.8; }
+.role-title { font-family: ‘Playfair Display’, Georgia, serif; font-size: 1.1rem; font-weight: 400; color: #f0ece4; margin-bottom: 10px; }
+.role-body { font-size: 0.85rem; font-weight: 300; line-height: 1.75; color: #7a7d8a; }
 
-.support-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-.support-note {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.62rem;
-color: #7a7d8a;
-margin-top: 20px;
-letter-spacing: 0.05em;
-}
+/* ── SUPPORT ── */
+#support { text-align: center; padding: 120px 48px; }
+.support-inner { max-width: 720px; margin: 0 auto; }
+#support .display-text { font-family: ‘Playfair Display’, Georgia, serif; font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 400; line-height: 1.25; color: #f0ece4; margin-bottom: 24px; }
+#support .display-text em { font-style: italic; color: #e8c97a; }
+#support p { font-size: 0.95rem; font-weight: 300; line-height: 1.85; color: #a8a5a0; margin-bottom: 48px; }
 
-/* Roles */
-.roles-header { margin-bottom: 36px; }
-.roles-grid {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 1px;
-background: rgba(255,255,255,0.07);
-border: 1px solid rgba(255,255,255,0.07);
-margin-bottom: 44px;
-}
-.role {
-background: #07090f;
-padding: 30px 26px;
-transition: background 0.25s;
-}
-.role:hover { background: #161b27; }
-.role-icon { font-size: 1.2rem; margin-bottom: 12px; display: block; }
-.role-title {
-font-family: ‘Playfair Display’, Georgia, serif;
-font-size: 1rem;
-font-weight: 400;
-color: #f0ece4;
-margin-bottom: 8px;
-}
-.role-body { font-size: 0.8rem; line-height: 1.7; color: #7a7d8a; }
+.tiers-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); margin-bottom: 48px; text-align: left; }
+.tier-card { background: #0e1118; padding: 28px 24px; transition: background 0.3s; }
+.tier-card:hover { background: #161b27; }
+.tier-name { font-family: ‘JetBrains Mono’, monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.16em; color: #e8c97a; margin-bottom: 8px; }
+.tier-amount { font-family: ‘Playfair Display’, Georgia, serif; font-size: 1.4rem; font-weight: 400; color: #f0ece4; margin-bottom: 10px; }
+.tier-desc { font-size: 0.78rem; font-weight: 300; line-height: 1.6; color: #7a7d8a; }
 
-/* ── CONTACT ── */
-#contact { background: #07090f; }
-.contact-grid {
-display: grid;
-grid-template-columns: 1fr 1.4fr;
-gap: 80px;
-align-items: start;
-}
-.contact-left {}
-.contact-note {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.68rem;
-color: #7a7d8a;
-margin-top: 32px;
-line-height: 1.7;
-letter-spacing: 0.04em;
-}
-.contact-note a { color: #e8c97a; }
-.contact-note a:hover { text-decoration: underline; }
-
-/* Form */
-.form-group { margin-bottom: 20px; }
-.form-label {
-display: block;
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.6rem;
-text-transform: uppercase;
-letter-spacing: 0.16em;
-color: #7a7d8a;
-margin-bottom: 8px;
-}
-.form-input,
-.form-select,
-.form-textarea {
-width: 100%;
-background: #0e1118;
-border: 1px solid rgba(255,255,255,0.1);
-border-radius: 2px;
-padding: 12px 16px;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 0.88rem;
-font-weight: 300;
-color: #f0ece4;
-transition: border-color 0.2s;
--webkit-appearance: none;
-appearance: none;
-}
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-outline: none;
-border-color: #e8c97a;
-}
-.form-input::placeholder,
-.form-textarea::placeholder { color: #7a7d8a; }
-.form-select { background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%237a7d8a’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’/%3E%3C/svg%3E”); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-.form-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
-.form-optional {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.55rem;
-color: #7a7d8a;
-margin-left: 6px;
-letter-spacing: 0.08em;
-}
+.support-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+.support-note { font-family: ‘JetBrains Mono’, monospace; font-size: 0.7rem; color: #7a7d8a; letter-spacing: 0.06em; }
 
 /* ── FOOTER ── */
 footer {
 background: #07090f;
-border-top: 1px solid rgba(255,255,255,0.06);
-padding: 44px 48px;
+border-top: 1px solid rgba(255,255,255,0.07);
+padding: 48px;
 display: flex;
-align-items: center;
 justify-content: space-between;
+align-items: center;
 flex-wrap: wrap;
-gap: 20px;
+gap: 24px;
 }
-.footer-mark {
-font-family: ‘Playfair Display’, serif;
-font-style: italic;
-font-size: 1.1rem;
-color: #7a7d8a;
-}
-.footer-mark span { color: #e8c97a; }
-.footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
-.footer-links a {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.6rem;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-color: #7a7d8a;
-transition: color 0.2s;
-}
+.footer-wordmark { font-family: ‘Playfair Display’, serif; font-style: italic; font-size: 1.2rem; color: #7a7d8a; }
+.footer-wordmark span { color: #e8c97a; }
+.footer-links { display: flex; gap: 28px; list-style: none; }
+.footer-links a { font-family: ‘JetBrains Mono’, monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #7a7d8a; transition: color 0.2s; }
 .footer-links a:hover { color: #e8c97a; }
-.footer-copy {
-font-family: ‘JetBrains Mono’, monospace;
-font-size: 0.58rem;
-color: #7a7d8a;
-opacity: 0.4;
-}
+.footer-copy { font-family: ‘JetBrains Mono’, monospace; font-size: 0.65rem; color: #7a7d8a; opacity: 0.5; letter-spacing: 0.06em; }
 
 /* ── SCROLL REVEAL ── */
-.reveal {
-opacity: 0;
-transform: translateY(24px);
-transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1),
-transform 0.75s cubic-bezier(0.16,1,0.3,1);
-}
-.reveal.visible { opacity: 1; transform: none; }
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 960px) {
-#nav { padding: 0 24px; }
+@media (max-width: 900px) {
+nav { padding: 20px 24px; }
 .nav-links { display: none; }
-.nav-toggle { display: flex; }
-.container { padding: 0 24px; }
-.page-section { padding: 72px 0; }
-.about-grid,
-.contact-grid,
-.support-intro { grid-template-columns: 1fr; gap: 40px; }
-.how-steps { grid-template-columns: 1fr; }
-.tiers { grid-template-columns: 1fr 1fr; }
+section { padding: 80px 24px; }
+#mission { grid-template-columns: 1fr; gap: 40px; }
+.steps-grid { grid-template-columns: 1fr; }
+.cards-row { grid-template-columns: 1fr; }
+.involved-header { grid-template-columns: 1fr; gap: 32px; }
 .roles-grid { grid-template-columns: 1fr 1fr; }
-footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
+.tiers-row { grid-template-columns: 1fr 1fr; }
+footer { flex-direction: column; align-items: flex-start; padding: 36px 24px; }
+#get-involved { padding: 80px 24px; }
+#support { padding: 80px 24px; }
+#stat { padding: 80px 24px; }
 }
-@media (max-width: 560px) {
-.hero-ctas { flex-direction: column; align-items: center; }
-.tiers { grid-template-columns: 1fr 1fr; }
+@media (max-width: 600px) {
 .roles-grid { grid-template-columns: 1fr; }
-.support-ctas { flex-direction: column; }
+.tiers-row { grid-template-columns: 1fr 1fr; }
+.hero-ctas { flex-direction: column; align-items: center; }
 }
 @media (prefers-reduced-motion: reduce) {
 *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -649,315 +470,267 @@ footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
 </head>
 <body>
 
-<!-- ── NAV ── -->
+<!-- NAV -->
 
-<nav id="nav">
-  <a href="#hero" class="wordmark">Marq<span>'</span>d</a>
+<nav>
+  <a href="#" class="wordmark">Marq<span>'</span>d</a>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#get-involved">Get Involved</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#support">Support</a></li>
   </ul>
-  <div class="nav-toggle" id="nav-toggle" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </div>
 </nav>
-<div class="nav-mobile" id="nav-mobile">
-  <a href="#about" class="nav-mobile-link">About</a>
-  <a href="#get-involved" class="nav-mobile-link">Get Involved</a>
-  <a href="#contact" class="nav-mobile-link">Contact</a>
-</div>
 
-<!-- ── HERO ── -->
+<!-- HERO -->
 
 <section id="hero">
-  <div id="globe-wrap">
-    <canvas id="globe-canvas"></canvas>
-  </div>
-  <div class="hero-vignette"></div>
+  <canvas id="globe-canvas"></canvas>
   <div class="hero-content">
     <div class="hero-eyebrow">A Living Queer Archive &nbsp;·&nbsp; Est. 2025</div>
     <h1 class="hero-title">Marq<span>'</span>d</h1>
     <p class="hero-tagline">Q marks the spot.</p>
-    <p class="hero-mission">
-      Marq'd is a <strong>living archive of queer existence</strong> — geographically indexed, anonymously contributed, and built to last. Every dot on this globe is a firsthand story, preserved as primary source history. In 64 countries, no official record of queer life exists. <strong>We are creating that record.</strong>
-    </p>
     <div class="hero-ctas">
-      <a href="#get-involved" class="btn btn-gold">Get Involved</a>
-      <a href="#about" class="btn btn-outline">Learn More</a>
+      <a href="#support" class="btn-primary">Support the Archive</a>
+      <a href="#mission" class="btn-ghost">Learn More</a>
     </div>
   </div>
-  <div class="scroll-cue">
-    <span class="scroll-cue-label">Scroll</span>
-    <div class="scroll-cue-bar"></div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
   </div>
 </section>
 
 <hr class="pride-rule">
 
-<!-- ── ABOUT ── -->
+<!-- MISSION -->
 
-<section id="about" class="page-section">
-  <div class="container">
-    <div class="about-grid">
-
-```
-  <div class="reveal">
+<section id="mission">
+  <div class="mission-left reveal">
     <div class="eyebrow">About the Archive</div>
-    <h2 class="section-heading">Every story is <em>evidence.</em></h2>
-    <p class="body-text">
-      Marq'd is a platform where queer people share anonymous firsthand stories tied to real-world coordinates. But it is more than a platform — it is a <strong>primary source archive</strong> of queer life across time and geography.
-    </p>
-    <p class="body-text" style="margin-top:16px;">
-      Primary sources are the most valuable form of historical evidence. For queer history, they have always been scarce — because they were dangerous to create and deadly to keep. Letters burned. Diaries written in code. Meeting places demolished. Oral histories lost with the people who held them.
-    </p>
-    <p class="body-text" style="margin-top:16px;">
-      <strong>Marq'd is an act of preservation.</strong> Stories submitted here are geographically anchored, timestamped, permanently numbered, and citable — exactly as a historian would cite any primary document.
-    </p>
-
-    <div class="stat-callout">
-      <div class="stat-num">64</div>
-      <div class="stat-desc">countries criminalize same-sex relationships.</div>
-      <div class="stat-sub">In most of them, no official record of queer life exists.<br>The record says: we were not there. We were there.</div>
+    <div class="display-text">
+      Every dot on this globe is a story.<br>
+      Every story is <em>evidence.</em>
     </div>
   </div>
+  <div class="mission-right reveal" style="transition-delay:0.15s">
+    <p class="mission-body">
+      Marq'd is a <strong>living archive of queer existence</strong> — geographically indexed, anonymously contributed, and built to last. People share firsthand stories tied to real-world coordinates, preserving queer life as primary source history.
+    </p>
+    <p class="mission-body">
+      Primary sources are the most valuable form of historical evidence. For queer history, they have always been scarce — because they were dangerous to create. Letters burned. Diaries written in code. Meeting places demolished. Entire communities erased.
+    </p>
+    <p class="mission-body">
+      <strong>Marq'd is an act of preservation.</strong> Every story submitted — from São Paulo or Stockholm, from Cairo or Kansas City — joins a permanent, geographic record of queer life as it was actually lived.
+    </p>
+  </div>
+</section>
 
-  <div class="reveal" style="transition-delay:0.12s;">
-    <div class="eyebrow">The Archive in Practice</div>
-    <h2 class="section-heading" style="font-size:clamp(1.5rem,2.5vw,2rem);">What a Marq looks like.</h2>
-    <p class="body-text">Each story submitted becomes a <strong>Field Record</strong> — a permanent archive entry with a unique record number, a geographic coordinate, a timestamp, and the contributor's own words.</p>
-    <p class="body-text" style="margin-top:16px;">Stories can be accompanied by an AI-generated voice reading, or the contributor's own recorded voice — a form of oral history that preserves accent, emotion, and presence. Photographs of places and spaces (never people) add a documentary layer.</p>
-    <p class="body-text" style="margin-top:16px;">Every Field Record is citable. Researchers, historians, and journalists can reference a Marq'd entry the same way they would reference any primary source document. This is not accidental — it is the point.</p>
+<hr class="pride-rule">
 
-    <!-- Sample card -->
-    <div style="margin-top:36px; border:1px solid rgba(255,255,255,0.07); border-radius:2px; overflow:hidden;">
-      <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.07); display:flex; justify-content:space-between; align-items:center; background:#0e1118;">
-        <span style="font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#7a7d8a;">FIELD RECORD · <span style="color:#e8c97a;">#MQ-000047</span></span>
-        <span style="font-family:'JetBrains Mono',monospace; font-size:0.58rem; color:#7a7d8a; border:1px solid rgba(255,255,255,0.1); padding:2px 7px;">[anonymous]</span>
-      </div>
-      <div style="padding:20px; background:#0e1118;">
-        <div style="font-family:'Playfair Display',serif; font-style:italic; font-size:1rem; color:#e8c97a; margin-bottom:4px;">Location withheld</div>
-        <div style="font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#7a7d8a; margin-bottom:14px;">2023 · 4 min read · ▶ Audio</div>
-        <div style="position:relative; padding-left:16px;">
-          <span style="position:absolute; left:0; top:-4px; font-family:'Playfair Display',serif; font-size:1.8rem; color:#e8c97a; opacity:0.5; line-height:1;">"</span>
-          <p style="font-size:0.84rem; line-height:1.8; color:#a8a5a0; font-style:italic;">I can't say where this happened. In my country, it is not possible to say where. But it happened, and it was real, and I want someone to know...</p>
+<!-- STAT -->
+
+<div id="stat">
+  <div class="stat-inner reveal">
+    <div class="eyebrow" style="justify-content:center">Why This Matters</div>
+    <div class="stat-number">64</div>
+    <div class="stat-label">countries criminalize same-sex relationships.</div>
+    <p class="stat-sub">
+      In most of them, no official record of queer life exists. No archives. No history.<br>
+      The record says: <em>we were not there.</em><br><br>
+      We were there. Marq'd is the proof.
+    </p>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+
+<section id="how-it-works">
+  <div class="reveal" style="text-align:center; margin-bottom: 16px;">
+    <div class="eyebrow" style="justify-content:center">How It Works</div>
+    <div style="font-family:'Playfair Display',Georgia,serif; font-size:clamp(1.8rem,3vw,2.4rem); font-weight:400; color:#f0ece4; line-height:1.3;">
+      Contribute to the record.<br>
+      <em style="color:#e8c97a;">Anonymously. Permanently.</em>
+    </div>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card reveal">
+      <span class="step-lambda">λ</span>
+      <div class="step-num">Step 01</div>
+      <div class="step-title">Drop a pin anywhere on the globe</div>
+      <p class="step-body">Use your location or search for a place. A city, a neighborhood, a specific intersection. Anywhere something happened.</p>
+    </div>
+    <div class="step-card reveal" style="transition-delay:0.1s">
+      <span class="step-lambda">λ</span>
+      <div class="step-num">Step 02</div>
+      <div class="step-title">Tell us what happened</div>
+      <p class="step-body">Write your story. Choose a voice to have it read aloud. Add a photograph of the place — never the people. No account required.</p>
+    </div>
+    <div class="step-card reveal" style="transition-delay:0.2s">
+      <span class="step-lambda">λ</span>
+      <div class="step-num">Step 03</div>
+      <div class="step-title">Receive a permanent record number</div>
+      <p class="step-body">Your Marq is assigned a Field Record ID. It is now part of the archive — permanent, citable, and yours.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- ARCHIVE PREVIEW -->
+
+<section id="archive-preview" style="padding-top:100px; padding-bottom:100px;">
+  <div class="preview-header reveal">
+    <div class="eyebrow" style="justify-content:center">From the Archive</div>
+    <div class="display-text">What a Marq looks like.</div>
+    <p>Story submission opens in Phase 1 — coming soon.</p>
+  </div>
+  <div class="cards-row reveal">
+
+```
+<div class="archive-card">
+  <div class="card-header">
+    <div class="record-id">FIELD RECORD · <span>#MQ-000012</span></div>
+    <div class="card-tag-row"><span class="card-tag">outdoor</span><span class="card-tag">spontaneous</span></div>
+  </div>
+  <div class="card-body">
+    <div class="card-location">São Paulo, Brazil</div>
+    <div class="card-meta">March 2024 &nbsp;·&nbsp; 2 min read &nbsp;·&nbsp; ▶ Audio</div>
+    <div class="card-quote">
+      <p class="card-text">Walking back from a bar I'd never been brave enough to enter before, I caught eyes with someone across the street. We stood there for a long moment...</p>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="card-reactions">🔥 14 &nbsp; 👀 8 &nbsp; 🫦 21</div>
+    <a href="#" class="card-cite">Cite →</a>
+  </div>
+  <div class="coming-soon-overlay"><span class="coming-soon-text">Live in Phase 1</span></div>
+</div>
+
+<div class="archive-card">
+  <div class="card-header">
+    <div class="record-id">FIELD RECORD · <span>#MQ-000031</span></div>
+    <div class="card-tag-row"><span class="card-tag">tender</span><span class="card-tag">unexpected</span></div>
+  </div>
+  <div class="card-body">
+    <div class="card-location">Berlin, Germany</div>
+    <div class="card-meta">January 2024 &nbsp;·&nbsp; 3 min read</div>
+    <div class="card-quote">
+      <p class="card-text">It was the last train of the night. He sat across from me with a book I recognized. We talked until the train ended and kept talking after...</p>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="card-reactions">🔥 9 &nbsp; 👀 22 &nbsp; 💬 6</div>
+    <a href="#" class="card-cite">Cite →</a>
+  </div>
+  <div class="coming-soon-overlay"><span class="coming-soon-text">Live in Phase 1</span></div>
+</div>
+
+<div class="archive-card">
+  <div class="card-header">
+    <div class="record-id">FIELD RECORD · <span>#MQ-000047</span></div>
+    <div class="card-tag-row"><span class="card-tag">anonymous</span><span class="card-tag">significant</span></div>
+  </div>
+  <div class="card-body">
+    <div class="card-location">Location withheld</div>
+    <div class="card-meta">2023 &nbsp;·&nbsp; 4 min read &nbsp;·&nbsp; ▶ Audio</div>
+    <div class="card-quote">
+      <p class="card-text">I can't say where this happened. In my country, it is not possible to say where. But it happened, and it was real, and I want someone to know...</p>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="card-reactions">🔥 41 &nbsp; 👀 58 &nbsp; 💬 12</div>
+    <a href="#" class="card-cite">Cite →</a>
+  </div>
+  <div class="coming-soon-overlay"><span class="coming-soon-text">Live in Phase 1</span></div>
+</div>
+```
+
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- GET INVOLVED -->
+
+<div id="get-involved">
+  <div id="get-involved-inner">
+    <div class="involved-header">
+      <div class="reveal">
+        <div class="eyebrow">Get Involved</div>
+        <div class="display-text">
+          One person.<br>
+          One vision.<br>
+          <em>A lot of work ahead.</em>
         </div>
       </div>
-      <div style="padding:11px 20px; border-top:1px solid rgba(255,255,255,0.07); display:flex; justify-content:space-between; background:#0e1118;">
-        <span style="font-family:'JetBrains Mono',monospace; font-size:0.62rem; color:#7a7d8a;">🔥 41 &nbsp;👀 58 &nbsp;💬 12</span>
-        <span style="font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#7a7d8a; opacity:0.5;">Cite this entry →</span>
+      <div class="reveal" style="transition-delay:0.15s">
+        <p>Marq'd is in its founding stage — built by a single person who believes queer stories deserve to be preserved as the historical evidence they are. If you share that belief and have something to contribute, we want to hear from you.</p>
       </div>
     </div>
-    <p style="font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#7a7d8a; margin-top:10px; letter-spacing:0.04em;">Story submission opens in Phase 1 — coming soon.</p>
+    <div class="roles-grid reveal">
+      <div class="role-card"><span class="role-icon">⌨️</span><div class="role-title">Developers</div><p class="role-body">React, TypeScript, Supabase, globe.gl. If you build things and believe in this, reach out.</p></div>
+      <div class="role-card"><span class="role-icon">✦</span><div class="role-title">Designers</div><p class="role-body">The visual system is documented and opinionated. A second set of skilled eyes would be invaluable.</p></div>
+      <div class="role-card"><span class="role-icon">📚</span><div class="role-title">Archivists & Academics</div><p class="role-body">LGBTQ+ archives, digital humanities, oral history. Your expertise shapes how this archive is structured.</p></div>
+      <div class="role-card"><span class="role-icon">⚖️</span><div class="role-title">Legal</div><p class="role-body">Privacy policy, terms of service, operating in hostile jurisdictions. Pro bono contributions welcome.</p></div>
+      <div class="role-card"><span class="role-icon">🌐</span><div class="role-title">Translators</div><p class="role-body">Arabic, Farsi, Russian, Mandarin, Portuguese, Spanish and more. Reach the people who need this most.</p></div>
+      <div class="role-card"><span class="role-icon">📢</span><div class="role-title">Community & Outreach</div><p class="role-body">LGBTQ+ organizations, queer media, academic institutions. If you know the right people, let's talk.</p></div>
+    </div>
+    <div style="text-align:center; margin-top:48px;" class="reveal">
+      <a href="mailto:marqd.official@gmail.com?subject=Get Involved" class="btn-primary">Get in Touch</a>
+    </div>
   </div>
-
 </div>
-```
 
+<hr class="pride-rule">
+
+<!-- SUPPORT -->
+
+<section id="support">
+  <div class="support-inner">
+    <div class="reveal">
+      <div class="eyebrow" style="justify-content:center">Support the Archive</div>
+      <div class="display-text">Free to use.<br><em>Not free to run.</em></div>
+      <p>Marq'd will always be free to read and contribute to. But hosting, storage, moderation, and development cost real money. Your support keeps the archive alive, independent, and growing.</p>
+    </div>
+    <div class="tiers-row reveal">
+      <div class="tier-card"><div class="tier-name">Reader</div><div class="tier-amount">Any amount</div><p class="tier-desc">One-time. You found us and you believe in us.</p></div>
+      <div class="tier-card"><div class="tier-name">Contributor</div><div class="tier-amount">$5 / mo</div><p class="tier-desc">You're part of keeping the lights on.</p></div>
+      <div class="tier-card"><div class="tier-name">Archivist</div><div class="tier-amount">$15 / mo</div><p class="tier-desc">You understand what this is for.</p></div>
+      <div class="tier-card"><div class="tier-name">Patron</div><div class="tier-amount">$50 / mo</div><p class="tier-desc">You're investing in queer history.</p></div>
+    </div>
+    <div class="support-ctas reveal">
+      <a href="https://opencollective.com/marqd" target="_blank" rel="noopener" class="btn-primary">Donate via Open Collective</a>
+      <a href="mailto:marqd.official@gmail.com?subject=Partnership" class="btn-ghost">Institutional Inquiry</a>
+    </div>
+    <p class="support-note reveal">Every dollar goes toward keeping the record intact.</p>
   </div>
 </section>
 
 <hr class="pride-rule">
 
-<!-- ── GET INVOLVED ── -->
-
-<section id="get-involved" class="page-section">
-  <div class="container">
-
-```
-<!-- How it works -->
-<div class="reveal">
-  <div class="eyebrow">How It Works</div>
-  <h2 class="section-heading">Leave your Marq.<br><em>Anonymously. Permanently.</em></h2>
-</div>
-<div class="how-steps">
-  <div class="step reveal">
-    <span class="step-lambda">λ</span>
-    <div class="step-num">Step 01</div>
-    <div class="step-title">Drop a pin anywhere on the globe</div>
-    <p class="step-body">Use your location or search for a city, neighborhood, or intersection. Anywhere something happened.</p>
-  </div>
-  <div class="step reveal" style="transition-delay:0.1s;">
-    <span class="step-lambda">λ</span>
-    <div class="step-num">Step 02</div>
-    <div class="step-title">Tell us what happened</div>
-    <p class="step-body">Write your story. Choose a voice to read it aloud, or record your own. Add a photo of the place. No account required.</p>
-  </div>
-  <div class="step reveal" style="transition-delay:0.2s;">
-    <span class="step-lambda">λ</span>
-    <div class="step-num">Step 03</div>
-    <div class="step-title">Receive a Field Record number</div>
-    <p class="step-body">Your Marq is assigned a permanent ID — citable, searchable, and part of the archive forever.</p>
-  </div>
-</div>
-
-<!-- Support -->
-<div class="support-intro reveal">
-  <div>
-    <div class="eyebrow">Support the Archive</div>
-    <h2 class="section-heading" style="font-size:clamp(1.6rem,3vw,2.4rem);">Free to use.<br><em>Not free to run.</em></h2>
-  </div>
-  <div style="padding-top:8px;">
-    <p class="body-text">Marq'd will always be free to read and contribute to. Hosting, storage, moderation, and development cost real money. Your support keeps the archive alive, independent, and growing. Every dollar goes toward keeping the record intact.</p>
-  </div>
-</div>
-<div class="tiers reveal">
-  <div class="tier">
-    <div class="tier-name">Reader</div>
-    <div class="tier-amount">Any amount</div>
-    <p class="tier-desc">One-time. You found us and you believe in us.</p>
-  </div>
-  <div class="tier">
-    <div class="tier-name">Contributor</div>
-    <div class="tier-amount">$5 / mo</div>
-    <p class="tier-desc">You're part of keeping the lights on.</p>
-  </div>
-  <div class="tier">
-    <div class="tier-name">Archivist</div>
-    <div class="tier-amount">$15 / mo</div>
-    <p class="tier-desc">You understand what this is for.</p>
-  </div>
-  <div class="tier">
-    <div class="tier-name">Patron</div>
-    <div class="tier-amount">$50 / mo</div>
-    <p class="tier-desc">You're investing in queer history.</p>
-  </div>
-</div>
-<div class="support-ctas reveal">
-  <a href="https://opencollective.com/marqd" target="_blank" rel="noopener" class="btn btn-gold">Donate via Open Collective</a>
-  <a href="#contact" class="btn btn-outline">Institutional Inquiry</a>
-</div>
-<p class="support-note reveal">Every dollar goes toward keeping the record intact.</p>
-
-<!-- Roles -->
-<div style="margin-top:80px;">
-  <div class="roles-header reveal">
-    <div class="eyebrow">Contribute Your Skills</div>
-    <h2 class="section-heading" style="font-size:clamp(1.6rem,3vw,2.4rem);">One person. One vision.<br><em>A lot of work ahead.</em></h2>
-    <p class="body-text" style="max-width:560px;">Marq'd is in its founding stage. If you have skills to offer and believe in what this is building toward, we want to hear from you.</p>
-  </div>
-  <div class="roles-grid">
-    <div class="role reveal">
-      <span class="role-icon">⌨️</span>
-      <div class="role-title">Developers</div>
-      <p class="role-body">React, TypeScript, Supabase, globe.gl. If you build things and believe in this, reach out.</p>
-    </div>
-    <div class="role reveal" style="transition-delay:0.06s;">
-      <span class="role-icon">✦</span>
-      <div class="role-title">Designers</div>
-      <p class="role-body">The visual system is documented and opinionated. A skilled second set of eyes would be invaluable.</p>
-    </div>
-    <div class="role reveal" style="transition-delay:0.12s;">
-      <span class="role-icon">📚</span>
-      <div class="role-title">Archivists & Academics</div>
-      <p class="role-body">LGBTQ+ archives, digital humanities, oral history. Your expertise shapes how this archive is structured.</p>
-    </div>
-    <div class="role reveal" style="transition-delay:0.18s;">
-      <span class="role-icon">⚖️</span>
-      <div class="role-title">Legal</div>
-      <p class="role-body">Privacy, terms of service, operating in hostile jurisdictions. Pro bono contributions welcome.</p>
-    </div>
-    <div class="role reveal" style="transition-delay:0.24s;">
-      <span class="role-icon">🌐</span>
-      <div class="role-title">Translators</div>
-      <p class="role-body">Arabic, Farsi, Russian, Mandarin, Portuguese, Spanish and more. Reach the people who need this most.</p>
-    </div>
-    <div class="role reveal" style="transition-delay:0.3s;">
-      <span class="role-icon">📢</span>
-      <div class="role-title">Outreach & Partnerships</div>
-      <p class="role-body">LGBTQ+ organizations, academic institutions, queer media. If you know the right people, let's talk.</p>
-    </div>
-  </div>
-  <div style="margin-top:40px;" class="reveal">
-    <a href="#contact" class="btn btn-gold">Get in Touch</a>
-  </div>
-</div>
-```
-
-  </div>
-</section>
-
-<hr class="pride-rule">
-
-<!-- ── CONTACT ── -->
-
-<section id="contact" class="page-section">
-  <div class="container">
-    <div class="contact-grid">
-
-```
-  <div class="reveal">
-    <div class="eyebrow">Contact</div>
-    <h2 class="section-heading">We're <em>listening.</em></h2>
-    <p class="body-text">Whether you want to propose a partnership, get involved in building Marq'd, inquire about advertising, or just say something — reach out.</p>
-    <div class="contact-note">
-      Direct email: <a href="mailto:marqd.official@gmail.com">marqd.official@gmail.com</a><br><br>
-      We read everything.<br>We try to respond to most things.<br><br>
-      To report a safety concern, select<br>"Safety Report" in the form.
-    </div>
-  </div>
-
-  <div class="reveal" style="transition-delay:0.12s;">
-    <form action="https://formspree.io/f/xreygoeq" method="POST">
-      <div class="form-group">
-        <label class="form-label" for="name">Name <span class="form-optional">optional</span></label>
-        <input class="form-input" type="text" id="name" name="name" placeholder="Your name" autocomplete="name">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="email">Email</label>
-        <input class="form-input" type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="subject">Subject</label>
-        <select class="form-select" id="subject" name="subject" required>
-          <option value="" disabled selected>Select a subject</option>
-          <option value="General">General</option>
-          <option value="Get Involved">Get Involved</option>
-          <option value="Partnership">Partnership</option>
-          <option value="Press">Press</option>
-          <option value="Advertising">Advertising</option>
-          <option value="Safety Report">Safety Report</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="message">Message</label>
-        <textarea class="form-textarea" id="message" name="message" placeholder="Tell us what's on your mind..." required></textarea>
-      </div>
-      <button type="submit" class="btn btn-gold" style="width:100%; text-align:center;">Send it</button>
-    </form>
-  </div>
-
-</div>
-```
-
-  </div>
-</section>
-
-<hr class="pride-rule">
-
-<!-- ── FOOTER ── -->
+<!-- FOOTER -->
 
 <footer>
-  <div class="footer-mark">Marq<span>'</span>d</div>
+  <div class="footer-wordmark">Marq<span>'</span>d</div>
   <ul class="footer-links">
-    <li><a href="#about">About</a></li>
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#get-involved">Get Involved</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="mailto:marqd.official@gmail.com">Email</a></li>
+    <li><a href="#support">Support</a></li>
+    <li><a href="mailto:marqd.official@gmail.com">Contact</a></li>
   </ul>
   <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
 </footer>
 
 <script>
-// ── GLOBE ──────────────────────────────────────────────────────────
+// ── GLOBE ──────────────────────────────────────────────────────────────
 (function() {
-  var wrap   = document.getElementById('globe-wrap');
   var canvas = document.getElementById('globe-canvas');
   var ctx    = canvas.getContext('2d');
-  var W, H, cx, cy, R, rot = 0, running = true;
+  var W, H, cx, cy, R, rot = 0;
 
-  var DOTS = [
+  var LOCATIONS = [
     [37.77,-122.41],[40.74,-73.99],[34.05,-118.24],[51.51,-0.12],
     [48.85,2.35],[52.52,13.40],[41.39,2.15],[59.33,18.06],
     [-23.55,-46.63],[-34.60,-58.38],[35.68,139.69],[-33.87,151.21],
@@ -968,9 +741,9 @@ footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
   ];
 
   function resize() {
-    W = wrap.offsetWidth;
-    H = wrap.offsetHeight;
-    if (!W || !H) { W = window.innerWidth; H = window.innerHeight; }
+    var hero = document.getElementById('hero');
+    W = hero.offsetWidth  || window.innerWidth;
+    H = hero.offsetHeight || window.innerHeight;
     canvas.width  = W;
     canvas.height = H;
     cx = W / 2;
@@ -998,13 +771,13 @@ footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    // atmosphere
-    var atm = ctx.createRadialGradient(cx, cy, R * 0.8, cx, cy, R * 1.35);
-    atm.addColorStop(0,   'rgba(78,205,196,0.05)');
+    // atmosphere glow
+    var atm = ctx.createRadialGradient(cx, cy, R * 0.82, cx, cy, R * 1.32);
+    atm.addColorStop(0,   'rgba(78,205,196,0.06)');
     atm.addColorStop(0.6, 'rgba(78,205,196,0.02)');
     atm.addColorStop(1,   'rgba(78,205,196,0)');
     ctx.fillStyle = atm;
-    ctx.beginPath(); ctx.arc(cx, cy, R * 1.35, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, cy, R * 1.32, 0, Math.PI * 2); ctx.fill();
 
     // globe base
     var base = ctx.createRadialGradient(cx - R*0.22, cy - R*0.18, R*0.08, cx, cy, R);
@@ -1014,10 +787,10 @@ footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
     ctx.fillStyle = base;
     ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
 
-    // grid
-    ctx.strokeStyle = 'rgba(78,205,196,0.055)';
-    ctx.lineWidth   = 0.6;
-    var lat, lng, p, p3, first;
+    // grid lines
+    ctx.strokeStyle = 'rgba(78,205,196,0.06)';
+    ctx.lineWidth   = 0.5;
+    var lat, lng, p3, p, first;
 
     for (lat = -60; lat <= 60; lat += 30) {
       ctx.beginPath(); first = true;
@@ -1042,31 +815,28 @@ footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
 
     // dots
     var t = Date.now() / 1000;
-    for (var i = 0; i < DOTS.length; i++) {
-      p3 = toXYZ(DOTS[i][0], DOTS[i][1], R);
+    for (var i = 0; i < LOCATIONS.length; i++) {
+      p3 = toXYZ(LOCATIONS[i][0], LOCATIONS[i][1], R);
       p  = project(p3);
       if (p.depth < 0) continue;
 
-      var depth  = (p.depth / R + 1) / 2;
-      var pulse  = (Math.sin(t * 1.3 + i * 0.65) + 1) / 2;
-      var dotR   = 2.5 + depth * 1.5;
-      var alpha  = 0.35 + depth * 0.65;
+      var depth = (p.depth / R + 1) / 2;
+      var pulse = (Math.sin(t * 1.3 + i * 0.65) + 1) / 2;
+      var dotR  = 2.5 + depth * 1.5;
+      var alpha = 0.35 + depth * 0.65;
 
-      // pulse ring
       var ring = ctx.createRadialGradient(p.sx, p.sy, dotR, p.sx, p.sy, dotR + pulse * 9);
       ring.addColorStop(0, 'rgba(78,205,196,' + (0.28 * pulse * depth) + ')');
       ring.addColorStop(1, 'rgba(78,205,196,0)');
       ctx.fillStyle = ring;
       ctx.beginPath(); ctx.arc(p.sx, p.sy, dotR + pulse * 9, 0, Math.PI * 2); ctx.fill();
 
-      // glow
       var glow = ctx.createRadialGradient(p.sx, p.sy, 0, p.sx, p.sy, dotR * 3.5);
       glow.addColorStop(0, 'rgba(78,205,196,' + (alpha * 0.7) + ')');
       glow.addColorStop(1, 'rgba(78,205,196,0)');
       ctx.fillStyle = glow;
       ctx.beginPath(); ctx.arc(p.sx, p.sy, dotR * 3.5, 0, Math.PI * 2); ctx.fill();
 
-      // core
       ctx.fillStyle = 'rgba(200,245,242,' + alpha + ')';
       ctx.beginPath(); ctx.arc(p.sx, p.sy, dotR, 0, Math.PI * 2); ctx.fill();
     }
@@ -1078,7 +848,7 @@ footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
     ctx.fillStyle = limb;
     ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
 
-    // specular
+    // specular highlight
     var spec = ctx.createRadialGradient(cx - R*0.28, cy - R*0.28, 0, cx - R*0.28, cy - R*0.28, R*0.55);
     spec.addColorStop(0, 'rgba(255,255,255,0.045)');
     spec.addColorStop(1, 'rgba(255,255,255,0)');
@@ -1086,41 +856,13 @@ footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
     ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
   }
 
-  function loop() {
-    if (!running) return;
-    rot += 0.0014;
-    draw();
-    requestAnimationFrame(loop);
-  }
+  function loop() { rot += 0.0014; draw(); requestAnimationFrame(loop); }
 
-  window.addEventListener('resize', function() { resize(); });
-
-  // Give DOM time to paint before reading dimensions
+  window.addEventListener('resize', resize);
   setTimeout(function() { resize(); loop(); }, 60);
 })();
 
-// ── NAV SCROLL BEHAVIOUR ──────────────────────────────────────────
-(function() {
-  var nav = document.getElementById('nav');
-  window.addEventListener('scroll', function() {
-    if (window.scrollY > 60) nav.classList.add('scrolled');
-    else nav.classList.remove('scrolled');
-  }, { passive: true });
-})();
-
-// ── MOBILE MENU ───────────────────────────────────────────────────
-(function() {
-  var toggle = document.getElementById('nav-toggle');
-  var menu   = document.getElementById('nav-mobile');
-  toggle.addEventListener('click', function() {
-    menu.classList.toggle('open');
-  });
-  document.querySelectorAll('.nav-mobile-link').forEach(function(link) {
-    link.addEventListener('click', function() { menu.classList.remove('open'); });
-  });
-})();
-
-// ── SCROLL REVEAL ─────────────────────────────────────────────────
+// ── SCROLL REVEAL ──────────────────────────────────────────────────────
 (function() {
   var obs = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
