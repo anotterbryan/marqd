@@ -1066,11 +1066,12 @@ function setGlobeMode(mode) {
   document.getElementById('gt-marq').classList.toggle('active', mode === 'marq');
   var hint = document.getElementById('gt-hint');
   if (mode === 'marq') {
-    hint.classList.add('show');
-    if (globeInstance) globeInstance.controls().autoRotate = false;
+    hint.classList.remove('show');
+    spOpen(null);
   } else {
     hint.classList.remove('show');
-    if (globeInstance) globeInstance.controls().autoRotate = true;
+    var panel = document.getElementById('submit-panel');
+    if (panel.classList.contains('open')) spClose();
   }
 }
 
@@ -1365,6 +1366,10 @@ function spClose() {
   document.body.style.overflow = '';
   if (globeInstance) globeInstance.controls().autoRotate = true;
   document.getElementById('sp-footer').style.display = 'flex';
+  // Reset toggle to Explore mode
+  globeMode = 'explore';
+  document.getElementById('gt-explore').classList.add('active');
+  document.getElementById('gt-marq').classList.remove('active');
 }
 
 function spReset() {
