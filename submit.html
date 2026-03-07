@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07090f">
+<title>Leave a Marq — Marq'd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #07090f; }
+body { background: #07090f; color: #f0ece4; font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px; height: 64px; display: flex; align-items: center; justify-content: space-between; background: rgba(7,9,15,0.96); border-bottom: 1px solid rgba(255,255,255,0.07); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.wordmark { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-style: italic; font-weight: 600; color: #f0ece4; }
+.wordmark span { color: #e8c97a; }
+.nav-back { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.13em; color: #7a7d8a; transition: color 0.2s; display: flex; align-items: center; gap: 8px; }
+.nav-back:hover { color: #e8c97a; }
+
+.pride-rule { display: block; width: 100%; height: 1px; border: none; background: linear-gradient(to right, #c0392b, #d4651a, #c9a227, #2e7d52, #2471a3, #7d3c98); opacity: 0.3; }
+
+/* MAIN LAYOUT */
+.submit-page { padding: 100px 48px 80px; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-items: start; }
+
+/* LEFT */
+.submit-left { position: sticky; top: 88px; }
+.page-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.22em; color: #4ecdc4; margin-bottom: 18px; }
+.page-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 600; font-style: italic; line-height: 1.1; letter-spacing: -0.02em; color: #f0ece4; margin-bottom: 20px; }
+.page-title span { color: #e8c97a; }
+.page-desc { font-size: 0.92rem; font-weight: 300; line-height: 1.85; color: #a8a5a0; margin-bottom: 32px; }
+.page-desc strong { color: #f0ece4; font-weight: 400; }
+
+.safety-box { background: #0e1118; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #4ecdc4; padding: 20px 22px; margin-bottom: 28px; }
+.safety-label { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.16em; color: #4ecdc4; margin-bottom: 8px; }
+.safety-text { font-size: 0.8rem; line-height: 1.7; color: #a8a5a0; }
+
+/* Steps indicator */
+.steps-indicator { display: flex; flex-direction: column; gap: 0; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 0; margin-left: 12px; }
+.step-ind { display: flex; align-items: center; gap: 14px; padding: 12px 0 12px 20px; position: relative; cursor: pointer; }
+.step-ind::before { content: ''; position: absolute; left: -5px; width: 9px; height: 9px; border-radius: 50%; background: #161b27; border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s; }
+.step-ind.active::before { background: #e8c97a; border-color: #e8c97a; }
+.step-ind.done::before { background: #4ecdc4; border-color: #4ecdc4; }
+.step-ind-num { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; }
+.step-ind-label { font-size: 0.82rem; color: #7a7d8a; transition: color 0.2s; }
+.step-ind.active .step-ind-label { color: #f0ece4; }
+.step-ind.done .step-ind-label { color: #4ecdc4; }
+
+/* RIGHT — form */
+.submit-right {}
+.form-step { display: none; }
+.form-step.active { display: block; }
+
+.step-header { margin-bottom: 32px; }
+.step-title-text { font-family: 'Playfair Display', Georgia, serif; font-size: 1.6rem; font-weight: 400; color: #f0ece4; margin-bottom: 6px; line-height: 1.25; }
+.step-title-text em { font-style: italic; color: #e8c97a; }
+.step-subtitle { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: #7a7d8a; letter-spacing: 0.06em; }
+
+.form-group { margin-bottom: 22px; }
+.form-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.16em; color: #7a7d8a; margin-bottom: 8px; }
+.form-label .opt { opacity: 0.5; font-size: 0.52rem; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; background: #0e1118; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px; padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 300;
+  color: #f0ece4; transition: border-color 0.2s; -webkit-appearance: none; appearance: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #e8c97a; }
+.form-input::placeholder, .form-textarea::placeholder { color: #7a7d8a; }
+.form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7d8a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+.form-textarea { resize: vertical; min-height: 160px; line-height: 1.7; }
+
+.char-count { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; text-align: right; margin-top: 5px; }
+
+/* Location search */
+.location-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+.withheld-toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-top: 10px; }
+.withheld-toggle input[type="checkbox"] { width: 16px; height: 16px; accent-color: #e8c97a; cursor: pointer; }
+.withheld-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #a8a5a0; letter-spacing: 0.06em; }
+
+/* Tags */
+.tags-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.tag-option { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #7a7d8a; border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 2px; cursor: pointer; transition: all 0.2s; -webkit-user-select: none; user-select: none; }
+.tag-option.selected { color: #e8c97a; border-color: rgba(232,201,122,0.4); background: rgba(232,201,122,0.05); }
+
+/* Audio */
+.audio-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.audio-option { background: #0e1118; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; padding: 16px; cursor: pointer; transition: all 0.2s; text-align: center; }
+.audio-option.selected { border-color: rgba(232,201,122,0.4); background: rgba(232,201,122,0.04); }
+.audio-option-icon { font-size: 1.4rem; margin-bottom: 8px; }
+.audio-option-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a5a0; }
+.audio-option.selected .audio-option-label { color: #e8c97a; }
+
+/* Voice selector */
+#voice-selector { margin-top: 14px; display: none; }
+.voice-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.voice-option { background: #0e1118; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; padding: 12px 10px; cursor: pointer; text-align: center; transition: all 0.2s; }
+.voice-option.selected { border-color: rgba(232,201,122,0.4); }
+.voice-name { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #a8a5a0; }
+.voice-option.selected .voice-name { color: #e8c97a; }
+
+/* Recording */
+#record-section { margin-top: 14px; display: none; }
+.record-btn { width: 100%; padding: 14px; background: #0e1118; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.13em; color: #a8a5a0; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.record-btn.recording { border-color: #c97a8e; color: #c97a8e; }
+.record-indicator { width: 8px; height: 8px; border-radius: 50%; background: #c97a8e; animation: rec-pulse 1s ease-in-out infinite; display: none; }
+.record-btn.recording .record-indicator { display: block; }
+@keyframes rec-pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+#recording-playback { margin-top: 10px; width: 100%; display: none; }
+
+/* Photo upload */
+.photo-upload-area {
+  border: 1px dashed rgba(255,255,255,0.15); border-radius: 2px;
+  padding: 36px; text-align: center; cursor: pointer;
+  transition: all 0.2s; position: relative;
+}
+.photo-upload-area:hover { border-color: rgba(232,201,122,0.3); }
+.photo-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.photo-icon { font-size: 1.8rem; margin-bottom: 10px; opacity: 0.4; }
+.photo-label { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: #7a7d8a; letter-spacing: 0.06em; }
+.photo-note { font-size: 0.75rem; color: #7a7d8a; margin-top: 6px; opacity: 0.7; }
+#photo-preview { width: 100%; border-radius: 2px; margin-top: 12px; display: none; max-height: 200px; object-fit: cover; border: 1px solid rgba(255,255,255,0.07); }
+
+/* Navigation buttons */
+.form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.07); }
+.btn { display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.14em; border-radius: 2px; padding: 12px 24px; cursor: pointer; transition: all 0.2s; border: none; -webkit-appearance: none; }
+.btn-gold { background: #e8c97a; color: #07090f; }
+.btn-gold:hover { background: #f0d896; }
+.btn-ghost { background: transparent; color: #7a7d8a; border: 1px solid rgba(255,255,255,0.12); }
+.btn-ghost:hover { border-color: rgba(255,255,255,0.25); color: #a8a5a0; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Success screen */
+#success-screen { display: none; text-align: center; padding: 60px 0; }
+.success-lambda { font-family: 'Playfair Display', serif; font-size: 4rem; color: #e8c97a; margin-bottom: 24px; animation: rise 1s cubic-bezier(0.16,1,0.3,1) both; }
+.success-heading { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.8rem,3vw,2.5rem); font-weight: 400; color: #f0ece4; margin-bottom: 16px; line-height: 1.25; }
+.success-heading em { font-style: italic; color: #e8c97a; }
+.success-record { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #e8c97a; margin: 24px 0; letter-spacing: 0.08em; }
+.success-body { font-size: 0.92rem; line-height: 1.85; color: #a8a5a0; max-width: 440px; margin: 0 auto 36px; }
+.success-citation { background: #0e1118; border: 1px solid rgba(255,255,255,0.07); padding: 18px 20px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #a8a5a0; line-height: 1.7; margin: 0 auto 32px; max-width: 500px; text-align: left; cursor: pointer; transition: border-color 0.2s; }
+.success-citation:hover { border-color: rgba(232,201,122,0.3); }
+.success-citation-label { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.16em; color: #7a7d8a; margin-bottom: 8px; }
+.success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+@keyframes rise { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+/* Error message */
+.field-error { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #c97a8e; margin-top: 5px; letter-spacing: 0.04em; display: none; }
+.field-error.show { display: block; }
+
+/* Submitting state */
+.submitting-overlay { display: none; position: fixed; inset: 0; background: rgba(7,9,15,0.85); z-index: 999; align-items: center; justify-content: center; flex-direction: column; gap: 20px; }
+.submitting-overlay.show { display: flex; }
+.spinner { width: 40px; height: 40px; border: 2px solid rgba(232,201,122,0.2); border-top-color: #e8c97a; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.submitting-text { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.16em; color: #e8c97a; }
+
+footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padding: 36px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-mark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: #7a7d8a; }
+.footer-mark span { color: #e8c97a; }
+.footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: #7a7d8a; opacity: 0.4; }
+
+@media (max-width: 900px) {
+  nav { padding: 0 24px; }
+  .submit-page { grid-template-columns: 1fr; gap: 48px; padding: 88px 24px 60px; }
+  .submit-left { position: static; }
+  .voice-options { grid-template-columns: repeat(3,1fr); }
+  footer { padding: 28px 24px; }
+}
+@media (max-width: 500px) {
+  .audio-options { grid-template-columns: 1fr; }
+  .voice-options { grid-template-columns: 1fr 1fr; }
+  .success-actions { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="wordmark">Marq<span>'</span>d</a>
+  <a href="index.html" class="nav-back">← Back to Globe</a>
+</nav>
+
+<hr class="pride-rule" style="margin-top:64px;">
+
+<div class="submit-page">
+
+  <!-- LEFT -->
+  <div class="submit-left">
+    <div class="page-kicker">Leave a Marq</div>
+    <h1 class="page-title">Your story<br>is a <span>record.</span></h1>
+    <p class="page-desc">
+      Every submission becomes a <strong>permanent Field Record</strong> — numbered, timestamped, and citable as a primary historical source. No account. No name. Just your story, preserved exactly as you tell it.
+    </p>
+
+    <div class="safety-box">
+      <div class="safety-label">Privacy & Safety</div>
+      <p class="safety-text">We collect no identifying information. Your IP address is not stored. If your location is sensitive, choose "Withhold location" — your story will still be archived. You can also submit from a VPN or Tor browser.</p>
+    </div>
+
+    <div class="steps-indicator">
+      <div class="step-ind active" data-step="0"><div class="step-ind-num">01</div><div class="step-ind-label">Location</div></div>
+      <div class="step-ind" data-step="1"><div class="step-ind-num">02</div><div class="step-ind-label">Your Story</div></div>
+      <div class="step-ind" data-step="2"><div class="step-ind-num">03</div><div class="step-ind-label">Audio</div></div>
+      <div class="step-ind" data-step="3"><div class="step-ind-num">04</div><div class="step-ind-label">Photo</div></div>
+      <div class="step-ind" data-step="4"><div class="step-ind-num">05</div><div class="step-ind-label">Review & Submit</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="submit-right">
+
+    <!-- STEP 1: LOCATION -->
+    <div class="form-step active" id="step-0">
+      <div class="step-header">
+        <div class="step-title-text">Where did this<br><em>happen?</em></div>
+        <div class="step-subtitle">Step 01 of 05 · Location</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">City, neighborhood, or address</label>
+        <div class="location-row">
+          <input class="form-input" type="text" id="location-input" placeholder="e.g. West Hollywood, CA" autocomplete="off">
+          <button class="btn btn-ghost" onclick="geocodeLocation()">Find</button>
+        </div>
+        <div class="field-error" id="location-error">Please enter a location or choose to withhold it.</div>
+      </div>
+
+      <label class="withheld-toggle">
+        <input type="checkbox" id="withheld-check">
+        <span class="withheld-label">Withhold my location — archive the story without coordinates</span>
+      </label>
+
+      <div class="form-group" style="margin-top:20px;">
+        <label class="form-label">Year this happened <span class="opt">(optional)</span></label>
+        <input class="form-input" type="text" id="year-input" placeholder="e.g. 2019" maxlength="4">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tags <span class="opt">(choose any that fit)</span></label>
+        <div class="tags-grid" id="tags-grid">
+          <div class="tag-option" data-tag="tender">[tender]</div>
+          <div class="tag-option" data-tag="joyful">[joyful]</div>
+          <div class="tag-option" data-tag="difficult">[difficult]</div>
+          <div class="tag-option" data-tag="spontaneous">[spontaneous]</div>
+          <div class="tag-option" data-tag="community">[community]</div>
+          <div class="tag-option" data-tag="family">[family]</div>
+          <div class="tag-option" data-tag="outdoor">[outdoor]</div>
+          <div class="tag-option" data-tag="significant">[significant]</div>
+          <div class="tag-option" data-tag="first time">[first time]</div>
+          <div class="tag-option" data-tag="anonymous">[anonymous]</div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <div></div>
+        <button class="btn btn-gold" onclick="goStep(1)">Next: Your Story →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: STORY -->
+    <div class="form-step" id="step-1">
+      <div class="step-header">
+        <div class="step-title-text">Tell us what<br><em>happened.</em></div>
+        <div class="step-subtitle">Step 02 of 05 · Your Story</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your story</label>
+        <textarea class="form-textarea" id="story-input" placeholder="Write in whatever voice feels right. There is no wrong way to tell this." style="min-height:240px;" oninput="updateCharCount()"></textarea>
+        <div class="char-count"><span id="char-count">0</span> words</div>
+        <div class="field-error" id="story-error">Please write your story before continuing.</div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn btn-ghost" onclick="goStep(0)">← Back</button>
+        <button class="btn btn-gold" onclick="goStep(2)">Next: Audio →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: AUDIO -->
+    <div class="form-step" id="step-2">
+      <div class="step-header">
+        <div class="step-title-text">Give your story<br><em>a voice.</em></div>
+        <div class="step-subtitle">Step 03 of 05 · Audio <span style="opacity:0.5;">(optional)</span></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">How would you like your story read?</label>
+        <div class="audio-options">
+          <div class="audio-option" data-audio="none" onclick="selectAudio('none')">
+            <div class="audio-option-icon">—</div>
+            <div class="audio-option-label">No audio</div>
+          </div>
+          <div class="audio-option selected" data-audio="ai" onclick="selectAudio('ai')">
+            <div class="audio-option-icon">🔊</div>
+            <div class="audio-option-label">AI voice</div>
+          </div>
+          <div class="audio-option" data-audio="record" onclick="selectAudio('record')">
+            <div class="audio-option-icon">🎙️</div>
+            <div class="audio-option-label">Record mine</div>
+          </div>
+          <div class="audio-option" data-audio="upload" onclick="selectAudio('upload')">
+            <div class="audio-option-icon">📁</div>
+            <div class="audio-option-label">Upload audio</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="voice-selector">
+        <label class="form-label">Choose a voice</label>
+        <div class="voice-options">
+          <div class="voice-option selected" data-voice="21m00Tcm4TlvDq8ikWAM" onclick="selectVoice(this, '21m00Tcm4TlvDq8ikWAM')"><div class="voice-name">Rachel</div></div>
+          <div class="voice-option" data-voice="AZnzlk1XvdvUeBnXmlld" onclick="selectVoice(this, 'AZnzlk1XvdvUeBnXmlld')"><div class="voice-name">Domi</div></div>
+          <div class="voice-option" data-voice="EXAVITQu4vr4xnSDxMaL" onclick="selectVoice(this, 'EXAVITQu4vr4xnSDxMaL')"><div class="voice-name">Bella</div></div>
+          <div class="voice-option" data-voice="ErXwobaYiN019PkySvjV" onclick="selectVoice(this, 'ErXwobaYiN019PkySvjV')"><div class="voice-name">Antoni</div></div>
+          <div class="voice-option" data-voice="VR6AewLTigWG4xSOukaG" onclick="selectVoice(this, 'VR6AewLTigWG4xSOukaG')"><div class="voice-name">Arnold</div></div>
+          <div class="voice-option" data-voice="pNInz6obpgDQGcFmaJgB" onclick="selectVoice(this, 'pNInz6obpgDQGcFmaJgB')"><div class="voice-name">Adam</div></div>
+        </div>
+      </div>
+
+      <div id="record-section">
+        <button class="record-btn" id="record-btn" onclick="toggleRecording()">
+          <div class="record-indicator"></div>
+          <span id="record-btn-text">Start Recording</span>
+        </button>
+        <audio id="recording-playback" controls></audio>
+      </div>
+
+      <div id="upload-section" style="display:none; margin-top:14px;">
+        <label class="form-label">Upload audio file</label>
+        <input class="form-input" type="file" id="audio-file-input" accept="audio/*" style="padding:10px;">
+      </div>
+
+      <div class="form-nav">
+        <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
+        <button class="btn btn-gold" onclick="goStep(3)">Next: Photo →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: PHOTO -->
+    <div class="form-step" id="step-3">
+      <div class="step-header">
+        <div class="step-title-text">Show us<br><em>the place.</em></div>
+        <div class="step-subtitle">Step 04 of 05 · Photo <span style="opacity:0.5;">(optional)</span></div>
+      </div>
+
+      <p style="font-size:0.85rem; line-height:1.75; color:#a8a5a0; margin-bottom:20px;">
+        A photo of the location — a street corner, a door, a view, a building. <strong style="color:#f0ece4;">Never people.</strong> This is a documentary layer, not a portrait.
+      </p>
+
+      <div class="photo-upload-area" id="photo-drop">
+        <input type="file" id="photo-input" accept="image/*" onchange="handlePhotoSelect(event)">
+        <div class="photo-icon">📷</div>
+        <div class="photo-label">Tap to upload a photo</div>
+        <p class="photo-note">JPG, PNG or HEIC · Max 10MB · No people</p>
+      </div>
+      <img id="photo-preview" src="" alt="Photo preview">
+      <button id="remove-photo-btn" style="display:none; margin-top:8px; background:none; border:none; font-family:'JetBrains Mono',monospace; font-size:0.58rem; color:#7a7d8a; cursor:pointer; letter-spacing:0.06em;" onclick="removePhoto()">Remove photo ×</button>
+
+      <div class="form-nav">
+        <button class="btn btn-ghost" onclick="goStep(2)">← Back</button>
+        <button class="btn btn-gold" onclick="goStep(4)">Review →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: REVIEW -->
+    <div class="form-step" id="step-4">
+      <div class="step-header">
+        <div class="step-title-text">Ready to<br><em>be recorded.</em></div>
+        <div class="step-subtitle">Step 05 of 05 · Review & Submit</div>
+      </div>
+
+      <div id="review-card" style="background:#0e1118; border:1px solid rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; margin-bottom:24px;">
+        <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.07); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#7a7d8a;">FIELD RECORD · <span style="color:#e8c97a;" id="review-id">#MQ-??????</span></span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:0.58rem; color:#7a7d8a;" id="review-tags"></span>
+        </div>
+        <div style="padding:20px;">
+          <div style="font-family:'Playfair Display',serif; font-style:italic; font-size:1rem; color:#e8c97a; margin-bottom:4px;" id="review-location">—</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#7a7d8a; margin-bottom:14px;" id="review-meta"></div>
+          <div style="position:relative; padding-left:16px;">
+            <span style="position:absolute; left:0; top:-4px; font-family:'Playfair Display',serif; font-size:1.8rem; color:#e8c97a; opacity:0.5; line-height:1;">"</span>
+            <p style="font-size:0.85rem; line-height:1.8; color:#a8a5a0; font-style:italic;" id="review-story-preview"></p>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#0e1118; border:1px solid rgba(255,255,255,0.07); border-left:3px solid rgba(232,201,122,0.4); padding:16px 18px; margin-bottom:24px;">
+        <p style="font-size:0.8rem; line-height:1.7; color:#a8a5a0;">By submitting, you confirm this is your own firsthand story and you grant Marq'd the right to archive and display it permanently. You retain ownership of your words.</p>
+      </div>
+
+      <!-- Audio preview in review -->
+      <div id="review-audio-wrap" style="display:none; margin-bottom:20px;">
+        <div style="background:#161b27;border:1px solid rgba(255,255,255,0.07);border-radius:2px;padding:14px 18px;display:flex;align-items:center;gap:14px;">
+          <button id="review-play-btn" style="width:34px;height:34px;border-radius:50%;background:#e8c97a;border:none;cursor:pointer;font-size:0.85rem;color:#07090f;flex-shrink:0;" onclick="toggleReviewAudio()">▶</button>
+          <div style="flex:1;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;text-transform:uppercase;letter-spacing:0.12em;color:#7a7d8a;margin-bottom:5px;" id="review-audio-label">Your recording</div>
+            <div style="height:2px;background:rgba(255,255,255,0.1);border-radius:1px;cursor:pointer;" id="review-audio-bar" onclick="seekReviewAudio(event)">
+              <div style="height:100%;background:#e8c97a;border-radius:1px;width:0%;transition:width 0.1s;" id="review-audio-progress"></div>
+            </div>
+          </div>
+          <audio id="review-audio-el"></audio>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
+        <button class="btn btn-gold" id="submit-btn" onclick="submitMarq()">Archive this Marq →</button>
+      </div>
+    </div>
+
+  </div><!-- end submit-right -->
+</div><!-- end submit-page -->
+
+<!-- SUCCESS -->
+<div id="success-screen" style="padding: 100px 48px 80px; max-width:700px; margin:0 auto;">
+  <div class="success-lambda">λ</div>
+  <h2 class="success-heading">Your Marq is<br><em>in the archive.</em></h2>
+  <div class="success-record" id="success-record-id">FIELD RECORD · #MQ-000000</div>
+  <p class="success-body">Your story is now a permanent primary source. It has been assigned a Field Record number and will appear on the globe. Thank you for contributing to the record.</p>
+  <div class="success-citation" id="success-citation" onclick="copyCitation()">
+    <div class="success-citation-label">Click to copy citation</div>
+    <div id="citation-text"></div>
+  </div>
+  <div class="success-actions">
+    <a href="index.html" class="btn btn-gold">Return to the Globe</a>
+    <button class="btn btn-ghost" onclick="submitAnother()">Submit Another</button>
+  </div>
+</div>
+
+<!-- SUBMITTING OVERLAY -->
+<div class="submitting-overlay" id="submitting-overlay">
+  <div class="spinner"></div>
+  <div class="submitting-text">Archiving your Marq...</div>
+</div>
+
+<hr class="pride-rule">
+<footer>
+  <div class="footer-mark">Marq<span>'</span>d</div>
+  <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
+</footer>
+
+<script>
+var SUPABASE_URL = 'https://aeazbkmrtjsizrjytuwz.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFlYXpia21ydGpzaXpyanl0dXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NjYzNTUsImV4cCI6MjA4ODQ0MjM1NX0.1cA_UiHZckcTV_Wdh58ASoigs_ADIKpu5wmDIirfMUk';
+var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+var currentStep = 0;
+var selectedTags = [];
+var selectedAudio = 'ai';
+var selectedVoice = '21m00Tcm4TlvDq8ikWAM';
+var geocodedLat = null, geocodedLng = null;
+
+// Pre-fill from globe pin drop
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('lat') && params.get('lng')) {
+    geocodedLat = parseFloat(params.get('lat'));
+    geocodedLng = parseFloat(params.get('lng'));
+    window.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('location-input').value = geocodedLat.toFixed(4) + ', ' + geocodedLng.toFixed(4);
+      document.getElementById('location-input').style.borderColor = 'rgba(78,205,196,0.5)';
+    });
+  }
+})();
+var photoFile = null;
+var mediaRecorder = null, recordedChunks = [], isRecording = false;
+var newRecordNumber = null;
+
+// ── STEPS ──
+function goStep(n) {
+  if (n === 1 && !validateStep0()) return;
+  if (n === 2 && !validateStep1()) return;
+  if (n === 4) buildReview();
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  document.getElementById('step-' + n).classList.add('active');
+  document.querySelectorAll('.step-ind').forEach(function(el, i) {
+    el.classList.remove('active','done');
+    if (i < n) el.classList.add('done');
+    if (i === n) el.classList.add('active');
+  });
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateStep0() {
+  var withheld = document.getElementById('withheld-check').checked;
+  var loc = document.getElementById('location-input').value.trim();
+  var err = document.getElementById('location-error');
+  if (!withheld && !geocodedLat && !loc) {
+    err.classList.add('show'); return false;
+  }
+  err.classList.remove('show'); return true;
+}
+
+function validateStep1() {
+  var story = document.getElementById('story-input').value.trim();
+  var err = document.getElementById('story-error');
+  if (story.length < 20) { err.classList.add('show'); return false; }
+  err.classList.remove('show'); return true;
+}
+
+// ── TAGS ──
+document.querySelectorAll('.tag-option').forEach(function(el) {
+  el.addEventListener('click', function() {
+    var tag = this.dataset.tag;
+    if (this.classList.contains('selected')) {
+      this.classList.remove('selected');
+      selectedTags = selectedTags.filter(function(t){ return t !== tag; });
+    } else {
+      this.classList.add('selected');
+      selectedTags.push(tag);
+    }
+  });
+});
+
+// ── GEOCODING ──
+async function geocodeLocation() {
+  var loc = document.getElementById('location-input').value.trim();
+  if (!loc) return;
+  try {
+    var res = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(loc));
+    var data = await res.json();
+    if (data && data[0]) {
+      geocodedLat = parseFloat(data[0].lat);
+      geocodedLng = parseFloat(data[0].lon);
+      document.getElementById('location-input').style.borderColor = 'rgba(78,205,196,0.5)';
+    }
+  } catch(e) {}
+}
+document.getElementById('location-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); geocodeLocation(); }
+});
+
+// ── CHAR COUNT ──
+function updateCharCount() {
+  var words = document.getElementById('story-input').value.trim().split(/\s+/).filter(Boolean).length;
+  document.getElementById('char-count').textContent = words;
+}
+
+// ── AUDIO ──
+function selectAudio(type) {
+  selectedAudio = type;
+  document.querySelectorAll('.audio-option').forEach(function(el) { el.classList.toggle('selected', el.dataset.audio === type); });
+  document.getElementById('voice-selector').style.display = type === 'ai' ? 'block' : 'none';
+  document.getElementById('record-section').style.display = type === 'record' ? 'block' : 'none';
+  document.getElementById('upload-section').style.display = type === 'upload' ? 'block' : 'none';
+}
+
+function selectVoice(el, voiceId) {
+  selectedVoice = voiceId;
+  document.querySelectorAll('.voice-option').forEach(function(v){ v.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+// Initialize audio to show AI options
+selectAudio('ai');
+
+// ── RECORDING ──
+async function toggleRecording() {
+  if (isRecording) {
+    mediaRecorder.stop();
+    isRecording = false;
+    document.getElementById('record-btn').classList.remove('recording');
+    document.getElementById('record-btn-text').textContent = 'Start Recording';
+  } else {
+    try {
+      var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = function(e) { if (e.data.size > 0) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = function() {
+        var blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        var url = URL.createObjectURL(blob);
+        var pb = document.getElementById('recording-playback');
+        pb.src = url; pb.style.display = 'block';
+        stream.getTracks().forEach(function(t){ t.stop(); });
+      };
+      mediaRecorder.start();
+      isRecording = true;
+      document.getElementById('record-btn').classList.add('recording');
+      document.getElementById('record-btn-text').textContent = 'Stop Recording';
+    } catch(e) { alert('Microphone access denied. Please allow microphone access to record.'); }
+  }
+}
+
+// ── PHOTO ──
+function handlePhotoSelect(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  photoFile = file;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = document.getElementById('photo-preview');
+    img.src = ev.target.result;
+    img.style.display = 'block';
+    document.getElementById('remove-photo-btn').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removePhoto() {
+  photoFile = null;
+  document.getElementById('photo-preview').style.display = 'none';
+  document.getElementById('remove-photo-btn').style.display = 'none';
+  document.getElementById('photo-input').value = '';
+}
+
+// ── REVIEW ──
+function buildReview() {
+  var withheld = document.getElementById('withheld-check').checked;
+  var loc = withheld ? 'Location withheld' : (document.getElementById('location-input').value.trim() || 'Location withheld');
+  var year = document.getElementById('year-input').value.trim();
+  var story = document.getElementById('story-input').value.trim();
+  var words = story.split(/\s+/).filter(Boolean).length;
+  var readTime = Math.max(1, Math.ceil(words / 200));
+  var audioLabel = selectedAudio === 'ai' ? ' · ▶ AI Audio' : selectedAudio === 'record' ? ' · ▶ Your Voice' : selectedAudio === 'upload' ? ' · ▶ Audio' : '';
+
+  document.getElementById('review-location').textContent = loc;
+  document.getElementById('review-meta').textContent = (year ? year + '  ·  ' : '') + readTime + ' min read' + audioLabel;
+  document.getElementById('review-tags').textContent = selectedTags.map(function(t){ return '['+t+']'; }).join(' ');
+  document.getElementById('review-story-preview').textContent = story.substring(0, 200) + (story.length > 200 ? '...' : '');
+
+  // Wire audio preview in review step
+  var reviewAudioWrap = document.getElementById('review-audio-wrap');
+  var reviewAudioEl = document.getElementById('review-audio-el');
+  var reviewLabel = document.getElementById('review-audio-label');
+  reviewAudioEl.pause();
+  reviewAudioEl.src = '';
+  document.getElementById('review-play-btn').textContent = '▶';
+  document.getElementById('review-audio-progress').style.width = '0%';
+
+  if (selectedAudio === 'record' && recordedChunks.length > 0) {
+    var blob = new Blob(recordedChunks, { type: 'audio/webm' });
+    reviewAudioEl.src = URL.createObjectURL(blob);
+    reviewLabel.textContent = 'Your voice recording';
+    reviewAudioWrap.style.display = 'block';
+  } else if (selectedAudio === 'upload') {
+    var uploadFile = document.getElementById('audio-file-input').files[0];
+    if (uploadFile) {
+      reviewAudioEl.src = URL.createObjectURL(uploadFile);
+      reviewLabel.textContent = 'Uploaded audio: ' + uploadFile.name;
+      reviewAudioWrap.style.display = 'block';
+    } else {
+      reviewAudioWrap.style.display = 'none';
+    }
+  } else {
+    reviewAudioWrap.style.display = 'none';
+  }
+
+  reviewAudioEl.addEventListener('timeupdate', function() {
+    if (reviewAudioEl.duration) {
+      document.getElementById('review-audio-progress').style.width =
+        (reviewAudioEl.currentTime / reviewAudioEl.duration * 100) + '%';
+    }
+  });
+  reviewAudioEl.addEventListener('ended', function() {
+    document.getElementById('review-play-btn').textContent = '▶';
+    document.getElementById('review-audio-progress').style.width = '0%';
+  });
+}
+
+function toggleReviewAudio() {
+  var el = document.getElementById('review-audio-el');
+  var btn = document.getElementById('review-play-btn');
+  if (el.paused) { el.play(); btn.textContent = '⏸'; }
+  else { el.pause(); btn.textContent = '▶'; }
+}
+
+function seekReviewAudio(e) {
+  var el = document.getElementById('review-audio-el');
+  var bar = document.getElementById('review-audio-bar');
+  var rect = bar.getBoundingClientRect();
+  if (el.duration) el.currentTime = ((e.clientX - rect.left) / rect.width) * el.duration;
+}
+
+// ── SUBMIT ──
+async function submitMarq() {
+  document.getElementById('submitting-overlay').classList.add('show');
+  try {
+    // Upload photo if present
+    var photoUrl = null;
+    if (photoFile) {
+      var ext = photoFile.name.split('.').pop();
+      var fileName = 'marq-' + Date.now() + '.' + ext;
+      var uploadRes = await db.storage.from('marq-photos').upload(fileName, photoFile, { cacheControl: '3600', upsert: false });
+      if (!uploadRes.error) {
+        var pubUrl = db.storage.from('marq-photos').getPublicUrl(fileName);
+        photoUrl = pubUrl.data.publicUrl;
+      }
+    }
+
+    // Handle audio
+    var audioUrl = null;
+    if (selectedAudio === 'record' && recordedChunks.length > 0) {
+      var blob = new Blob(recordedChunks, { type: 'audio/webm' });
+      var audioName = 'marq-audio-' + Date.now() + '.webm';
+      var audioRes = await db.storage.from('marq-audio').upload(audioName, blob);
+      if (!audioRes.error) {
+        var pubAudio = db.storage.from('marq-audio').getPublicUrl(audioName);
+        audioUrl = pubAudio.data.publicUrl;
+      }
+    } else if (selectedAudio === 'upload') {
+      var uploadedFile = document.getElementById('audio-file-input').files[0];
+      if (uploadedFile) {
+        var audioExt = uploadedFile.name.split('.').pop();
+        var audioName2 = 'marq-audio-' + Date.now() + '.' + audioExt;
+        var audioRes2 = await db.storage.from('marq-audio').upload(audioName2, uploadedFile);
+        if (!audioRes2.error) {
+          var pubAudio2 = db.storage.from('marq-audio').getPublicUrl(audioName2);
+          audioUrl = pubAudio2.data.publicUrl;
+        }
+      }
+    }
+
+    var withheld = document.getElementById('withheld-check').checked;
+    var locText = document.getElementById('location-input').value.trim();
+
+    var payload = {
+      lat: withheld ? null : (geocodedLat || 0),
+      lng: withheld ? null : (geocodedLng || 0),
+      location_display: withheld ? null : locText,
+      location_withheld: withheld,
+      story: document.getElementById('story-input').value.trim(),
+      tags: selectedTags,
+      year_occurred: document.getElementById('year-input').value.trim() || null,
+      photo_url: photoUrl,
+      audio_url: audioUrl,
+      audio_type: selectedAudio !== 'none' ? selectedAudio : null,
+      voice_id: selectedAudio === 'ai' ? selectedVoice : null
+    };
+
+    var res = await db.from('marqs').insert([payload]).select();
+    if (res.error) throw res.error;
+
+    var newMarq = res.data[0];
+    newRecordNumber = newMarq.record_number;
+    showSuccess(newMarq);
+
+  } catch(e) {
+    console.error(e);
+    alert('Something went wrong. Please try again.');
+  } finally {
+    document.getElementById('submitting-overlay').classList.remove('show');
+  }
+}
+
+function showSuccess(marq) {
+  document.querySelector('.submit-page').style.display = 'none';
+  var success = document.getElementById('success-screen');
+  success.style.display = 'block';
+
+  var num = String(marq.record_number).padStart(6,'0');
+  document.getElementById('success-record-id').textContent = 'FIELD RECORD · #MQ-' + num;
+
+  var loc = marq.location_withheld ? 'Location withheld' : (marq.location_display || 'Unknown');
+  var year = marq.submitted_at ? new Date(marq.submitted_at).getFullYear() : new Date().getFullYear();
+  var citation = "Marq'd Archive. Field Record #MQ-" + num + ". " + loc + ". " + year + ". marqd.archive. Accessed " + new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) + ".";
+  document.getElementById('citation-text').textContent = citation;
+  window.currentCitation = citation;
+
+  success.scrollIntoView({ behavior: 'smooth' });
+}
+
+function copyCitation() {
+  if (window.currentCitation) {
+    navigator.clipboard.writeText(window.currentCitation).then(function() {
+      document.querySelector('.success-citation-label').textContent = 'Copied! ✓';
+      setTimeout(function() { document.querySelector('.success-citation-label').textContent = 'Click to copy citation'; }, 2000);
+    });
+  }
+}
+
+function submitAnother() {
+  window.location.reload();
+}
+</script>
+</body>
+</html>
