@@ -1346,7 +1346,7 @@ var spAudioType = 'none';
 var spVoiceId = '21m00Tcm4TlvDq8ikWAM';
 var spLat = null, spLng = null;
 var spPhotoFile = null;
-var spMediaRec = null, spRecChunks = [], spRecording = false;
+var spMediaRec = null, spRecChunks = [], spRecording = false, spAudioMime = 'audio/webm';
 var spCiteStr = '';
 
 function spOpen(e) {
@@ -1477,10 +1477,12 @@ async function spToggleRec() {
     try {
       var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       spRecChunks = [];
-      spMediaRec = new MediaRecorder(stream);
+      // Safari/iOS requires audio/mp4; other browsers use audio/webm
+      spAudioMime = MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : 'audio/webm';
+      spMediaRec = new MediaRecorder(stream, { mimeType: spAudioMime });
       spMediaRec.ondataavailable = function(e) { if (e.data.size > 0) spRecChunks.push(e.data); };
       spMediaRec.onstop = function() {
-        var blob = new Blob(spRecChunks, { type: 'audio/webm' });
+        var blob = new Blob(spRecChunks, { type: spAudioMime });
         var pb = document.getElementById('sp-rec-pb');
         pb.src = URL.createObjectURL(blob); pb.style.display = 'block';
         stream.getTracks().forEach(function(t) { t.stop(); });
@@ -1587,9 +1589,10 @@ async function spSubmit() {
     // Upload audio
     var audioUrl = null;
     if (spAudioType === 'record' && spRecChunks.length > 0) {
-      var blob = new Blob(spRecChunks, { type: 'audio/webm' });
-      var an = 'marq-audio-' + Date.now() + '.webm';
-      var ar = await db.storage.from('marq-audio').upload(an, blob);
+      var blob = new Blob(spRecChunks, { type: spAudioMime });
+      var audioExt = spAudioMime === 'audio/mp4' ? 'mp4' : 'webm';
+      var an = 'marq-audio-' + Date.now() + '.' + audioExt;
+      var ar = await db.storage.from('marq-audio').upload(an, blob, { contentType: spAudioMime });
       if (!ar.error) audioUrl = db.storage.from('marq-audio').getPublicUrl(an).data.publicUrl;
     } else if (spAudioType === 'upload') {
       var uf = document.getElementById('sp-audio-file').files[0];
@@ -1634,9 +1637,10 @@ async function spSubmit() {
     document.getElementById('sp-footer').style.display = 'none';
     document.getElementById('sp-success').classList.add('show');
   } catch(e) {
-    console.error(e);
+    console.error('Submission error:', e);
     document.getElementById('sp-spinner').classList.remove('show');
-    alert('Something went wrong. Please try again.');
+    var errMsg = (e && e.message) ? e.message : (typeof e === 'string' ? e : 'Unknown error');
+    alert('Submission failed: ' + errMsg + '\n\nIf this mentions "row-level security" or "policy", you need to add insert permissions in your Supabase dashboard → Table Editor → marqs → RLS Policies.');
   }
 }
 
