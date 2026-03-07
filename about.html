@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07090f">
+<title>About — Marq'd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #07090f; scroll-behavior: smooth; }
+body {
+  background: #07090f;
+  color: #f0ece4;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 48px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(7,9,15,0.94);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.wordmark {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.4rem;
+  font-style: italic;
+  font-weight: 600;
+  color: #f0ece4;
+}
+.wordmark span { color: #e8c97a; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: #7a7d8a;
+  transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: #e8c97a; }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+.nav-toggle span { display: block; width: 22px; height: 1px; background: #f0ece4; }
+.nav-mobile {
+  display: none;
+  position: fixed;
+  top: 64px; left: 0; right: 0;
+  background: rgba(7,9,15,0.98);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  z-index: 99;
+  padding: 20px 48px;
+  flex-direction: column;
+}
+.nav-mobile.open { display: flex; }
+.nav-mobile a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: #a8a5a0;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: color 0.2s;
+}
+.nav-mobile a:last-child { border-bottom: none; }
+.nav-mobile a:hover { color: #e8c97a; }
+
+/* ── PRIDE RULE ── */
+.pride-rule {
+  display: block; width: 100%; height: 1px; border: none;
+  background: linear-gradient(to right, #c0392b, #d4651a, #c9a227, #2e7d52, #2471a3, #7d3c98);
+  opacity: 0.3;
+}
+
+/* ── PAGE HEADER ── */
+#page-header {
+  padding: 140px 48px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.page-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #4ecdc4;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-kicker::after { content: ''; height: 1px; width: 40px; background: rgba(255,255,255,0.12); }
+.page-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.8rem, 6vw, 5.5rem);
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #f0ece4;
+  margin-bottom: 32px;
+  max-width: 840px;
+}
+.page-title em { color: #e8c97a; font-style: italic; }
+.page-intro {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  font-weight: 300;
+  line-height: 1.85;
+  color: #a8a5a0;
+  max-width: 680px;
+}
+.page-intro strong { color: #f0ece4; font-weight: 400; }
+
+/* ── SHARED ── */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #7a7d8a;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before { content: 'λ'; color: #e8c97a; font-family: 'Playfair Display', serif; font-size: 0.95rem; font-style: italic; }
+
+.section-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: #f0ece4;
+  margin-bottom: 28px;
+}
+.section-heading em { font-style: italic; color: #e8c97a; }
+
+.body-text {
+  font-size: 0.97rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: #a8a5a0;
+  margin-bottom: 18px;
+}
+.body-text:last-child { margin-bottom: 0; }
+.body-text strong { color: #f0ece4; font-weight: 400; }
+.body-text em { font-family: 'Playfair Display', serif; font-style: italic; color: #c8c4bc; }
+
+/* ── SECTION WRAPPER ── */
+.page-section { padding: 96px 0; }
+.page-section-alt {
+  background: #0a0c13;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 96px 0;
+}
+
+/* ── STATS BAND ── */
+#stats-band {
+  background: #0e1118;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 0;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.stat-block {
+  padding: 56px 40px;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  transition: background 0.3s;
+}
+.stat-block:last-child { border-right: none; }
+.stat-block:hover { background: #161b27; }
+.stat-big {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 600;
+  color: #e8c97a;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.stat-label {
+  font-size: 0.88rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: #a8a5a0;
+}
+.stat-source {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  color: #7a7d8a;
+  margin-top: 10px;
+  letter-spacing: 0.05em;
+}
+
+/* ── TWO COLUMN ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.two-col-wide {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
+  align-items: start;
+}
+
+/* ── TIMELINE ── */
+.timeline {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  padding-left: 0;
+  margin-left: 12px;
+}
+.timeline-item {
+  position: relative;
+  padding: 0 0 36px 32px;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #e8c97a;
+  opacity: 0.5;
+}
+.timeline-item:hover::before { opacity: 1; }
+.timeline-year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #e8c97a;
+  margin-bottom: 6px;
+  opacity: 0.7;
+}
+.timeline-event {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: #a8a5a0;
+}
+.timeline-event strong { color: #f0ece4; font-weight: 400; }
+
+/* ── PULLQUOTE ── */
+.pullquote {
+  border-left: 3px solid #e8c97a;
+  padding: 24px 32px;
+  margin: 40px 0;
+  background: #0e1118;
+}
+.pullquote p {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #c8c4bc;
+}
+.pullquote cite {
+  display: block;
+  margin-top: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: #7a7d8a;
+  font-style: normal;
+  letter-spacing: 0.06em;
+}
+
+/* ── HIGHLIGHT BOX ── */
+.highlight-box {
+  background: #0e1118;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 3px solid #e8c97a;
+  padding: 36px;
+  margin-top: 40px;
+}
+.highlight-box-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #e8c97a;
+  margin-bottom: 14px;
+}
+.highlight-box p {
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: #a8a5a0;
+}
+.highlight-box p strong { color: #f0ece4; font-weight: 400; }
+
+/* ── US MAP CONTEXT ── */
+.state-context {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.state-box {
+  background: #0e1118;
+  padding: 24px;
+  transition: background 0.25s;
+}
+.state-box:hover { background: #161b27; }
+.state-box-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 8px;
+}
+.label-protected { color: #4ecdc4; }
+.label-none { color: #c97a8e; }
+.state-box-body { font-size: 0.82rem; line-height: 1.65; color: #a8a5a0; }
+.state-box-body strong { color: #f0ece4; font-weight: 400; }
+
+/* ── GET INVOLVED (simplified) ── */
+#get-involved { background: #07090f; padding: 96px 0; }
+.involved-inner { max-width: 680px; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  border-radius: 2px;
+  padding: 13px 28px;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-appearance: none;
+}
+.btn-gold { background: #e8c97a; color: #07090f; border: 1px solid #e8c97a; }
+.btn-gold:hover { background: #f0d896; transform: translateY(-1px); }
+.btn-outline { background: transparent; color: #a8a5a0; border: 1px solid rgba(255,255,255,0.18); }
+.btn-outline:hover { border-color: #e8c97a; color: #e8c97a; transform: translateY(-1px); }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 40px; }
+
+/* ── FOOTER ── */
+footer {
+  background: #07090f;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 44px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-mark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: #7a7d8a; }
+.footer-mark span { color: #e8c97a; }
+.footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
+.footer-links a { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: #7a7d8a; transition: color 0.2s; }
+.footer-links a:hover { color: #e8c97a; }
+.footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; opacity: 0.4; }
+
+/* ── SCROLL REVEAL ── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  #page-header { padding: 110px 24px 60px; }
+  .container { padding: 0 24px; }
+  .page-section, .page-section-alt, #get-involved { padding: 72px 0; }
+  .two-col, .two-col-wide { grid-template-columns: 1fr; gap: 48px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .stat-block { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .stat-block:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.07); }
+  .stat-block:last-child, .stat-block:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+  .state-context { grid-template-columns: 1fr; }
+  footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 540px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .stat-block { border-right: none; }
+  .btn-row { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="wordmark">Marq<span>'</span>d</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="index.html#support">Support</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-toggle" id="nav-toggle">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="index.html#support">Support</a>
+  <a href="index.html#contact">Contact</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div id="page-header">
+  <div class="page-kicker">About the Archive</div>
+  <h1 class="page-title">The record has always<br>been <em>incomplete.</em></h1>
+  <p class="page-intro">
+    Queer history is not missing by accident. It has been <strong>destroyed, suppressed, rewritten, and buried</strong> — systematically, across centuries, across continents. What we know about queer life throughout history is a fraction of what existed. Marq'd exists to make sure the same is not said of us.
+  </p>
+</div>
+
+<hr class="pride-rule">
+
+<!-- STATS BAND -->
+<div id="stats-band">
+  <div class="stats-grid">
+    <div class="stat-block reveal">
+      <div class="stat-big">64</div>
+      <div class="stat-label">countries where same-sex relationships are criminalized</div>
+      <div class="stat-source">ILGA World, 2023</div>
+    </div>
+    <div class="stat-block reveal" style="transition-delay:0.08s;">
+      <div class="stat-big">19</div>
+      <div class="stat-label">U.S. states with no state-level housing protections for LGBTQ+ people</div>
+      <div class="stat-source">Movement Advancement Project, 2024</div>
+    </div>
+    <div class="stat-block reveal" style="transition-delay:0.16s;">
+      <div class="stat-big">20<span style="font-size:0.5em; vertical-align:middle;">pts</span></div>
+      <div class="stat-label">lower homeownership rate for LGBTQ+ Americans vs. straight, cisgender peers</div>
+      <div class="stat-source">Urban Institute</div>
+    </div>
+    <div class="stat-block reveal" style="transition-delay:0.24s;">
+      <div class="stat-big">5.4M</div>
+      <div class="stat-label">LGBT adults in the U.S. living without housing discrimination protections</div>
+      <div class="stat-source">Williams Institute, UCLA</div>
+    </div>
+  </div>
+</div>
+
+<hr class="pride-rule">
+
+<!-- SECTION: NOT JUST ABROAD -->
+<div class="page-section">
+  <div class="container">
+    <div class="two-col-wide">
+      <div class="reveal">
+        <div class="eyebrow">The United States</div>
+        <h2 class="section-heading">Safety is not a<br>given — even here.</h2>
+        <p class="body-text">
+          It is easy to assume that legal progress in the United States means queer people are safe. The reality is more complicated. There is still <strong>no federal law that explicitly protects LGBTQ+ people from housing discrimination</strong>. Protections depend on where you live — and in nearly two dozen states, they are absent at the state level entirely.
+        </p>
+        <p class="body-text">
+          A 2021 executive order directed the Department of Housing and Urban Development to interpret the Fair Housing Act's sex protections to include sexual orientation and gender identity. That executive order can be reversed. It is not a law. In states without their own explicit protections, LGBTQ+ renters and homebuyers have limited or no legal recourse against discrimination — even when that discrimination is blatant.
+        </p>
+        <p class="body-text">
+          <strong>28% of the LGBTQ+ population in the United States lives in states that do not prohibit housing discrimination</strong> based on sexual orientation or gender identity. In some of those states, local municipalities are preempted from passing their own protections.
+        </p>
+        <div class="pullquote">
+          <p>What happens when the law says you are protected, but the administration chooses not to enforce it? The answer is: you are not protected.</p>
+        </div>
+        <p class="body-text">
+          Marq'd exists partly because legal protection and lived safety are not the same thing. Stories of housing discrimination, workplace hostility, and daily navigations of unsafe space happen in San Diego and San Antonio, not just in places that appear on maps of criminalization. <strong>Every geography is a queer geography.</strong> Every story belongs in the archive.
+        </p>
+      </div>
+
+      <div class="reveal" style="transition-delay:0.12s;">
+        <div class="eyebrow">State by State</div>
+        <h3 style="font-family:'Playfair Display',serif; font-size:1rem; font-weight:400; color:#a8a5a0; margin-bottom:24px; line-height:1.5;">The patchwork of LGBTQ+ housing protection in the U.S.</h3>
+        <div class="state-context">
+          <div class="state-box">
+            <div class="state-box-label label-protected">Explicit protections</div>
+            <p class="state-box-body"><strong>23 states + D.C.</strong> explicitly prohibit housing discrimination based on sexual orientation and gender identity.</p>
+          </div>
+          <div class="state-box">
+            <div class="state-box-label label-none">Interpreted only</div>
+            <p class="state-box-body"><strong>8 states</strong> interpret existing sex discrimination bans to include LGBTQ+ people — but this interpretation is not guaranteed.</p>
+          </div>
+          <div class="state-box">
+            <div class="state-box-label label-none">No state protection</div>
+            <p class="state-box-body"><strong>19 states</strong> have passed no state-level protections. Some prevent cities from creating their own ordinances.</p>
+          </div>
+          <div class="state-box">
+            <div class="state-box-label label-none">Federal floor only</div>
+            <p class="state-box-body">Residents in unprotected states rely solely on federal enforcement — which has shifted under every administration.</p>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <div class="highlight-box-title">What this means in practice</div>
+          <p>A landlord in an unprotected state can decline to rent to a same-sex couple. A property manager can ask invasive questions about gender identity. A bank can apply different standards to a queer applicant for a mortgage. <strong>These things happen.</strong> Most go unreported because there is no legal pathway to pursue them.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="pride-rule">
+
+<!-- SECTION: ERASURE -->
+<div class="page-section-alt">
+  <div class="container">
+    <div class="two-col">
+
+      <div class="reveal">
+        <div class="eyebrow">A History of Erasure</div>
+        <h2 class="section-heading">This is not the first time<br>the record has been <em>cleared.</em></h2>
+        <p class="body-text">
+          The destruction of queer history is not a metaphor. It is a documented, recurring pattern — carried out by governments, institutions, families, and even by queer people themselves, acting in fear. What survives is what was hidden well enough, or preserved by people who understood what they were protecting.
+        </p>
+        <p class="body-text">
+          The loss is immeasurable precisely because we cannot know what we have lost. The letters that were never written. The diaries burned before their authors died. The photographs never taken because taking them was dangerous. The oral histories that died with their speakers, undocumented and unrecorded.
+        </p>
+        <p class="body-text">
+          Every instance of erasure below represents not one lost record, but hundreds or thousands — the ones we know about, standing in for the ones we don't.
+        </p>
+
+        <div class="pullquote">
+          <p>The roots of the Archive lie in the silent voices, the love letters destroyed, the pronouns changed, the diaries carefully edited, the pictures never taken.</p>
+          <cite>— Joan Nestle, co-founder, Lesbian Herstory Archives, Brooklyn</cite>
+        </div>
+
+        <p class="body-text">
+          Erasure is not only historical. In February 2025, the U.S. federal government began systematically removing references to transgender and queer people from government websites, replacing decades of documented history with absence. The LGBTQ+ History Association called it <strong>"part of a much broader pattern of attacks on accurate and diverse history."</strong> Archivists and scholars moved immediately to preserve what was being deleted.
+        </p>
+        <p class="body-text">
+          <strong>The archive is always under threat.</strong> That is why it must always be built.
+        </p>
+      </div>
+
+      <div class="reveal" style="transition-delay:0.12s;">
+        <div class="eyebrow">A Partial Timeline</div>
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <div class="timeline-year">Medieval Europe</div>
+            <div class="timeline-event">Records of sodomy trials were burned alongside those convicted — the evidence and the person destroyed simultaneously. <strong>The documents that might have documented queer life were considered too dangerous to keep.</strong></div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">1860</div>
+            <div class="timeline-event">British colonial rule criminalized homosexuality in India under Section 377 — erasing centuries of documented queer existence in Hindu texts and temple art. <strong>Most modern Indians came to believe homosexuality was a Western import.</strong> It was the criminalization that was imported.</div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">1933</div>
+            <div class="timeline-event">The Nazi regime burned the Institut für Sexualwissenschaft in Berlin — the world's first LGBTQ+ research institute, containing over 12,000 books, 35,000 photographs, and decades of case histories. <strong>The famous Nazi book-burning images are, at their core, images of queer history being destroyed.</strong></div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">1940s – 1960s</div>
+            <div class="timeline-event">The Lavender Scare: the U.S. federal government purged thousands of gay and lesbian employees, treating homosexuality as a security threat. <strong>Queer people burned their own letters, diaries, and photographs</strong> to protect themselves.</div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">Ongoing</div>
+            <div class="timeline-event">Descendants, biographers, and institutional archivists have consistently "straightwashed" historical figures — altering pronouns, removing partners from records, declining to catalog materials. <strong>In some archives, queer materials are still kept under restricted access or described with clinical euphemism.</strong></div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">2025</div>
+            <div class="timeline-event">The U.S. federal government orders the removal of LGBTQ+ content from government websites and directs agencies to recognize only two sexes. <strong>Historians and archivists scramble to preserve what is being deleted in real time.</strong></div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="pride-rule">
+
+<!-- SECTION: WHY MARQD -->
+<div class="page-section">
+  <div class="container">
+    <div class="two-col">
+      <div class="reveal">
+        <div class="eyebrow">Why Marq'd Exists</div>
+        <h2 class="section-heading">Primary sources.<br><em>Written by us.</em></h2>
+        <p class="body-text">
+          A primary source is a firsthand account — a letter, a diary, a testimony, a photograph. Historians rank primary sources as the most valuable form of evidence because they have not been filtered through interpretation. They are the record of something as it was actually experienced.
+        </p>
+        <p class="body-text">
+          For most of recorded history, queer people did not create primary sources about their own lives — because doing so was dangerous. When they did, those records were often destroyed by others, or by themselves. What survived was what could be hidden.
+        </p>
+        <p class="body-text">
+          <strong>Marq'd is built on a simple premise: every story submitted here is a primary source.</strong> It is assigned a permanent record number, a geographic coordinate, and a timestamp. It can be cited by historians, journalists, and researchers exactly as any primary document would be cited. It is not curated for palatability. It is not filtered for safety. It is the record of queer life as it was actually lived.
+        </p>
+        <p class="body-text">
+          The dots on the globe are not symbolic. Each one is a document. Together, they are an archive that could not have existed at any earlier point in history — one that belongs to no institution, no government, and no individual other than the people who contributed to it.
+        </p>
+      </div>
+
+      <div class="reveal" style="transition-delay:0.12s; padding-top:8px;">
+        <div class="eyebrow"><!-- BRYAN: Replace this section with your personal statement when ready --></div>
+        <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:400; font-style:italic; color:#f0ece4; margin-bottom:20px; line-height:1.3;">A note from the founder.</h3>
+
+        <!-- BRYAN: Write 2-4 paragraphs here in your own voice. Why did you build this?
+             What does queer history mean to you personally? What do you want people to feel
+             when they find this archive? Keep it honest. Short is fine. -->
+        <div style="background:#0e1118; border:1px solid rgba(255,255,255,0.07); border-left:3px solid rgba(232,201,122,0.3); padding:28px; border-radius:2px;">
+          <p style="font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:#7a7d8a; letter-spacing:0.06em; line-height:1.7;">
+            [ Founder statement coming soon. ]<br><br>
+            This space is reserved for a personal note from Bryan — the person who built this. It will be written in his voice, not polished for public consumption.
+          </p>
+        </div>
+
+        <div class="highlight-box" style="margin-top:32px;">
+          <div class="highlight-box-title">Phase Roadmap</div>
+          <p>
+            <strong>Founding Site (now):</strong> Globe, mission, community building, donations.<br><br>
+            <strong>Phase 1:</strong> Live story submission, AI-generated audio, photo uploads, citable Field Records.<br><br>
+            <strong>Phase 2:</strong> Optional profiles, Near Me feed, translated interface, partner integrations.<br><br>
+            <strong>Phase 3:</strong> Research export tools, legal context layer, Tor access for high-risk regions, institutional archive partnerships.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="pride-rule">
+
+<!-- GET INVOLVED (simplified) -->
+<div id="get-involved">
+  <div class="container">
+    <div class="involved-inner reveal">
+      <div class="eyebrow">Get Involved</div>
+      <h2 class="section-heading">If this matters to you,<br><em>let's talk.</em></h2>
+      <p class="body-text">
+        Marq'd is in its early stages. There are skills it needs — in development, design, archival practice, translation, and legal expertise. If you have something to offer and believe in what this is building toward, reach out. No formal process. Just an email.
+      </p>
+      <p class="body-text">
+        Institutions, academic partners, and researchers interested in the archive are also welcome to get in touch.
+      </p>
+      <div class="btn-row">
+        <a href="mailto:marqd.official@gmail.com?subject=Get Involved" class="btn btn-gold">Get in Touch</a>
+        <a href="index.html#support" class="btn btn-outline">Support the Archive</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="pride-rule">
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-mark">Marq<span>'</span>d</div>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="index.html#support">Support</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+    <li><a href="mailto:marqd.official@gmail.com">Email</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
+</footer>
+
+<script>
+// Mobile menu
+(function() {
+  var toggle = document.getElementById('nav-toggle');
+  var menu   = document.getElementById('nav-mobile');
+  toggle.addEventListener('click', function() { menu.classList.toggle('open'); });
+  document.querySelectorAll('.nav-mobile a').forEach(function(link) {
+    link.addEventListener('click', function() { menu.classList.remove('open'); });
+  });
+})();
+
+// Scroll reveal
+(function() {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+})();
+</script>
+</body>
+</html>
