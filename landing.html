@@ -123,6 +123,7 @@
 
     .nav__wordmark {
       font-family: var(--font-display);
+      font-style: italic;
       font-size: 1.5rem;
       font-weight: 600;
       letter-spacing: -0.01em;
@@ -150,6 +151,7 @@
     /* ─── Hero ──────────────────────────────────────────── */
     .hero {
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -896,6 +898,7 @@
 
     .footer__wordmark {
       font-family: var(--font-display);
+      font-style: italic;
       font-size: 1.2rem;
       font-weight: 600;
       color: var(--text-secondary);
@@ -1409,7 +1412,7 @@
            and replace "https://formspree.io/f/YOUR_FORM_ID" below -->
       <form
         class="contact-form"
-        action="https://formspree.io/f/YOUR_FORM_ID"
+        action="https://formspree.io/f/xreygoeq"
         method="POST"
         onsubmit="handleFormSubmit(event)"
       >
@@ -1558,6 +1561,15 @@
       link.addEventListener('click', () => {
         document.querySelector('.nav__links').classList.remove('open');
       });
+    });
+
+    // Close mobile nav when clicking outside of it
+    document.addEventListener('click', (e) => {
+      const nav = document.querySelector('.nav');
+      const navLinks = document.querySelector('.nav__links');
+      if (navLinks.classList.contains('open') && !nav.contains(e.target)) {
+        navLinks.classList.remove('open');
+      }
     });
   </script>
 
