@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marq'd — A Living Archive of Queer Existence</title>
+  <meta name="description" content="Marq'd is a living archive of queer existence. Every dot on this globe is a story — anonymous, geographic, permanent. Primary source history, written by the people who lived it." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────── */
+    :root {
+      --bg-base:        #07090f;
+      --bg-surface:     #0e1118;
+      --bg-elevated:    #161b27;
+      --bg-overlay:     rgba(7, 9, 15, 0.88);
+
+      --accent-gold:    #e8c97a;
+      --accent-teal:    #4ecdc4;
+      --accent-rose:    #c97a8e;
+
+      --pride-red:      #c0392b;
+      --pride-orange:   #d4651a;
+      --pride-yellow:   #c9a227;
+      --pride-green:    #2e7d52;
+      --pride-blue:     #2471a3;
+      --pride-violet:   #7d3c98;
+
+      --text-primary:   #f0ece4;
+      --text-secondary: #a8a5a0;
+      --text-muted:     #7a7d8a;
+
+      --border-subtle:  rgba(255, 255, 255, 0.07);
+      --border-visible: rgba(255, 255, 255, 0.14);
+
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-ui:      'DM Sans', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible { outline: 2px solid var(--accent-gold); outline-offset: 2px; }
+
+    img { display: block; max-width: 100%; }
+
+    /* ─── Utility ───────────────────────────────────────── */
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .pride-rule {
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        var(--pride-red),
+        var(--pride-orange),
+        var(--pride-yellow),
+        var(--pride-green),
+        var(--pride-blue),
+        var(--pride-violet)
+      );
+      opacity: 0.4;
+      border: none;
+      margin: 0;
+    }
+
+    .lambda {
+      font-family: var(--font-display);
+      color: var(--accent-gold);
+      opacity: 0.7;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .container--wide {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ─── Nav ───────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(7,9,15,0.95) 0%, rgba(7,9,15,0) 100%);
+    }
+
+    .nav__wordmark {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+    }
+
+    .nav__wordmark span { color: var(--accent-gold); }
+
+    .nav__links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav__links a {
+      font-family: var(--font-ui);
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      transition: color 200ms;
+    }
+
+    .nav__links a:hover { color: var(--text-primary); }
+
+    /* ─── Hero ──────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle radial glow — stands in for the globe */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center,
+        rgba(78, 205, 196, 0.06) 0%,
+        rgba(78, 205, 196, 0.02) 40%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+
+    /* Animated globe ring */
+    .hero__globe-ring {
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      border: 1px solid rgba(78, 205, 196, 0.12);
+      position: relative;
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse-ring 4s ease-in-out infinite;
+    }
+
+    .hero__globe-ring::before {
+      content: '';
+      position: absolute;
+      inset: 24px;
+      border-radius: 50%;
+      border: 1px solid rgba(78, 205, 196, 0.08);
+    }
+
+    .hero__globe-ring::after {
+      content: '';
+      position: absolute;
+      inset: 56px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 40% 35%,
+        rgba(78, 205, 196, 0.1) 0%,
+        rgba(14, 17, 24, 0.95) 60%
+      );
+      border: 1px solid rgba(78, 205, 196, 0.06);
+    }
+
+    @keyframes pulse-ring {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(78, 205, 196, 0); }
+      50% { box-shadow: 0 0 60px 0 rgba(78, 205, 196, 0.06); }
+    }
+
+    /* Dots on the globe ring */
+    .hero__dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-teal);
+      box-shadow: 0 0 8px 2px rgba(78, 205, 196, 0.5);
+      animation: dot-pulse 3s ease-in-out infinite;
+    }
+
+    .hero__dot:nth-child(1) { top: 22%; left: 28%; animation-delay: 0s; }
+    .hero__dot:nth-child(2) { top: 38%; left: 62%; animation-delay: 0.6s; }
+    .hero__dot:nth-child(3) { top: 60%; left: 42%; animation-delay: 1.2s; }
+    .hero__dot:nth-child(4) { top: 50%; left: 22%; animation-delay: 1.8s; }
+    .hero__dot:nth-child(5) { top: 30%; left: 75%; animation-delay: 2.4s; }
+    .hero__dot:nth-child(6) { top: 68%; left: 68%; animation-delay: 0.4s; }
+    .hero__dot:nth-child(7) { top: 72%; left: 30%; animation-delay: 1.5s; }
+
+    @keyframes dot-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+
+    .hero__lambda {
+      position: absolute;
+      font-family: var(--font-display);
+      font-size: 5rem;
+      color: var(--accent-gold);
+      opacity: 0.15;
+      z-index: 1;
+      user-select: none;
+    }
+
+    .hero__tagline {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+      position: relative;
+      z-index: 2;
+      animation: fade-up 1s var(--ease-out) 0.2s both;
+    }
+
+    .hero__sub {
+      font-family: var(--font-ui);
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 480px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      animation: fade-up 1s var(--ease-out) 0.4s both;
+    }
+
+    .hero__ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fade-up 1s var(--ease-out) 0.6s both;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn {
+      font-family: var(--font-ui);
+      font-size: 0.875rem;
+      font-weight: 400;
+      padding: 0.75rem 1.75rem;
+      border-radius: 4px;
+      border: 1px solid;
+      cursor: pointer;
+      transition: background 200ms, color 200ms, border-color 200ms;
+      display: inline-block;
+    }
+
+    .btn--primary {
+      background: var(--accent-gold);
+      color: var(--bg-base);
+      border-color: var(--accent-gold);
+    }
+
+    .btn--primary:hover {
+      background: #f0d48a;
+      border-color: #f0d48a;
+    }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border-visible);
+    }
+
+    .btn--ghost:hover {
+      color: var(--text-primary);
+      border-color: var(--border-subtle);
+      background: var(--bg-elevated);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: fade-up 1s var(--ease-out) 1.2s both;
+    }
+
+    .scroll-hint__arrow {
+      width: 1px;
+      height: 32px;
+      background: linear-gradient(to bottom, var(--text-muted), transparent);
+      animation: scroll-arrow 2s ease-in-out infinite;
+    }
+
+    @keyframes scroll-arrow {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 0.7; transform: scaleY(1.2); }
+    }
+
+    /* ─── Sections ──────────────────────────────────────── */
+    section { padding: 5rem 0; }
+
+    .section--dark { background: var(--bg-surface); }
+
+    .section-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-header h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 400;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin-top: 0.75rem;
+    }
+
+    /* ─── Mission ───────────────────────────────────────── */
+    .mission__body {
+      font-family: var(--font-ui);
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--text-secondary);
+    }
+
+    .mission__body p + p { margin-top: 1.25rem; }
+
+    .mission__pull {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+      line-height: 1.5;
+      color: var(--text-primary);
+      border-left: 2px solid var(--accent-gold);
+      padding-left: 1.5rem;
+      margin: 2.5rem 0;
+    }
+
+    /* ─── Stakes ────────────────────────────────────────── */
+    .stakes {
+      text-align: center;
+    }
+
+    .stakes__stat {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 400;
+      color: var(--accent-gold);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stakes__label {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 2.5rem;
+    }
+
+    .stakes__body {
+      max-width: 580px;
+      margin: 0 auto 3rem;
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--text-secondary);
+    }
+
+    .stakes__closing {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      color: var(--text-primary);
+    }
+
+    /* ─── How It Works ──────────────────────────────────── */
+    .steps {
+      display: grid;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      padding: 1.75rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+    }
+
+    .step__lambda {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--accent-gold);
+      opacity: 0.8;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+      line-height: 1;
+    }
+
+    .step__content h3 {
+      font-family: var(--font-ui);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+    }
+
+    .step__content p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ─── Roadmap ───────────────────────────────────────── */
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .phase {
+      padding: 2rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .phase__status {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .phase__status--live   { color: var(--accent-teal); }
+    .phase__status--active { color: var(--accent-gold); }
+    .phase__status--planned{ color: var(--text-muted); }
+
+    .phase h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .phase p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    .phase__features {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .phase__features li {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    .phase__features li::before {
+      content: '— ';
+      opacity: 0.5;
+    }
+
+    /* ─── Get Involved ──────────────────────────────────── */
+    .involve-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+
+    .involve-card {
+      padding: 1.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      transition: border-color 200ms, background 200ms;
+    }
+
+    .involve-card:hover {
+      border-color: var(--border-visible);
+      background: var(--bg-elevated);
+    }
+
+    .involve-card__icon {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .involve-card h3 {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 0.6rem;
+    }
+
+    .involve-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .involve__cta {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-visible);
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .involve__cta p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    /* ─── Support ───────────────────────────────────────── */
+    .support__intro {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin-bottom: 3rem;
+      max-width: 640px;
+    }
+
+    .tiers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1px;
+      background: var(--border-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+    }
+
+    .tier {
+      background: var(--bg-surface);
+      padding: 1.75rem 1.5rem;
+      transition: background 200ms;
+    }
+
+    .tier:hover { background: var(--bg-elevated); }
+
+    .tier__name {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .tier__amount {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--accent-gold);
+      margin-bottom: 0.4rem;
+    }
+
+    .tier__desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .support__oc {
+      padding: 2.5rem 2rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-visible);
+      border-radius: 4px;
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    /* BRYAN: Replace this block with the Open Collective embed widget
+       once your Open Collective page is live at opencollective.com/marqd */
+    .support__oc p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.05em;
+    }
+
+    .oc-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+      padding: 0.75rem 1.75rem;
+      border-radius: 4px;
+      transition: background 200ms, color 200ms;
+    }
+
+    .oc-link:hover {
+      background: var(--accent-gold);
+      color: var(--bg-base);
+    }
+
+    .support__uses {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .support__uses li {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+    }
+
+    .support__uses li::before {
+      content: '→ ';
+      color: var(--accent-gold);
+      opacity: 0.6;
+    }
+
+    /* ─── Contact ───────────────────────────────────────── */
+    .contact__intro {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      max-width: 580px;
+    }
+
+    .contact-form {
+      display: grid;
+      gap: 1.25rem;
+      max-width: 560px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .field label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-visible);
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      font-weight: 300;
+      transition: border-color 200ms;
+      width: 100%;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder { color: var(--text-muted); }
+
+    .field select { appearance: none; cursor: pointer; }
+    .field select option { background: var(--bg-elevated); }
+
+    .field textarea { resize: vertical; min-height: 140px; }
+
+    .contact-form__submit {
+      margin-top: 0.5rem;
+    }
+
+    .contact__note {
+      margin-top: 2rem;
+      max-width: 480px;
+    }
+
+    .contact__note p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+    }
+
+    .contact__safety {
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-left: 2px solid var(--accent-rose);
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.03em;
+      line-height: 1.7;
+    }
+
+    /* ─── Partners ──────────────────────────────────────── */
+    .partners-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+
+    .partner {
+      background: var(--bg-surface);
+      padding: 1.25rem;
+    }
+
+    .partner__name {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+    }
+
+    .partner__why {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .partners__disclaimer {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      margin-top: 1rem;
+      opacity: 0.7;
+    }
+
+    /* ─── Active Development Banner ─────────────────────── */
+    .dev-banner {
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--border-visible);
+      border-bottom: 1px solid var(--border-visible);
+      padding: 3rem 0;
+      text-align: center;
+    }
+
+    .dev-banner h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      font-weight: 400;
+      color: var(--text-primary);
+      margin: 0.75rem 0 1rem;
+    }
+
+    .dev-banner p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+    }
+
+    .dev-banner__ctas {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ─── Footer ────────────────────────────────────────── */
+    .footer {
+      padding: 3rem 0 2rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .footer__inner {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .footer__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer__wordmark {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .footer__wordmark span { color: var(--accent-gold); }
+
+    .footer__links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+
+    .footer__links a {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      transition: color 200ms;
+    }
+
+    .footer__links a:hover { color: var(--text-secondary); }
+
+    .footer__bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1.5rem;
+    }
+
+    .footer__copy {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .footer__keep {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .footer__keep a {
+      color: var(--accent-gold);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* ─── Section Divider ───────────────────────────────── */
+    .section-rule {
+      height: 1px;
+      background: var(--border-subtle);
+      margin: 0;
+    }
+
+    /* ─── Mobile Nav ────────────────────────────────────── */
+    .nav__toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem;
+      color: var(--text-secondary);
+    }
+
+    /* ─── Responsive ────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav__links { display: none; }
+      .nav__toggle { display: block; }
+
+      .nav__links.open {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        background: var(--bg-overlay);
+        backdrop-filter: blur(12px);
+        padding: 5rem 2rem 2rem;
+        z-index: 99;
+      }
+
+      .nav__links.open a {
+        font-size: 1.1rem;
+        color: var(--text-primary);
+      }
+
+      .hero__globe-ring {
+        width: 260px;
+        height: 260px;
+      }
+
+      section { padding: 4rem 0; }
+
+      .footer__top { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 1.25rem; }
+      .hero { padding: 5rem 1.25rem 3rem; }
+      .nav { padding: 1rem 1.25rem; }
+
+      .hero__globe-ring {
+        width: 200px;
+        height: 200px;
+      }
+
+      .hero__tagline { font-size: 1.8rem; }
+    }
+
+    /* ─── Reduced Motion ────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .hero__dot,
+      .hero__globe-ring,
+      .scroll-hint__arrow { animation: none; }
+      * { transition-duration: 50ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Nav ──────────────────────────────────────────── -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <a href="#" class="nav__wordmark">Marq<span>'</span>d</a>
+    <button class="nav__toggle" aria-label="Toggle menu" onclick="this.nextElementSibling.classList.toggle('open')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <ul class="nav__links">
+      <li><a href="#mission">Mission</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#get-involved">Get Involved</a></li>
+      <li><a href="#support">Support</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ─── Hero ─────────────────────────────────────────── -->
+  <section class="hero" aria-label="Hero">
+    <div class="hero__globe-ring" aria-hidden="true">
+      <div class="hero__dot"></div>
+      <div class="hero__dot"></div>
+      <div class="hero__dot"></div>
+      <div class="hero__dot"></div>
+      <div class="hero__dot"></div>
+      <div class="hero__dot"></div>
+      <div class="hero__dot"></div>
+      <span class="hero__lambda" aria-hidden="true">λ</span>
+    </div>
+
+    <h1 class="hero__tagline"><em>Q marks the spot.</em></h1>
+
+    <p class="hero__sub">
+      A living archive of queer existence. Every dot is a story —
+      anonymous, geographic, permanent. Primary source history,
+      written by the people who lived it.
+    </p>
+
+    <div class="hero__ctas">
+      <a href="#support" class="btn btn--primary">Support the Archive</a>
+      <a href="#get-involved" class="btn btn--ghost">Get Involved</a>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="scroll-hint__arrow"></div>
+    </div>
+  </section>
+
+  <hr class="pride-rule" />
+
+  <!-- ─── Mission ──────────────────────────────────────── -->
+  <section id="mission">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">About the Archive</p>
+        <h2>Queer stories are primary sources.</h2>
+      </div>
+
+      <div class="mission__body">
+        <p>
+          In 1969, no one thought the notes slipped between strangers at the Stonewall Inn would become history. They were just moments — a touch, a look, a night. But those moments, accumulated and preserved, became the primary evidence of a community's existence, resistance, and humanity.
+        </p>
+
+        <blockquote class="mission__pull">
+          "In places where we cannot exist openly, we have always existed quietly. This is the record."
+        </blockquote>
+
+        <p>
+          Marq'd makes it possible for anyone, anywhere, to contribute to that record — anonymously, safely, and permanently. Every story submitted adds to an irreplaceable geographic and temporal archive of queer existence.
+        </p>
+        <p>
+          Unlike a social media platform where content disappears or gets deprioritized, Marq'd treats its archive as permanent. Stories receive numbered, citable record IDs. They are evidence — not posts.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ─── Stakes ────────────────────────────────────────── -->
+  <section class="section--dark">
+    <div class="container stakes">
+      <p class="eyebrow">Why It Matters</p>
+
+      <p class="stakes__stat" aria-label="64 countries">64</p>
+      <p class="stakes__label">countries criminalize same-sex relationships.</p>
+
+      <p class="stakes__body">
+        In most of them, no gay bars are listed on Google Maps. No Pride parades in the historical record. No archives of queer life. The official history says: <em>we were not there.</em>
+      </p>
+
+      <p class="stakes__body">
+        12 countries impose the death penalty. In dozens more, LGBTQ+ people face state-sanctioned discrimination, forced conversion, and social erasure. Letters burned. Diaries written in code. Meeting places demolished. Oral histories lost.
+      </p>
+
+      <p class="stakes__closing">
+        Marq'd is the record that official history refuses to keep.
+      </p>
+    </div>
+  </section>
+
+  <hr class="pride-rule" />
+
+  <!-- ─── How It Works ─────────────────────────────────── -->
+  <section id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">The Archive</p>
+        <h2>How it works.</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <span class="step__lambda" aria-hidden="true">λ</span>
+          <div class="step__content">
+            <h3>Drop a pin anywhere on the globe</h3>
+            <p>Any location. The intersection, the park, the street. The coordinates matter. Not just the city — the exact spot where something happened. Geographic specificity is historical evidence.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step__lambda" aria-hidden="true">λ</span>
+          <div class="step__content">
+            <h3>Tell us what happened — text, voice, or both</h3>
+            <p>You don't have to use names. You don't have to explain anything. What happened here? A spontaneous encounter in Madrid and a brave documentation from a country where that existence is illegal are both primary sources. Both matter.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step__lambda" aria-hidden="true">λ</span>
+          <div class="step__content">
+            <h3>Your Marq is assigned a permanent record number</h3>
+            <p>Every story receives a permanent, sequential record ID — format <span style="font-family:var(--font-mono);color:var(--text-muted);font-size:0.85em;">#MQ-004821</span>. It is citable. It is a source. It counts. No government, institution, or majority vote can undo it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:2rem;padding:1.5rem;background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:4px;border-left:2px solid var(--accent-teal)">
+        <p class="eyebrow" style="margin-bottom:0.5rem">Safety First</p>
+        <p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.75">For contributors in hostile regions, anonymity is not a preference — it is a matter of physical safety. No personally identifiable information is ever collected from anonymous contributors. IPs are hashed, never stored in plaintext. The platform functions without an account.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ─── Roadmap ───────────────────────────────────────── -->
+  <section id="roadmap" class="section--dark">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Where We're Headed</p>
+        <h2>The roadmap.</h2>
+      </div>
+
+      <div class="roadmap">
+        <div class="phase">
+          <p class="phase__status phase__status--live">✓ Founding Site — Live</p>
+          <h3>Establishing the Archive</h3>
+          <p>The founding site establishes the project, communicates the mission, and invites early supporters and contributors before the full archive goes live.</p>
+          <ul class="phase__features">
+            <li>Interactive 3D globe with seed data</li>
+            <li>Full mission and about pages</li>
+            <li>Contact and support infrastructure</li>
+            <li>Open Collective donation page</li>
+            <li>Public roadmap and architectural docs</li>
+          </ul>
+        </div>
+
+        <div class="phase">
+          <p class="phase__status phase__status--active">⚙ Phase 1 — In Development</p>
+          <h3>The Live Archive</h3>
+          <p>A fully functional, live archive. Real stories. Real coordinates. Permanent records. A stranger anywhere in the world can read and submit — anonymously, safely, permanently — in under five minutes.</p>
+          <ul class="phase__features">
+            <li>Live story submission (no account required)</li>
+            <li>Supabase backend — real-time globe</li>
+            <li>AI-read audio via ElevenLabs</li>
+            <li>Photo submission — places only</li>
+            <li>Academic citation export</li>
+            <li>Content moderation queue</li>
+          </ul>
+        </div>
+
+        <div class="phase">
+          <p class="phase__status phase__status--planned">◦ Phase 2 &amp; 3 — Planned</p>
+          <h3>Community &amp; Institution</h3>
+          <p>Optional identity and social connection without compromising the anonymous core. Then: Marq'd as a recognized resource for researchers, historians, journalists, and human rights advocates.</p>
+          <ul class="phase__features">
+            <li>Optional user profiles</li>
+            <li>Time-scrubber — watch the archive grow</li>
+            <li>Legal context layer (ILGA World data)</li>
+            <li>Research export — JSON/CSV for scholars</li>
+            <li>Translations — 10+ languages</li>
+            <li>Tor-friendly access documentation</li>
+            <li>Institutional partnerships</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ─── Get Involved ──────────────────────────────────── -->
+  <section id="get-involved">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Collaborate</p>
+        <h2>Get involved.</h2>
+      </div>
+
+      <div class="involve-grid">
+        <div class="involve-card">
+          <div class="involve-card__icon">⌨</div>
+          <h3>Development</h3>
+          <p>React, TypeScript, Supabase, globe.gl, ElevenLabs API. If you build things and believe in this, reach out.</p>
+        </div>
+        <div class="involve-card">
+          <div class="involve-card__icon">◧</div>
+          <h3>Design</h3>
+          <p>The visual system is documented. A second set of eyes from someone with strong UI/UX instincts would be valuable.</p>
+        </div>
+        <div class="involve-card">
+          <div class="involve-card__icon">◫</div>
+          <h3>Archival &amp; Academic</h3>
+          <p>If you work in LGBTQ+ archives, digital humanities, oral history, or human rights documentation — your perspective shapes how this archive should be structured.</p>
+        </div>
+        <div class="involve-card">
+          <div class="involve-card__icon">◎</div>
+          <h3>Community &amp; Outreach</h3>
+          <p>Relationships with LGBTQ+ organizations, academic institutions, or queer media are how Marq'd becomes something that lasts. Let's talk.</p>
+        </div>
+        <div class="involve-card">
+          <div class="involve-card__icon">⚖</div>
+          <h3>Legal</h3>
+          <p>Privacy policy, terms of service, operating in hostile jurisdictions, nonprofit structure. Legal expertise would be meaningful here.</p>
+        </div>
+        <div class="involve-card">
+          <div class="involve-card__icon">◌</div>
+          <h3>Translation</h3>
+          <p>Arabic, Farsi, Russian, Mandarin, Portuguese, Spanish, French, Hindi, Swahili, and more. You're helping reach the people who need this most.</p>
+        </div>
+      </div>
+
+      <div class="involve__cta">
+        <p>"Marq'd is one person with a vision and a lot of work ahead. If you're a developer, designer, archivist, human rights advocate, or someone who simply believes in this — reach out."</p>
+        <a href="#contact" class="btn btn--primary">Get Involved</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ─── Partnership Vision ───────────────────────────── -->
+  <section class="section--dark">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Partnership Vision</p>
+        <h2>Organizations we're building toward.</h2>
+      </div>
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:0.5rem">These are aspirations, not current relationships. Listed here because mission alignment matters.</p>
+
+      <div class="partners-grid">
+        <div class="partner">
+          <p class="partner__name">ILGA World</p>
+          <p class="partner__why">Global authority on LGBTQ+ legal rights — their country-level data could power the legal context layer.</p>
+        </div>
+        <div class="partner">
+          <p class="partner__name">ONE Archives at USC</p>
+          <p class="partner__why">Largest repository of LGBTQ+ materials in the world. Potential archival partnership.</p>
+        </div>
+        <div class="partner">
+          <p class="partner__name">Rainbow Railroad</p>
+          <p class="partner__why">Helps LGBTQ+ people escape state-sponsored violence. Deep mission alignment.</p>
+        </div>
+        <div class="partner">
+          <p class="partner__name">Equaldex</p>
+          <p class="partner__why">Crowdsourced LGBTQ+ rights database — potential data integration for the legal layer.</p>
+        </div>
+        <div class="partner">
+          <p class="partner__name">OutRight Action International</p>
+          <p class="partner__why">Human rights documentation and co-research potential.</p>
+        </div>
+        <div class="partner">
+          <p class="partner__name">The Trevor Project</p>
+          <p class="partner__why">Safety resources for young LGBTQ+ users — crisis link integration.</p>
+        </div>
+      </div>
+
+      <p class="partners__disclaimer">*These organizations have not been contacted or agreed to any relationship. Listed as mission-aligned aspirations only.</p>
+    </div>
+  </section>
+
+  <!-- ─── Active Development Banner ───────────────────── -->
+  <div class="dev-banner">
+    <div class="container">
+      <p class="eyebrow">Marq'd is in active development</p>
+      <h2>Story submission, voice recordings, photography, and the full live archive are coming in Phase 1.</h2>
+      <p>Want to be part of building this?</p>
+      <div class="dev-banner__ctas">
+        <a href="#support" class="btn btn--primary">Support the Archive</a>
+        <a href="#get-involved" class="btn btn--ghost">Get Involved</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-rule" />
+
+  <!-- ─── Support ───────────────────────────────────────── -->
+  <section id="support" class="section--dark">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Support the Archive</p>
+        <h2>Keep the record alive.</h2>
+      </div>
+
+      <p class="support__intro">
+        Marq'd is free to use and always will be. But hosting, storage, moderation, and development cost real money. Your support keeps the archive alive, independent, and accessible to everyone — including people in places where it matters most.
+      </p>
+
+      <!-- BRYAN: Replace this block with the Open Collective embed widget
+           once your Open Collective page is live at opencollective.com/marqd -->
+      <div class="support__oc">
+        <p>Donations processed securely via Open Collective</p>
+        <a href="https://opencollective.com/marqd" class="oc-link" target="_blank" rel="noopener noreferrer">
+          Donate via Open Collective →
+        </a>
+      </div>
+
+      <p class="eyebrow" style="margin-bottom:1rem">Contribution tiers</p>
+      <div class="tiers">
+        <div class="tier">
+          <p class="tier__name">Reader</p>
+          <p class="tier__amount">Any amount</p>
+          <p class="tier__desc">One-time contribution</p>
+        </div>
+        <div class="tier">
+          <p class="tier__name">Contributor</p>
+          <p class="tier__amount">$5 / mo</p>
+          <p class="tier__desc">Ongoing support</p>
+        </div>
+        <div class="tier">
+          <p class="tier__name">Archivist</p>
+          <p class="tier__amount">$15 / mo</p>
+          <p class="tier__desc">Sustaining the record</p>
+        </div>
+        <div class="tier">
+          <p class="tier__name">Patron</p>
+          <p class="tier__amount">$50 / mo</p>
+          <p class="tier__desc">Founding-level support</p>
+        </div>
+      </div>
+
+      <p class="eyebrow" style="margin-bottom:0.75rem;margin-top:2.5rem">What your support funds</p>
+      <ul class="support__uses">
+        <li>Hosting &amp; infrastructure</li>
+        <li>Story &amp; photo storage</li>
+        <li>Content moderation</li>
+        <li>Legal &amp; compliance</li>
+        <li>Development work</li>
+        <li>Translations</li>
+        <li>Archive preservation</li>
+        <li>Safety tooling</li>
+      </ul>
+
+      <p style="font-family:var(--font-display);font-style:italic;font-size:1rem;color:var(--text-muted);margin-top:2.5rem;text-align:center">
+        Every dollar goes toward keeping the record intact.
+      </p>
+    </div>
+  </section>
+
+  <hr class="section-rule" />
+
+  <!-- ─── Contact ───────────────────────────────────────── -->
+  <section id="contact">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Get in Touch</p>
+        <h2>We're listening.</h2>
+      </div>
+
+      <p class="contact__intro">
+        "Whether you want to propose a partnership, get involved in building Marq'd, ask about press, or just say something — we read everything."
+      </p>
+
+      <!-- Formspree integration — replace ACTION_URL with your Formspree endpoint -->
+      <!-- BRYAN: Sign up at formspree.io, create a form, copy your endpoint URL,
+           and replace "https://formspree.io/f/YOUR_FORM_ID" below -->
+      <form
+        class="contact-form"
+        action="https://formspree.io/f/YOUR_FORM_ID"
+        method="POST"
+        onsubmit="handleFormSubmit(event)"
+      >
+        <div class="field">
+          <label for="name">Name <span style="color:var(--text-muted);font-size:0.65rem">(optional)</span></label>
+          <input type="text" id="name" name="name" placeholder="Yours, if you'd like" autocomplete="name" />
+        </div>
+
+        <div class="field">
+          <label for="email">Email <span style="color:var(--accent-rose);font-size:0.7rem">required</span></label>
+          <input type="email" id="email" name="email" required placeholder="you@example.com" autocomplete="email" />
+        </div>
+
+        <div class="field">
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject">
+            <option value="General">General</option>
+            <option value="Get Involved">Get Involved</option>
+            <option value="Partnership">Partnership</option>
+            <option value="Press">Press &amp; Media</option>
+            <option value="Advertising">Advertising</option>
+            <option value="Safety Report">Safety Report</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required placeholder="What's on your mind?"></textarea>
+        </div>
+
+        <div class="contact-form__submit">
+          <button type="submit" class="btn btn--primary" id="submit-btn">Send it</button>
+        </div>
+
+        <div id="form-success" style="display:none;padding:1rem;background:var(--bg-elevated);border:1px solid var(--accent-teal);border-radius:4px;font-family:var(--font-mono);font-size:0.75rem;color:var(--accent-teal);letter-spacing:0.05em">
+          Message received. We'll be in touch.
+        </div>
+      </form>
+
+      <div class="contact__note">
+        <p>We read everything. We try to respond to most things.</p>
+        <div class="contact__safety">
+          To report content or a safety concern, select "Safety Report" above. These are prioritized.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="pride-rule" />
+
+  <!-- ─── Footer ───────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__top">
+          <span class="footer__wordmark">Marq<span>'</span>d</span>
+          <ul class="footer__links">
+            <li><a href="#mission">Mission</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+            <li><a href="#get-involved">Get Involved</a></li>
+            <li><a href="#support">Support</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer__bottom">
+          <span class="footer__copy">© 2026 Marq'd · In active development</span>
+          <span class="footer__keep">
+            Keep the archive alive → <a href="#support">Support</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Form submission handler
+    function handleFormSubmit(e) {
+      const form = e.target;
+      const action = form.getAttribute('action');
+
+      // If the action URL still has the placeholder, show a helpful message
+      if (action.includes('YOUR_FORM_ID')) {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        const original = btn.textContent;
+        btn.textContent = 'Set up Formspree first →';
+        btn.style.opacity = '0.6';
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.style.opacity = '1';
+        }, 3000);
+        return;
+      }
+
+      // Real Formspree submission via fetch
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      const data = new FormData(form);
+
+      fetch(action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(res => {
+        if (res.ok) {
+          form.reset();
+          document.getElementById('form-success').style.display = 'block';
+          btn.style.display = 'none';
+        } else {
+          btn.textContent = 'Something went wrong — try again';
+          btn.disabled = false;
+        }
+      })
+      .catch(() => {
+        btn.textContent = 'Something went wrong — try again';
+        btn.disabled = false;
+      });
+    }
+
+    // Smooth active nav highlight on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav__links a');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => {
+            link.style.color = link.getAttribute('href') === '#' + entry.target.id
+              ? 'var(--text-primary)'
+              : '';
+          });
+        }
+      });
+    }, { rootMargin: '-40% 0px -50% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+
+    // Close mobile nav when a link is clicked
+    document.querySelectorAll('.nav__links a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelector('.nav__links').classList.remove('open');
+      });
+    });
+  </script>
+
+</body>
+</html>
