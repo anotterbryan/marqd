@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07090f">
+<title>Contact — Marq'd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #07090f; scroll-behavior: smooth; }
+body {
+  background: #07090f;
+  color: #f0ece4;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 48px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(7,9,15,0.94);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.wordmark { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-style: italic; font-weight: 600; color: #f0ece4; }
+.wordmark span { color: #e8c97a; }
+.nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+.nav-links a { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.13em; color: #7a7d8a; transition: color 0.2s; }
+.nav-links a:hover, .nav-links a.active { color: #e8c97a; }
+.nav-submit-btn { padding: 8px 18px; background: #e8c97a; color: #07090f !important; border-radius: 2px; font-size: 0.62rem !important; font-weight: 400; transition: background 0.2s; }
+.nav-submit-btn:hover { background: #f0d896 !important; }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+.nav-toggle span { display: block; width: 22px; height: 1px; background: #f0ece4; }
+.nav-mobile { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(7,9,15,0.98); border-bottom: 1px solid rgba(255,255,255,0.07); z-index: 99; padding: 20px 48px; flex-direction: column; }
+.nav-mobile.open { display: flex; }
+.nav-mobile a { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.13em; color: #a8a5a0; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.2s; }
+.nav-mobile a:last-child { border-bottom: none; }
+.nav-mobile a:hover { color: #e8c97a; }
+
+/* ── PRIDE RULE ── */
+.pride-rule { display: block; width: 100%; height: 1px; border: none; background: linear-gradient(to right, #c0392b, #d4651a, #c9a227, #2e7d52, #2471a3, #7d3c98); opacity: 0.3; }
+
+/* ── PAGE HEADER ── */
+#page-header { padding: 140px 48px 80px; max-width: 1200px; margin: 0 auto; }
+.page-kicker { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.22em; color: #4ecdc4; margin-bottom: 18px; }
+.page-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 400; line-height: 1.15; color: #f0ece4; margin-bottom: 28px; }
+.page-title em { font-style: italic; color: #e8c97a; }
+.page-intro { font-size: clamp(1rem, 1.8vw, 1.15rem); font-weight: 300; line-height: 1.85; color: #a8a5a0; max-width: 680px; }
+.page-intro strong { color: #f0ece4; font-weight: 400; }
+
+/* ── LAYOUT ── */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+.page-section { padding: 96px 0; }
+.page-section-alt { background: #0a0c13; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 96px 0; }
+.eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.2em; color: #7a7d8a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: 'λ'; color: #e8c97a; font-family: 'Playfair Display', serif; font-size: 0.95rem; font-style: italic; }
+.section-heading { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 400; line-height: 1.2; color: #f0ece4; margin-bottom: 20px; }
+.section-heading em { font-style: italic; color: #e8c97a; }
+.body-text { font-size: 0.95rem; font-weight: 300; line-height: 1.9; color: #a8a5a0; margin-bottom: 18px; }
+.body-text strong { color: #f0ece4; font-weight: 400; }
+
+/* ── CONTACT GRID ── */
+.contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: start; }
+.contact-sidebar {}
+.contact-direct { margin-top: 36px; }
+.direct-item { display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.direct-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.direct-label { font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; text-transform: uppercase; letter-spacing: 0.16em; color: #7a7d8a; }
+.direct-value { font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: #f0ece4; }
+.direct-value a { color: #e8c97a; }
+.direct-value a:hover { text-decoration: underline; }
+.direct-note { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #7a7d8a; line-height: 1.6; }
+
+/* ── FORM ── */
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.16em; color: #7a7d8a; margin-bottom: 7px; }
+.form-input, .form-select, .form-textarea { width: 100%; background: #0e1118; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; padding: 11px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 300; color: #f0ece4; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #e8c97a; }
+.form-input::placeholder, .form-textarea::placeholder { color: #7a7d8a; }
+.form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7d8a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; background-color: #0e1118; }
+.form-select option { background: #0e1118; }
+.form-textarea { resize: vertical; min-height: 140px; line-height: 1.6; }
+.btn { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.14em; border-radius: 2px; padding: 13px 28px; cursor: pointer; transition: all 0.2s; border: none; -webkit-appearance: none; }
+.btn-gold { background: #e8c97a; color: #07090f; border: 1px solid #e8c97a; }
+.btn-gold:hover { background: #f0d896; border-color: #f0d896; }
+
+/* ── SUBJECT CARDS ── */
+.subject-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); margin-top: 48px; }
+.subject-card { background: #0e1118; padding: 28px 24px; transition: background 0.2s; }
+.subject-card:hover { background: #161b27; }
+.subject-icon { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #e8c97a; opacity: 0.4; margin-bottom: 10px; }
+.subject-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1rem; font-weight: 400; color: #f0ece4; margin-bottom: 8px; }
+.subject-body { font-size: 0.8rem; line-height: 1.7; color: #7a7d8a; }
+
+/* ── SAFETY BOX ── */
+.safety-box { background: #0e1118; border-left: 3px solid #4ecdc4; padding: 18px 20px; margin-top: 32px; }
+.safety-label { font-family: 'JetBrains Mono', monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.14em; color: #4ecdc4; margin-bottom: 7px; }
+.safety-text { font-size: 0.82rem; line-height: 1.7; color: #a8a5a0; }
+.safety-text a { color: #4ecdc4; }
+
+/* ── SUCCESS ── */
+.form-success { display: none; text-align: center; padding: 60px 32px; }
+.form-success.show { display: block; }
+.success-lambda { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #e8c97a; margin-bottom: 14px; }
+.success-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 400; color: #f0ece4; margin-bottom: 10px; }
+.success-body { font-size: 0.88rem; line-height: 1.8; color: #a8a5a0; }
+
+/* ── PULL QUOTE ── */
+.pull-quote { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.1rem, 2.2vw, 1.5rem); font-style: italic; font-weight: 400; line-height: 1.6; color: rgba(240,236,228,0.75); padding: 36px 48px; border-left: 3px solid rgba(232,201,122,0.35); margin: 0; }
+.pull-quote strong { color: #e8c97a; font-style: normal; font-weight: 400; }
+
+/* ── FOOTER ── */
+footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padding: 44px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.footer-mark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: #7a7d8a; }
+.footer-mark span { color: #e8c97a; }
+.footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
+.footer-links a { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: #7a7d8a; transition: color 0.2s; }
+.footer-links a:hover { color: #e8c97a; }
+.footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; opacity: 0.4; }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  #page-header { padding: 110px 24px 60px; }
+  .container { padding: 0 24px; }
+  .page-section, .page-section-alt { padding: 64px 0; }
+  .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+  .subject-grid { grid-template-columns: 1fr 1fr; }
+  footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 560px) {
+  .subject-grid { grid-template-columns: 1fr; }
+  .pull-quote { padding: 28px 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="wordmark">Marq<span>'</span>d</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+    <li><a href="index.html" onclick="setTimeout(function(){if(window.spOpen)spOpen(null);},200);" class="nav-submit-btn">Leave a Marq</a></li>
+  </ul>
+  <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="support.html">Support</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     PAGE HEADER
+     EDITABLE TEXT:
+       - .page-kicker → "Get in Touch"
+       - .page-title  → main heading
+       - .page-intro  → the intro paragraph
+     ═══════════════════════════════════════════════════════════════════ -->
+<div id="page-header">
+  <div class="page-kicker">Get in Touch</div>
+  <h1 class="page-title">We're <em>listening.</em></h1>
+  <p class="page-intro">
+    Whether you want to share a story, propose a partnership, get involved in building Marq'd, or just say something —
+    <strong>we want to hear from you.</strong> This project exists because people care about it. That includes you.
+  </p>
+</div>
+
+<hr class="pride-rule">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: CONTACT FORM + SIDEBAR
+     EDITABLE TEXT:
+       - Left column: heading, body text, direct email, hours note
+       - Form subject dropdown: edit <option> values to add/remove subjects
+       - Submit button text: "Send it"
+       - Safety box text at bottom of sidebar
+     EDITABLE LINKS:
+       - mailto href → change email address
+       - form action → your Formspree endpoint
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="page-section">
+  <div class="container">
+    <div class="contact-grid">
+
+      <!-- LEFT: Intro + direct contact -->
+      <div class="reveal">
+        <div class="eyebrow">Direct Contact</div>
+        <h2 class="section-heading">Say <em>anything.</em></h2>
+        <p class="body-text">
+          Use the form to reach us, or write directly. There's a real person reading every message.
+          We try to respond to most things, though response time varies.
+        </p>
+
+        <div class="contact-direct">
+
+          <!-- EDITABLE: Direct email -->
+          <div class="direct-item">
+            <div class="direct-label">Email</div>
+            <div class="direct-value">
+              <a href="mailto:marqd.official@gmail.com">marqd.official@gmail.com</a>
+            </div>
+            <div class="direct-note">For general inquiries, partnerships, press, and everything else.</div>
+          </div>
+
+          <!-- EDITABLE: Response time note -->
+          <div class="direct-item">
+            <div class="direct-label">Response Time</div>
+            <div class="direct-value" style="color:#a8a5a0; font-size:0.88rem;">
+              We read everything. We respond to most things within a few days.
+            </div>
+          </div>
+
+          <!-- EDITABLE: Safety note -->
+          <div class="direct-item">
+            <div class="direct-label">Safety Reports</div>
+            <div class="direct-value" style="color:#a8a5a0; font-size:0.88rem;">
+              Select <em style="color:#f0ece4;">"Safety Report"</em> in the subject dropdown. These are treated as priority.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="safety-box">
+          <div class="safety-label">Note on Privacy</div>
+          <p class="safety-text">
+            We do not sell, share, or store contact information beyond what's needed to respond.
+            If you're concerned about privacy, you can write from a temporary email address.
+          </p>
+        </div>
+      </div>
+
+      <!-- RIGHT: Form -->
+      <div class="reveal" style="transition-delay:0.12s;">
+        <div id="contact-form-wrap">
+          <!-- EDITABLE: Formspree endpoint in the action attribute below -->
+          <form action="https://formspree.io/f/xreygoeq" method="POST" id="contact-form">
+            <div class="form-group">
+              <label class="form-label">Name <span style="opacity:0.5; font-size:0.55rem;">(optional)</span></label>
+              <input class="form-input" type="text" name="name" placeholder="Your name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" type="email" name="email" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <!-- EDITABLE: Add or remove subject options below -->
+              <select class="form-select" name="subject" required>
+                <option value="" disabled selected>Select a subject</option>
+                <option>General</option>
+                <option>Get Involved</option>
+                <option>Partnership</option>
+                <option>Press</option>
+                <option>Advertising</option>
+                <option>Safety Report</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea class="form-textarea" name="message" placeholder="Tell us what's on your mind..." required></textarea>
+            </div>
+            <!-- EDITABLE: Submit button text -->
+            <button type="submit" class="btn btn-gold" style="width:100%; text-align:center;">Send it</button>
+          </form>
+          <p style="font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:#7a7d8a; margin-top:14px; line-height:1.7;">
+            We read everything. We try to respond to most things.
+          </p>
+        </div>
+
+        <!-- Success state shown after submit -->
+        <div class="form-success" id="form-success">
+          <div class="success-lambda">λ</div>
+          <h3 class="success-title">Message received.</h3>
+          <p class="success-body">
+            We read everything. Someone will be in touch soon.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: WHAT WE'RE LOOKING FOR
+     EDITABLE TEXT: headings, card titles, card bodies
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="page-section-alt">
+  <div class="container">
+    <div class="reveal" style="max-width:720px; margin-bottom:16px;">
+      <div class="eyebrow">What We're Looking For</div>
+      <h2 class="section-heading">Marq'd is one person<br>with <em>a lot of work ahead.</em></h2>
+      <p class="body-text">
+        If you're a developer, designer, archivist, translator, human rights advocate, educator,
+        or just someone who believes in this — there's a place for you here.
+        Reach out. Let's figure it out together.
+      </p>
+    </div>
+
+    <!-- EDITABLE: Subject cards — edit title and body for each card -->
+    <div class="subject-grid reveal" style="transition-delay:0.1s;">
+      <div class="subject-card">
+        <div class="subject-icon">λ</div>
+        <div class="subject-title">Get Involved</div>
+        <p class="subject-body">Developers, designers, translators, moderators, archivists. Skills of all kinds needed at every stage.</p>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">λ</div>
+        <div class="subject-title">Partnership</div>
+        <p class="subject-body">Libraries, universities, advocacy organizations, and foundations working at the intersection of LGBTQ+ rights and history.</p>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">λ</div>
+        <div class="subject-title">Press & Media</div>
+        <p class="subject-body">Journalists, documentarians, and researchers covering queer history, digital archives, or community-built technology.</p>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">λ</div>
+        <div class="subject-title">Advertising</div>
+        <p class="subject-body">Marq'd accepts mission-aligned advertising only. Nothing that conflicts with the dignity or safety of our community.</p>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">λ</div>
+        <div class="subject-title">Safety Reports</div>
+        <p class="subject-body">Content concerns, safety issues, or anything that feels wrong. Prioritized. Taken seriously. Never dismissed.</p>
+      </div>
+      <div class="subject-card">
+        <div class="subject-icon">λ</div>
+        <div class="subject-title">Anything Else</div>
+        <p class="subject-body">Ideas, feedback, questions about the archive, thoughts on what we're building. All of it welcome.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: PULL QUOTE (closing thought)
+     EDITABLE TEXT: the blockquote text
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="page-section">
+  <div class="container">
+    <blockquote class="pull-quote reveal">
+      "Queer history was not lost by accident. Marq'd is what happens when we decide
+      to <strong>stop waiting for someone else</strong> to preserve it."
+    </blockquote>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FOOTER
+     EDITABLE TEXT: copyright year, nav links
+     ═══════════════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-mark">Marq<span>'</span>d</div>
+  <ul class="footer-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="mailto:marqd.official@gmail.com">Email</a></li>
+  </ul>
+  <!-- EDITABLE: Update the copyright year here -->
+  <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
+</footer>
+
+<script>
+(function() {
+  var toggle = document.getElementById('nav-toggle');
+  var menu   = document.getElementById('nav-mobile');
+  toggle.addEventListener('click', function() { menu.classList.toggle('open'); });
+  document.querySelectorAll('.nav-mobile a').forEach(function(link) {
+    link.addEventListener('click', function() { menu.classList.remove('open'); });
+  });
+
+  // Reveal on scroll
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+  // Handle Formspree AJAX submit (optional — falls back to standard redirect)
+  var form = document.getElementById('contact-form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var data = new FormData(form);
+      fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+        .then(function(r) {
+          if (r.ok) {
+            document.getElementById('contact-form-wrap').style.display = 'none';
+            document.getElementById('form-success').classList.add('show');
+          } else {
+            form.submit(); // fallback
+          }
+        })
+        .catch(function() { form.submit(); });
+    });
+  }
+
+  // Pre-fill subject from URL param: contact.html?subject=Partnership
+  var params = new URLSearchParams(window.location.search);
+  var sub = params.get('subject');
+  if (sub) {
+    var sel = document.querySelector('select[name="subject"]');
+    if (sel) {
+      Array.from(sel.options).forEach(function(o) {
+        if (o.text.toLowerCase() === sub.toLowerCase()) o.selected = true;
+      });
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
