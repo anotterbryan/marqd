@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07090f">
+<title>Marq'd — Q Marks the Spot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #07090f; scroll-behavior: smooth; }
+body {
+  background: #07090f;
+  color: #f0ece4;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  padding: 0 48px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(7,9,15,0);
+  transition: background 0.4s, border-color 0.4s;
+  border-bottom: 1px solid rgba(255,255,255,0);
+}
+nav.scrolled {
+  background: rgba(7,9,15,0.96);
+  border-bottom-color: rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.wordmark { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-style: italic; font-weight: 600; color: #f0ece4; }
+.wordmark span { color: #e8c97a; }
+.nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+.nav-links a { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.13em; color: rgba(240,236,228,0.6); transition: color 0.2s; }
+.nav-links a:hover { color: #e8c97a; }
+.nav-submit-btn {
+  padding: 8px 18px;
+  background: #e8c97a;
+  color: #07090f;
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  transition: background 0.2s;
+}
+.nav-submit-btn:hover { background: #f0d896; color: #07090f; }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.nav-toggle span { display: block; width: 22px; height: 1px; background: #f0ece4; }
+.nav-mobile { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(7,9,15,0.98); border-bottom: 1px solid rgba(255,255,255,0.07); z-index: 499; padding: 20px 48px; flex-direction: column; }
+.nav-mobile.open { display: flex; }
+.nav-mobile a { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.13em; color: #a8a5a0; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.2s; }
+.nav-mobile a:last-child { border-bottom: none; }
+.nav-mobile a:hover { color: #e8c97a; }
+
+/* HERO */
+#hero {
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  min-height: 640px;
+  background: #07090f;
+  position: relative;
+  overflow: hidden;
+}
+#globe-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#globe-canvas { display: block; cursor: pointer; }
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(ellipse at center, rgba(7,9,15,0.15) 0%, rgba(7,9,15,0.55) 100%);
+  pointer-events: none;
+}
+.hero-content {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 32px;
+  pointer-events: none;
+}
+.hero-content > * { pointer-events: auto; }
+.hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.22em; color: #4ecdc4; margin-bottom: 20px; opacity: 0; animation: rise 1.4s 0.3s cubic-bezier(0.16,1,0.3,1) forwards; }
+.hero-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(5rem, 14vw, 9rem); font-weight: 600; font-style: italic; line-height: 1; letter-spacing: -0.02em; color: #f0ece4; margin-bottom: 16px; opacity: 0; animation: rise 1.4s 0.1s cubic-bezier(0.16,1,0.3,1) forwards; }
+.hero-title span { color: #e8c97a; }
+.hero-tagline { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1rem, 2.5vw, 1.35rem); font-style: italic; color: rgba(240,236,228,0.65); margin-bottom: 28px; opacity: 0; animation: rise 1.4s 0.45s cubic-bezier(0.16,1,0.3,1) forwards; }
+.hero-mission { font-size: clamp(0.85rem, 1.5vw, 0.98rem); font-weight: 300; line-height: 1.85; color: rgba(240,236,228,0.7); max-width: 560px; margin: 0 auto 40px; opacity: 0; animation: rise 1.4s 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+.hero-mission strong { color: #f0ece4; font-weight: 400; }
+.hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: rise 1.4s 0.75s cubic-bezier(0.16,1,0.3,1) forwards; }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Live counter */
+.live-counter {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: rgba(240,236,228,0.5);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  opacity: 0;
+  animation: rise 1.4s 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ecdc4; animation: live-pulse 2s ease-in-out infinite; }
+@keyframes live-pulse { 0%,100%{opacity:0.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
+#marq-count { color: #e8c97a; }
+
+.scroll-cue { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: rise 1.4s 1.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+.scroll-cue-label { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(240,236,228,0.3); }
+.scroll-cue-bar { width: 1px; height: 36px; background: linear-gradient(to bottom, rgba(232,201,122,0.5), transparent); animation: scroll-bob 2.2s ease-in-out infinite; }
+@keyframes scroll-bob { 0%,100%{opacity:0.4} 50%{opacity:1} }
+.globe-hint { position: absolute; bottom: 80px; right: 32px; z-index: 10; font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(240,236,228,0.25); line-height: 1.8; text-align: right; opacity: 0; animation: rise 1.4s 1.8s cubic-bezier(0.16,1,0.3,1) forwards; pointer-events: none; }
+
+/* BUTTONS */
+.btn { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.14em; border-radius: 2px; padding: 13px 28px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; }
+.btn-gold { background: #e8c97a; color: #07090f; border: 1px solid #e8c97a; }
+.btn-gold:hover { background: #f0d896; border-color: #f0d896; transform: translateY(-1px); }
+.btn-outline { background: transparent; color: rgba(240,236,228,0.7); border: 1px solid rgba(255,255,255,0.2); }
+.btn-outline:hover { border-color: #e8c97a; color: #e8c97a; transform: translateY(-1px); }
+
+/* PRIDE RULE */
+.pride-rule { display: block; width: 100%; height: 1px; border: none; background: linear-gradient(to right, #c0392b, #d4651a, #c9a227, #2e7d52, #2471a3, #7d3c98); opacity: 0.3; }
+
+/* SECTIONS */
+.page-section { padding: 108px 0; }
+.page-section-alt { background: #0a0c13; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 108px 0; }
+.container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+.eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.2em; color: #7a7d8a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.eyebrow::before { content: 'λ'; color: #e8c97a; font-family: 'Playfair Display', serif; font-size: 0.95rem; font-style: italic; }
+.section-heading { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; line-height: 1.2; color: #f0ece4; margin-bottom: 24px; }
+.section-heading em { font-style: italic; color: #e8c97a; }
+.body-text { font-size: 0.95rem; font-weight: 300; line-height: 1.9; color: #a8a5a0; margin-bottom: 18px; }
+.body-text strong { color: #f0ece4; font-weight: 400; }
+
+/* STORY DRAWER */
+#drawer-backdrop {
+  position: fixed; inset: 0; z-index: 800;
+  background: rgba(7,9,15,0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s;
+}
+#drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+
+#story-drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 100%;
+  max-width: 520px;
+  z-index: 900;
+  background: #0e1118;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#story-drawer.open { transform: translateX(0); }
+
+.drawer-header {
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+.drawer-record-id { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #7a7d8a; letter-spacing: 0.08em; margin-bottom: 6px; }
+.drawer-record-id span { color: #e8c97a; }
+.drawer-location { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 1.2rem; color: #e8c97a; }
+.drawer-close {
+  width: 32px; height: 32px; border-radius: 2px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #7a7d8a; font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: all 0.2s;
+}
+.drawer-close:hover { background: rgba(255,255,255,0.1); color: #f0ece4; }
+
+.drawer-body { flex: 1; overflow-y: auto; padding: 24px 28px; -webkit-overflow-scrolling: touch; }
+.drawer-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #7a7d8a; margin-bottom: 20px; display: flex; gap: 16px; flex-wrap: wrap; }
+.drawer-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+.drawer-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; border: 1px solid rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 1px; }
+
+.drawer-photo { width: 100%; border-radius: 2px; margin-bottom: 20px; max-height: 220px; object-fit: cover; border: 1px solid rgba(255,255,255,0.07); }
+
+.drawer-story { position: relative; padding-left: 20px; margin-bottom: 28px; }
+.drawer-story::before { content: '\201C'; position: absolute; left: 0; top: -4px; font-family: 'Playfair Display', serif; font-size: 2rem; color: #e8c97a; opacity: 0.5; line-height: 1; }
+.drawer-story p { font-size: 0.92rem; line-height: 1.85; color: #c8c4bc; font-style: italic; }
+
+/* Audio player */
+.audio-player {
+  background: #161b27;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 2px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.audio-play-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #e8c97a; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.2s;
+  font-size: 0.9rem; color: #07090f;
+}
+.audio-play-btn:hover { background: #f0d896; }
+.audio-info { flex: 1; min-width: 0; }
+.audio-label { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: #7a7d8a; margin-bottom: 4px; }
+.audio-bar { height: 2px; background: rgba(255,255,255,0.1); border-radius: 1px; position: relative; cursor: pointer; }
+.audio-progress { height: 100%; background: #e8c97a; border-radius: 1px; width: 0%; transition: width 0.1s; }
+audio { display: none; }
+
+.drawer-footer {
+  padding: 16px 28px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  background: #0e1118;
+}
+.drawer-reactions { display: flex; gap: 16px; }
+.reaction-btn { background: none; border: none; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #7a7d8a; display: flex; align-items: center; gap: 5px; transition: color 0.2s; padding: 4px; }
+.reaction-btn:hover { color: #f0ece4; }
+.cite-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
+  color: #7a7d8a; background: none; border: none; cursor: pointer;
+  letter-spacing: 0.06em; transition: color 0.2s; padding: 4px;
+}
+.cite-btn:hover { color: #e8c97a; }
+.cite-toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: #161b27; border: 1px solid rgba(232,201,122,0.3);
+  color: #e8c97a; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; padding: 10px 20px; border-radius: 2px;
+  z-index: 1000; opacity: 0; pointer-events: none;
+  transition: opacity 0.3s; white-space: nowrap;
+}
+.cite-toast.show { opacity: 1; }
+
+/* MISSION */
+#mission { background: #07090f; }
+.mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+
+/* STAT */
+#stat { background: #0e1118; border-top: 1px solid rgba(255,255,255,0.07); border-bottom: 1px solid rgba(255,255,255,0.07); }
+.stat-inner { max-width: 760px; margin: 0 auto; text-align: center; padding: 100px 48px; }
+.stat-number { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(5rem, 16vw, 10rem); font-weight: 600; color: #e8c97a; line-height: 1; margin-bottom: 16px; }
+.stat-label { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 400; color: #f0ece4; margin-bottom: 24px; line-height: 1.4; }
+.stat-sub { font-size: 0.95rem; line-height: 1.85; color: #a8a5a0; }
+.stat-sub em { font-family: 'Playfair Display', serif; font-style: italic; color: #f0ece4; }
+
+/* HOW IT WORKS */
+.steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); margin-top: 56px; }
+.step { background: #0e1118; padding: 44px 36px; transition: background 0.25s; }
+.step:hover { background: #161b27; }
+.step-lambda { font-family: 'Playfair Display', serif; font-size: 2rem; color: #e8c97a; opacity: 0.25; display: block; margin-bottom: 18px; transition: opacity 0.25s; }
+.step:hover .step-lambda { opacity: 0.65; }
+.step-num { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.18em; color: #7a7d8a; margin-bottom: 10px; }
+.step-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; font-weight: 400; color: #f0ece4; margin-bottom: 12px; line-height: 1.3; }
+.step-body { font-size: 0.85rem; line-height: 1.75; color: #7a7d8a; }
+
+/* SUPPORT */
+#support { background: #07090f; text-align: center; }
+.support-inner { max-width: 800px; margin: 0 auto; }
+.tiers { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); margin: 40px 0 36px; text-align: left; }
+.tier { background: #0e1118; padding: 28px 22px; transition: background 0.25s; }
+.tier:hover { background: #161b27; }
+.tier-name { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.16em; color: #e8c97a; margin-bottom: 8px; }
+.tier-amount { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; color: #f0ece4; margin-bottom: 8px; }
+.tier-desc { font-size: 0.75rem; line-height: 1.6; color: #7a7d8a; }
+.support-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+.support-note { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: #7a7d8a; }
+
+/* CONTACT */
+#contact { background: #0a0c13; border-top: 1px solid rgba(255,255,255,0.06); }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: start; }
+.contact-note { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #7a7d8a; margin-top: 28px; line-height: 1.8; }
+.contact-note a { color: #e8c97a; }
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.16em; color: #7a7d8a; margin-bottom: 7px; }
+.form-input, .form-select, .form-textarea { width: 100%; background: #0e1118; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; padding: 11px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 300; color: #f0ece4; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #e8c97a; }
+.form-input::placeholder, .form-textarea::placeholder { color: #7a7d8a; }
+.form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7d8a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.form-textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+/* FOOTER */
+footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padding: 44px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.footer-mark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: #7a7d8a; }
+.footer-mark span { color: #e8c97a; }
+.footer-links { display: flex; gap: 24px; list-style: none; flex-wrap: wrap; }
+.footer-links a { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: #7a7d8a; transition: color 0.2s; }
+.footer-links a:hover { color: #e8c97a; }
+.footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; opacity: 0.4; }
+
+/* IN-PAGE SUBMIT PANEL */
+#submit-panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 100%;
+  max-width: 560px;
+  z-index: 900;
+  background: #0e1118;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  transform: translateX(100%);
+  transition: transform 0.42s cubic-bezier(0.16,1,0.3,1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#submit-panel.open { transform: translateX(0); }
+.panel-header {
+  padding: 20px 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  background: #0e1118;
+}
+.panel-title { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 1.2rem; color: #f0ece4; }
+.panel-title span { color: #e8c97a; }
+.panel-close {
+  width: 32px; height: 32px; border-radius: 2px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  color: #7a7d8a; font-size: 1.1rem; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; transition: all 0.2s;
+}
+.panel-close:hover { background: rgba(255,255,255,0.1); color: #f0ece4; }
+.panel-body { flex: 1; overflow-y: auto; padding: 24px 28px; -webkit-overflow-scrolling: touch; }
+.panel-footer {
+  padding: 16px 28px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex; gap: 10px;
+  flex-shrink: 0; background: #0e1118;
+}
+.panel-step { display: none; }
+.panel-step.active { display: block; }
+.panel-step-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.3rem; font-weight: 400; color: #f0ece4; margin-bottom: 4px; line-height: 1.25; }
+.panel-step-title em { font-style: italic; color: #e8c97a; }
+.panel-step-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; letter-spacing: 0.06em; margin-bottom: 24px; }
+.p-form-group { margin-bottom: 18px; }
+.p-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; text-transform: uppercase; letter-spacing: 0.16em; color: #7a7d8a; margin-bottom: 7px; }
+.p-input, .p-textarea, .p-select {
+  width: 100%; background: #161b27; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px; padding: 11px 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 300;
+  color: #f0ece4; transition: border-color 0.2s; -webkit-appearance: none;
+}
+.p-input:focus, .p-textarea:focus, .p-select:focus { outline: none; border-color: #e8c97a; }
+.p-input::placeholder, .p-textarea::placeholder { color: #7a7d8a; }
+.p-textarea { resize: vertical; min-height: 140px; line-height: 1.7; }
+.p-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.p-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; color: #7a7d8a; border: 1px solid rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 2px; cursor: pointer; transition: all 0.2s; -webkit-user-select: none; user-select: none; }
+.p-tag.selected { color: #e8c97a; border-color: rgba(232,201,122,0.4); background: rgba(232,201,122,0.05); }
+.p-audio-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+.p-audio-opt { background: #161b27; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; padding: 14px 12px; cursor: pointer; text-align: center; transition: all 0.2s; }
+.p-audio-opt.selected { border-color: rgba(232,201,122,0.4); background: rgba(232,201,122,0.04); }
+.p-audio-opt-icon { font-size: 1.2rem; margin-bottom: 6px; }
+.p-audio-opt-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a5a0; }
+.p-audio-opt.selected .p-audio-opt-lbl { color: #e8c97a; }
+.p-record-btn { width: 100%; padding: 12px; background: #161b27; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: #a8a5a0; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 12px; }
+.p-record-btn.recording { border-color: #c97a8e; color: #c97a8e; }
+.p-rec-dot { width: 7px; height: 7px; border-radius: 50%; background: #c97a8e; animation: rec-pulse 1s ease-in-out infinite; display: none; }
+.p-record-btn.recording .p-rec-dot { display: block; }
+.p-photo-area { border: 1px dashed rgba(255,255,255,0.15); border-radius: 2px; padding: 28px; text-align: center; cursor: pointer; transition: border-color 0.2s; position: relative; }
+.p-photo-area:hover { border-color: rgba(232,201,122,0.3); }
+.p-photo-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.p-photo-preview { width: 100%; border-radius: 2px; margin-top: 10px; display: none; max-height: 180px; object-fit: cover; border: 1px solid rgba(255,255,255,0.07); }
+.p-step-dots { display: flex; gap: 6px; align-items: center; }
+.p-step-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: all 0.2s; }
+.p-step-dot.active { background: #e8c97a; width: 18px; border-radius: 3px; }
+.p-step-dot.done { background: #4ecdc4; }
+.p-review-card { background: #161b27; border: 1px solid rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; margin-bottom: 18px; }
+.p-review-card-hdr { padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; }
+.p-review-card-body { padding: 18px; }
+.p-safety-box { background: #161b27; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #4ecdc4; padding: 14px 16px; margin-bottom: 18px; }
+.p-safety-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; text-transform: uppercase; letter-spacing: 0.14em; color: #4ecdc4; margin-bottom: 6px; }
+.p-safety-txt { font-size: 0.76rem; line-height: 1.65; color: #a8a5a0; }
+.p-consent { background: #161b27; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid rgba(232,201,122,0.35); padding: 14px 16px; margin-bottom: 18px; font-size: 0.76rem; line-height: 1.65; color: #a8a5a0; }
+.p-submitting { display: none; position: absolute; inset: 0; background: rgba(14,17,24,0.92); z-index: 10; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+.p-submitting.show { display: flex; }
+.p-spinner { width: 36px; height: 36px; border: 2px solid rgba(232,201,122,0.2); border-top-color: #e8c97a; border-radius: 50%; animation: spin 0.8s linear infinite; }
+.p-success { text-align: center; padding: 40px 20px; display: none; }
+.p-success.show { display: block; }
+.p-success-lambda { font-family: 'Playfair Display', serif; font-size: 3rem; color: #e8c97a; margin-bottom: 16px; }
+.p-success-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 400; color: #f0ece4; margin-bottom: 10px; line-height: 1.3; }
+.p-success-title em { font-style: italic; color: #e8c97a; }
+.p-success-id { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #e8c97a; margin: 16px 0; letter-spacing: 0.08em; }
+.p-success-body { font-size: 0.82rem; line-height: 1.8; color: #a8a5a0; margin-bottom: 20px; }
+.p-cite { background: #07090f; border: 1px solid rgba(255,255,255,0.07); padding: 12px 14px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #a8a5a0; line-height: 1.6; margin-bottom: 20px; cursor: pointer; transition: border-color 0.2s; }
+.p-cite:hover { border-color: rgba(232,201,122,0.3); }
+.p-cite-lbl { font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.14em; color: #7a7d8a; margin-bottom: 5px; }
+.p-withheld { display: flex; align-items: center; gap: 9px; cursor: pointer; margin-top: 10px; }
+.p-withheld input[type="checkbox"] { width: 14px; height: 14px; accent-color: #e8c97a; cursor: pointer; }
+.p-withheld-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; color: #a8a5a0; letter-spacing: 0.04em; }
+.entry-number-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #7a7d8a; background: #161b27; border: 1px solid rgba(255,255,255,0.07); padding: 6px 12px; border-radius: 2px; display: inline-block; margin-bottom: 20px; }
+.entry-number-badge span { color: #e8c97a; }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* RESPONSIVE */
+@media (max-width: 960px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  .container { padding: 0 24px; }
+  .page-section, .page-section-alt { padding: 72px 0; }
+  .mission-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .tiers { grid-template-columns: 1fr 1fr; }
+  footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
+  .stat-inner { padding: 72px 24px; }
+}
+@media (max-width: 560px) {
+  .hero-ctas { flex-direction: column; align-items: center; }
+  .tiers { grid-template-columns: 1fr 1fr; }
+  .support-ctas { flex-direction: column; align-items: center; }
+  #story-drawer { max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="wordmark">Marq<span>'</span>d</a>
+  <ul class="nav-links">
+    <li><a href="about.html">About</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#support">Support</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#" class="nav-submit-btn" onclick="openPanel(event)">Leave a Marq</a></li>
+  </ul>
+  <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="about.html">About</a>
+  <a href="#how-it-works">How It Works</a>
+  <a href="#support">Support</a>
+  <a href="#contact">Contact</a>
+  <a href="#" onclick="openPanel(event)">Leave a Marq →</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div id="globe-container"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">A Living Queer Archive &nbsp;·&nbsp; Est. 2025</div>
+    <h1 class="hero-title">Marq<span>'</span>d</h1>
+    <p class="hero-tagline">Q marks the spot.</p>
+    <p class="hero-mission">
+      A <strong>living archive of queer existence</strong> — geographically indexed, anonymously contributed, and built to last. Every dot on this globe is a firsthand story. Every story is a primary source. <strong>Click any dot to read.</strong>
+    </p>
+    <div class="hero-ctas">
+      <a href="#" class="btn btn-gold" onclick="openPanel(event)">Leave a Marq</a>
+      <a href="about.html" class="btn btn-outline">Why This Exists</a>
+    </div>
+  </div>
+  <div class="live-counter">
+    <div class="live-dot"></div>
+    <span id="marq-count">—</span> stories in the archive
+  </div>
+  <div class="scroll-cue">
+    <span class="scroll-cue-label">Scroll</span>
+    <div class="scroll-cue-bar"></div>
+  </div>
+  <div class="globe-hint">Scroll to zoom · Drag to rotate<br>Click anywhere to drop a pin</div>
+</section>
+
+<!-- STORY DRAWER -->
+<div id="drawer-backdrop"></div>
+<div id="story-drawer">
+  <div class="drawer-header">
+    <div>
+      <div class="drawer-record-id">FIELD RECORD · <span id="drawer-id">#MQ-000000</span></div>
+      <div class="drawer-location" id="drawer-location">Loading...</div>
+    </div>
+    <button class="drawer-close" id="drawer-close">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-meta" id="drawer-meta"></div>
+    <div class="drawer-tags" id="drawer-tags"></div>
+    <img id="drawer-photo" class="drawer-photo" src="" alt="" style="display:none;">
+    <div id="drawer-audio-player" class="audio-player" style="display:none;">
+      <button class="audio-play-btn" id="audio-play-btn">▶</button>
+      <div class="audio-info">
+        <div class="audio-label">Listen to this entry</div>
+        <div class="audio-bar" id="audio-bar">
+          <div class="audio-progress" id="audio-progress"></div>
+        </div>
+      </div>
+      <audio id="audio-el"></audio>
+    </div>
+    <div class="drawer-story"><p id="drawer-story-text"></p></div>
+  </div>
+  <div class="drawer-footer">
+    <div class="drawer-reactions">
+      <button class="reaction-btn" data-reaction="fire">🔥 <span id="r-fire">0</span></button>
+      <button class="reaction-btn" data-reaction="eyes">👀 <span id="r-eyes">0</span></button>
+      <button class="reaction-btn" data-reaction="heart">🫦 <span id="r-heart">0</span></button>
+    </div>
+    <button class="cite-btn" id="cite-btn">Cite this entry →</button>
+  </div>
+</div>
+<div class="cite-toast" id="cite-toast">Citation copied to clipboard</div>
+
+<hr class="pride-rule">
+
+<!-- MISSION -->
+<section id="mission" class="page-section">
+  <div class="container">
+    <div class="mission-grid">
+      <div class="reveal">
+        <div class="eyebrow">About the Archive</div>
+        <h2 class="section-heading">Every dot is a story.<br>Every story is <em>evidence.</em></h2>
+      </div>
+      <div class="reveal" style="transition-delay:0.12s; padding-top:8px;">
+        <p class="body-text">Marq'd is a <strong>living archive of queer existence</strong> — geographically indexed, anonymously contributed, and built to last. People share firsthand stories tied to real-world coordinates, preserved as primary source history.</p>
+        <p class="body-text">Primary sources are the most valuable form of historical evidence. For queer history, they have always been scarce — because they were dangerous to create. Letters burned. Diaries written in code. Meeting places demolished.</p>
+        <p class="body-text"><strong>Marq'd is an act of preservation.</strong> Every story submitted joins a permanent, geographic record of queer life as it was actually lived.</p>
+        <a href="about.html" style="display:inline-block; margin-top:24px; font-family:'JetBrains Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.14em; color:#e8c97a; border-bottom:1px solid rgba(232,201,122,0.3); padding-bottom:2px;">Read more about why this exists →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- STAT -->
+<div id="stat">
+  <div class="stat-inner reveal">
+    <div class="eyebrow" style="justify-content:center;">Why This Matters</div>
+    <div class="stat-number">64</div>
+    <div class="stat-label">countries criminalize same-sex relationships.</div>
+    <p class="stat-sub">In most of them, no official record of queer life exists.<br>The record says: <em>we were not there.</em><br><br>We were there. Marq'd is the proof.</p>
+  </div>
+</div>
+
+<hr class="pride-rule">
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="page-section">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="eyebrow" style="justify-content:center;">How It Works</div>
+      <h2 class="section-heading" style="text-align:center;">Leave your Marq.<br><em>Anonymously. Permanently.</em></h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step reveal">
+        <span class="step-lambda">λ</span>
+        <div class="step-num">Step 01</div>
+        <div class="step-title">Drop a pin anywhere on the globe</div>
+        <p class="step-body">Search for a place or use your coordinates. A city, a neighborhood, a specific corner. Anywhere something happened.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:0.1s;">
+        <span class="step-lambda">λ</span>
+        <div class="step-num">Step 02</div>
+        <div class="step-title">Tell us what happened</div>
+        <p class="step-body">Write your story. Record your own voice or choose an AI reading. Add a photo of the place — never the people. No account required.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:0.2s;">
+        <span class="step-lambda">λ</span>
+        <div class="step-num">Step 03</div>
+        <div class="step-title">Receive a Field Record number</div>
+        <p class="step-body">Your Marq is assigned a permanent ID — citable, searchable, part of the archive forever. The record exists now.</p>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:48px;" class="reveal">
+      <a href="#" class="btn btn-gold" onclick="openPanel(event)">Leave a Marq</a>
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- SUPPORT -->
+<section id="support" class="page-section">
+  <div class="container">
+    <div class="support-inner" style="margin:0 auto;">
+      <div class="reveal">
+        <div class="eyebrow" style="justify-content:center;">Support the Archive</div>
+        <h2 class="section-heading" style="text-align:center;">Free to use.<br><em>Not free to run.</em></h2>
+        <p class="body-text" style="text-align:center; max-width:520px; margin:0 auto 0;">Marq'd will always be free to read and contribute to. Hosting, storage, and development cost real money. Your support keeps the archive alive and independent.</p>
+      </div>
+      <div class="tiers reveal">
+        <div class="tier"><div class="tier-name">Reader</div><div class="tier-amount">Any amount</div><p class="tier-desc">One-time. You found us and you believe in us.</p></div>
+        <div class="tier"><div class="tier-name">Contributor</div><div class="tier-amount">$5 / mo</div><p class="tier-desc">You're part of keeping the lights on.</p></div>
+        <div class="tier"><div class="tier-name">Archivist</div><div class="tier-amount">$15 / mo</div><p class="tier-desc">You understand what this is for.</p></div>
+        <div class="tier"><div class="tier-name">Patron</div><div class="tier-amount">$50 / mo</div><p class="tier-desc">You're investing in queer history.</p></div>
+      </div>
+      <div class="support-ctas reveal">
+        <a href="https://opencollective.com/marqdthespot" target="_blank" rel="noopener" class="btn btn-gold">Donate via Open Collective</a>
+        <a href="/cdn-cgi/l/email-protection#224f435053460c4d44444b414b434e62454f434b4e0c414d4f1d515740484741561f724350564c4750514a4b52" class="btn btn-outline">Institutional Inquiry</a>
+      </div>
+      <p class="support-note reveal">Every dollar goes toward keeping the record intact.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- CONTACT -->
+<section id="contact" class="page-section-alt">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="eyebrow">Contact</div>
+        <h2 class="section-heading">We're <em>listening.</em></h2>
+        <p class="body-text">Whether you want to get involved, propose a partnership, or just say something — reach out.</p>
+        <div class="contact-note">
+          Direct: <a href="/cdn-cgi/l/email-protection#fb969a898a9fd5949d9d9298929a97bb9c969a9297d5989496"><span class="__cf_email__" data-cfemail="8ce1edfefde8a2e3eaeae5efe5ede0ccebe1ede5e0a2efe3e1">[email&#160;protected]</span></a><br><br>
+          We read everything.
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay:0.12s;">
+        <form action="https://formspree.io/f/xreygoeq" method="POST">
+          <div class="form-group"><label class="form-label">Name <span style="opacity:0.5; font-size:0.55rem;">(optional)</span></label><input class="form-input" type="text" name="name" placeholder="Your name"></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="email" placeholder="your@email.com" required></div>
+          <div class="form-group"><label class="form-label">Subject</label>
+            <select class="form-select" name="subject" required>
+              <option value="" disabled selected>Select a subject</option>
+              <option>General</option><option>Get Involved</option><option>Partnership</option>
+              <option>Press</option><option>Advertising</option><option>Safety Report</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" name="message" placeholder="Tell us what's on your mind..." required></textarea></div>
+          <button type="submit" class="btn btn-gold" style="width:100%; text-align:center;">Send it</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="pride-rule">
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-mark">Marq<span>'</span>d</div>
+  <ul class="footer-links">
+    <li><a href="about.html">About</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#support">Support</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#" onclick="openPanel(event)">Leave a Marq</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><!-- IN-PAGE SUBMIT PANEL -->
+<div id="submit-panel">
+  <div class="panel-header">
+    <div class="panel-title">Leave a <span>Marq</span></div>
+    <button class="panel-close" id="panel-close">✕</button>
+  </div>
+  <div class="panel-body" style="position:relative;">
+    <!-- SUBMITTING OVERLAY -->
+    <div class="p-submitting" id="p-submitting">
+      <div class="p-spinner"></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.14em;color:#e8c97a;">Archiving your Marq...</div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="p-success" id="p-success">
+      <div class="p-success-lambda">λ</div>
+      <h3 class="p-success-title">Your Marq is<br><em>in the archive.</em></h3>
+      <div class="p-success-id" id="p-success-id">FIELD RECORD · #MQ-000000</div>
+      <p class="p-success-body">Your story is now a permanent primary source. It will appear on the globe.</p>
+      <div class="p-cite" id="p-cite" onclick="pCopyCitation()">
+        <div class="p-cite-lbl">Click to copy citation</div>
+        <div id="p-cite-text"></div>
+      </div>
+      <button class="btn btn-gold" onclick="closePanel()" style="width:100%;">Return to Globe</button>
+    </div>
+
+    <!-- STEP 1: LOCATION -->
+    <div class="panel-step active" id="ps-0">
+      <div class="panel-step-title">Where did this<br><em>happen?</em></div>
+      <div class="panel-step-sub">Step 01 of 05 · Location</div>
+      <div class="p-form-group">
+        <label class="p-label">City, neighborhood, or address</label>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;">
+          <input class="p-input" type="text" id="p-location" placeholder="e.g. West Hollywood, CA" autocomplete="off">
+          <button class="btn btn-outline" style="padding:11px 14px;font-size:0.58rem;" onclick="pGeocode()">Find</button>
+        </div>
+      </div>
+      <label class="p-withheld"><input type="checkbox" id="p-withheld"><span class="p-withheld-lbl">Withhold my location — archive without coordinates</span></label>
+      <div class="p-form-group" style="margin-top:16px;">
+        <label class="p-label">Year this happened <span style="opacity:0.5;">(optional)</span></label>
+        <input class="p-input" type="text" id="p-year" placeholder="e.g. 2019" maxlength="4">
+      </div>
+      <div class="p-form-group">
+        <label class="p-label">Tags <span style="opacity:0.5;">(optional)</span></label>
+        <div class="p-tags" id="p-tags">
+          <div class="p-tag" data-tag="tender">[tender]</div>
+          <div class="p-tag" data-tag="joyful">[joyful]</div>
+          <div class="p-tag" data-tag="difficult">[difficult]</div>
+          <div class="p-tag" data-tag="spontaneous">[spontaneous]</div>
+          <div class="p-tag" data-tag="community">[community]</div>
+          <div class="p-tag" data-tag="family">[family]</div>
+          <div class="p-tag" data-tag="first time">[first time]</div>
+          <div class="p-tag" data-tag="anonymous">[anonymous]</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: STORY -->
+    <div class="panel-step" id="ps-1">
+      <div class="panel-step-title">Tell us what<br><em>happened.</em></div>
+      <div class="panel-step-sub">Step 02 of 05 · Your Story</div>
+      <div class="p-safety-box">
+        <div class="p-safety-lbl">Privacy &amp; Safety</div>
+        <p class="p-safety-txt">No identifying information is collected. Your IP is not stored. Submit via VPN or Tor if needed.</p>
+      </div>
+      <div class="p-form-group">
+        <label class="p-label">Your story</label>
+        <textarea class="p-textarea" id="p-story" placeholder="Write in whatever voice feels right. There is no wrong way." style="min-height:200px;" oninput="pUpdateCount()"></textarea>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:#7a7d8a;text-align:right;margin-top:4px;"><span id="p-word-count">0</span> words</div>
+      </div>
+    </div>
+
+    <!-- STEP 3: AUDIO -->
+    <div class="panel-step" id="ps-2">
+      <div class="panel-step-title">Give your story<br><em>a voice.</em></div>
+      <div class="panel-step-sub">Step 03 of 05 · Audio (optional)</div>
+      <div class="p-form-group">
+        <label class="p-label">How should your story be read?</label>
+        <div class="p-audio-opts">
+          <div class="p-audio-opt selected" data-audio="none" onclick="pSelectAudio('none')"><div class="p-audio-opt-icon">—</div><div class="p-audio-opt-lbl">No audio</div></div>
+          <div class="p-audio-opt" data-audio="ai" onclick="pSelectAudio('ai')"><div class="p-audio-opt-icon">🔊</div><div class="p-audio-opt-lbl">AI voice</div></div>
+          <div class="p-audio-opt" data-audio="record" onclick="pSelectAudio('record')"><div class="p-audio-opt-icon">🎙️</div><div class="p-audio-opt-lbl">Record mine</div></div>
+          <div class="p-audio-opt" data-audio="upload" onclick="pSelectAudio('upload')"><div class="p-audio-opt-icon">📁</div><div class="p-audio-opt-lbl">Upload audio</div></div>
+        </div>
+      </div>
+      <div id="p-voice-wrap" style="display:none;">
+        <label class="p-label">Choose a voice</label>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;" id="p-voices">
+          <div class="p-audio-opt selected" style="padding:10px 8px;" data-voice="21m00Tcm4TlvDq8ikWAM" onclick="pSelectVoice(this,'21m00Tcm4TlvDq8ikWAM')"><div class="p-audio-opt-lbl">Rachel</div></div>
+          <div class="p-audio-opt" style="padding:10px 8px;" data-voice="AZnzlk1XvdvUeBnXmlld" onclick="pSelectVoice(this,'AZnzlk1XvdvUeBnXmlld')"><div class="p-audio-opt-lbl">Domi</div></div>
+          <div class="p-audio-opt" style="padding:10px 8px;" data-voice="EXAVITQu4vr4xnSDxMaL" onclick="pSelectVoice(this,'EXAVITQu4vr4xnSDxMaL')"><div class="p-audio-opt-lbl">Bella</div></div>
+          <div class="p-audio-opt" style="padding:10px 8px;" data-voice="ErXwobaYiN019PkySvjV" onclick="pSelectVoice(this,'ErXwobaYiN019PkySvjV')"><div class="p-audio-opt-lbl">Antoni</div></div>
+          <div class="p-audio-opt" style="padding:10px 8px;" data-voice="VR6AewLTigWG4xSOukaG" onclick="pSelectVoice(this,'VR6AewLTigWG4xSOukaG')"><div class="p-audio-opt-lbl">Arnold</div></div>
+          <div class="p-audio-opt" style="padding:10px 8px;" data-voice="pNInz6obpgDQGcFmaJgB" onclick="pSelectVoice(this,'pNInz6obpgDQGcFmaJgB')"><div class="p-audio-opt-lbl">Adam</div></div>
+        </div>
+      </div>
+      <div id="p-record-wrap" style="display:none;">
+        <button class="p-record-btn" id="p-rec-btn" onclick="pToggleRecording()">
+          <div class="p-rec-dot"></div><span id="p-rec-txt">Start Recording</span>
+        </button>
+        <audio id="p-rec-playback" controls style="width:100%;margin-top:10px;display:none;"></audio>
+      </div>
+      <div id="p-upload-wrap" style="display:none;margin-top:12px;">
+        <label class="p-label">Upload audio file</label>
+        <input class="p-input" type="file" id="p-audio-file" accept="audio/*" style="padding:9px;">
+      </div>
+    </div>
+
+    <!-- STEP 4: PHOTO -->
+    <div class="panel-step" id="ps-3">
+      <div class="panel-step-title">Show us<br><em>the place.</em></div>
+      <div class="panel-step-sub">Step 04 of 05 · Photo (optional)</div>
+      <p style="font-size:0.82rem;line-height:1.75;color:#a8a5a0;margin-bottom:18px;">A photo of the location — a street, a door, a view. <strong style="color:#f0ece4;">Never people.</strong></p>
+      <div class="p-photo-area" id="p-photo-area">
+        <input type="file" id="p-photo-input" accept="image/*" onchange="pHandlePhoto(event)">
+        <div style="font-size:1.5rem;margin-bottom:8px;opacity:0.4;">📷</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#7a7d8a;">Tap to upload</div>
+        <div style="font-size:0.72rem;color:#7a7d8a;margin-top:4px;opacity:0.7;">JPG, PNG · Max 10MB · No people</div>
+      </div>
+      <img id="p-photo-preview" class="p-photo-preview" src="" alt="">
+      <button id="p-remove-photo" style="display:none;margin-top:7px;background:none;border:none;font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:#7a7d8a;cursor:pointer;" onclick="pRemovePhoto()">Remove photo ×</button>
+    </div>
+
+    <!-- STEP 5: REVIEW -->
+    <div class="panel-step" id="ps-4">
+      <div class="panel-step-title">Ready to<br><em>be recorded.</em></div>
+      <div class="panel-step-sub">Step 05 of 05 · Review &amp; Submit</div>
+      <div class="entry-number-badge" id="p-entry-badge">Loading entry number...</div>
+      <div class="p-review-card">
+        <div class="p-review-card-hdr">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#7a7d8a;">FIELD RECORD · <span style="color:#e8c97a;" id="p-review-id">#MQ-??????</span></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:#7a7d8a;" id="p-review-tags"></span>
+        </div>
+        <div class="p-review-card-body">
+          <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:0.95rem;color:#e8c97a;margin-bottom:4px;" id="p-review-loc">—</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#7a7d8a;margin-bottom:12px;" id="p-review-meta"></div>
+          <div id="p-review-audio-wrap" style="display:none;margin-bottom:14px;">
+            <div style="background:#0e1118;border:1px solid rgba(255,255,255,0.07);border-radius:2px;padding:12px 14px;display:flex;align-items:center;gap:12px;">
+              <button id="p-rev-play" style="width:30px;height:30px;border-radius:50%;background:#e8c97a;border:none;cursor:pointer;font-size:0.8rem;color:#07090f;flex-shrink:0;" onclick="pToggleReviewAudio()">▶</button>
+              <div style="flex:1;"><div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;text-transform:uppercase;letter-spacing:0.1em;color:#7a7d8a;margin-bottom:4px;" id="p-rev-audio-lbl">Audio</div><div style="height:2px;background:rgba(255,255,255,0.1);border-radius:1px;cursor:pointer;" onclick="pSeekReview(event)"><div style="height:100%;background:#e8c97a;border-radius:1px;width:0%;" id="p-rev-prog"></div></div></div>
+              <audio id="p-rev-audio"></audio>
+            </div>
+          </div>
+          <div style="position:relative;padding-left:14px;">
+            <span style="position:absolute;left:0;top:-4px;font-family:'Playfair Display',serif;font-size:1.6rem;color:#e8c97a;opacity:0.5;line-height:1;">"</span>
+            <p style="font-size:0.82rem;line-height:1.8;color:#a8a5a0;font-style:italic;" id="p-review-story"></p>
+          </div>
+        </div>
+      </div>
+      <div class="p-consent">By submitting, you confirm this is your own firsthand story and grant Marq'd the right to archive and display it permanently. You retain ownership of your words.</div>
+    </div>
+  </div>
+
+  <!-- PANEL FOOTER -->
+  <div class="panel-footer">
+    <div class="p-step-dots" id="p-dots">
+      <div class="p-step-dot active"></div>
+      <div class="p-step-dot"></div>
+      <div class="p-step-dot"></div>
+      <div class="p-step-dot"></div>
+      <div class="p-step-dot"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-left:auto;">
+      <button class="btn btn-outline" id="p-back-btn" style="display:none;padding:10px 18px;" onclick="pGoStep(pCurrentStep-1)">← Back</button>
+      <button class="btn btn-gold" id="p-next-btn" style="padding:10px 18px;" onclick="pNextStep()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ── CONFIG ──────────────────────────────────────────────────────────
+var SUPABASE_URL  = 'https://aeazbkmrtjsizrjytuwz.supabase.co';
+var SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFlYXpia21ydGpzaXpyanl0dXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NjYzNTUsImV4cCI6MjA4ODQ0MjM1NX0.1cA_UiHZckcTV_Wdh58ASoigs_ADIKpu5wmDIirfMUk';
+var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Seed data shown before real stories arrive
+var SEED = [
+  { id:'seed-1', record_number:12, lat:-23.55, lng:-46.63, location_display:'São Paulo, Brazil', story:"Walking back from a bar I'd never been brave enough to enter before, I caught eyes with someone across the street. We stood there for a long moment. Neither of us moved. The city kept going around us.", tags:['outdoor','spontaneous'], submitted_at:'2024-03-01' },
+  { id:'seed-2', record_number:31, lat:52.52, lng:13.40, location_display:'Berlin, Germany', story:"It was the last train of the night. He sat across from me with a book I recognized. We talked until the train ended and kept talking after. I never saw him again. I think about that conversation still.", tags:['tender','unexpected'], submitted_at:'2024-01-15' },
+  { id:'seed-3', record_number:47, lat:35.68, lng:139.69, location_display:'Location withheld', location_withheld:true, story:"I can't say where this happened. In my country, it is not possible to say where. But it happened, and it was real, and I want someone to know that it happened.", tags:['anonymous'], submitted_at:'2023-09-01' },
+  { id:'seed-4', record_number:58, lat:51.51, lng:-0.12, location_display:'London, United Kingdom', story:"We danced for three hours straight. I don't know most of their names. But for those three hours we were the same. The DJ played one more song and we all screamed.", tags:['joy','community'], submitted_at:'2024-06-01' },
+  { id:'seed-5', record_number:73, lat:40.74, lng:-73.99, location_display:'New York City, USA', story:"My grandmother asked me to explain it to her. I expected the worst. She was quiet for a long time, then she said: 'So you just love people.' Yes. That's it exactly.", tags:['family','tender'], submitted_at:'2023-11-20' },
+  { id:'seed-6', record_number:89, lat:-33.87, lng:151.21, location_display:'Sydney, Australia', story:"The march came around the corner and I started crying before I even knew why. My friend put her arm around me. Later I understood: I had never seen that many of us in one place before.", tags:['pride','community'], submitted_at:'2024-02-14' }
+];
+
+var allMarqs = [];
+var currentMarq = null;
+var globeInstance = null;
+
+// ── SUPABASE ─────────────────────────────────────────────────────────
+async function loadMarqs() {
+  try {
+    var res = await db.from('marqs').select('*').order('submitted_at', { ascending: false });
+    var live = (res.data || []);
+    allMarqs = live.length > 0 ? live.concat(SEED) : SEED;
+  } catch(e) {
+    allMarqs = SEED;
+  }
+  var count = allMarqs.filter(function(m){ return !m.id || !m.id.startsWith('seed'); }).length;
+  document.getElementById('marq-count').textContent = count > 0 ? count : SEED.length;
+  if (globeInstance) updateGlobe();
+}
+
+// ── GLOBE (canvas 2D, zero dependencies) ─────────────────────────────
+var globeState = {
+  rotation: 0,
+  rotationSpeed: 0.002,
+  animFrame: null,
+  canvas: null,
+  ctx: null,
+  radius: 0,
+  baseRadius: 0,
+  zoom: 1,
+  minZoom: 0.5,
+  maxZoom: 4,
+  cx: 0, cy: 0,
+  dragging: false,
+  dragMoved: false,
+  lastX: 0,
+  lastY: 0,
+  pinchDist: null,
+  pinMode: false
+};
+
+function initGlobe() {
+  var container = document.getElementById('globe-container');
+  var canvas = document.createElement('canvas');
+  canvas.id = 'globe-canvas';
+  container.appendChild(canvas);
+  globeState.canvas = canvas;
+  globeState.ctx = canvas.getContext('2d');
+
+  function resize() {
+    var W = window.innerWidth, H = window.innerHeight;
+    canvas.width = W; canvas.height = H;
+    globeState.baseRadius = Math.min(W, H) * 0.42;
+    globeState.radius = globeState.baseRadius * globeState.zoom;
+    globeState.cx = W / 2; globeState.cy = H / 2;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Drag to spin
+  canvas.addEventListener('mousedown', function(e) {
+    globeState.dragging = true;
+    globeState.dragMoved = false;
+    globeState.lastX = e.clientX;
+    globeState.lastY = e.clientY;
+    globeState.rotationSpeed = 0;
+  });
+  window.addEventListener('mouseup', function(e) {
+    if (globeState.dragging && !globeState.dragMoved) {
+      var rect = globeState.canvas.getBoundingClientRect();
+      var mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      handleGlobeClick(mx, my);
+    }
+    globeState.dragging = false;
+    globeState.rotationSpeed = 0.002;
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (!globeState.dragging) return;
+    var dx = e.clientX - globeState.lastX;
+    var dy = e.clientY - globeState.lastY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) globeState.dragMoved = true;
+    globeState.rotation += dx * 0.005;
+    globeState.lastX = e.clientX;
+    globeState.lastY = e.clientY;
+    drawGlobe();
+  });
+
+  // Scroll to zoom
+  canvas.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var delta = e.deltaY > 0 ? 0.9 : 1.1;
+    globeState.zoom = Math.max(globeState.minZoom, Math.min(globeState.maxZoom, globeState.zoom * delta));
+    globeState.radius = globeState.baseRadius * globeState.zoom;
+    drawGlobe();
+  }, { passive: false });
+
+  // Touch drag + pinch zoom
+  canvas.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 2) {
+      globeState.pinchDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      globeState.dragging = false;
+    } else {
+      globeState.dragging = true;
+      globeState.dragMoved = false;
+      globeState.lastX = e.touches[0].clientX;
+      globeState.lastY = e.touches[0].clientY;
+      globeState.rotationSpeed = 0;
+    }
+  }, { passive: true });
+  window.addEventListener('touchend', function(e) {
+    if (e.changedTouches.length === 1 && globeState.dragging && !globeState.dragMoved) {
+      var t = e.changedTouches[0];
+      var rect = globeState.canvas.getBoundingClientRect();
+      handleGlobeClick(t.clientX - rect.left, t.clientY - rect.top);
+    }
+    globeState.dragging = false;
+    globeState.pinchDist = null;
+    globeState.rotationSpeed = 0.002;
+  });
+  window.addEventListener('touchmove', function(e) {
+    if (e.touches.length === 2 && globeState.pinchDist !== null) {
+      var newDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      var ratio = newDist / globeState.pinchDist;
+      globeState.zoom = Math.max(globeState.minZoom, Math.min(globeState.maxZoom, globeState.zoom * ratio));
+      globeState.radius = globeState.baseRadius * globeState.zoom;
+      globeState.pinchDist = newDist;
+      drawGlobe();
+      return;
+    }
+    if (!globeState.dragging) return;
+    var dx = e.touches[0].clientX - globeState.lastX;
+    if (Math.abs(dx) > 3) globeState.dragMoved = true;
+    globeState.rotation += dx * 0.005;
+    globeState.lastX = e.touches[0].clientX;
+    globeState.lastY = e.touches[0].clientY;
+    drawGlobe();
+  }, { passive: true });
+
+  drawLoop();
+}
+
+function latlngToXY(lat, lng, rotation) {
+  var latR = lat * Math.PI / 180;
+  var lngR = (lng * Math.PI / 180) + rotation;
+  var x = globeState.cx + globeState.radius * Math.cos(latR) * Math.sin(lngR);
+  var y = globeState.cy - globeState.radius * Math.sin(latR);
+  var visible = Math.cos(latR) * Math.cos(lngR) > -0.05;
+  return { x: x, y: y, visible: visible, depth: Math.cos(latR) * Math.cos(lngR) };
+}
+
+function drawGlobe() {
+  var ctx = globeState.ctx;
+  var cx = globeState.cx, cy = globeState.cy, r = globeState.radius;
+  ctx.clearRect(0, 0, globeState.canvas.width, globeState.canvas.height);
+
+  // Stars
+  ctx.save();
+  var starSeed = 42;
+  for (var s = 0; s < 180; s++) {
+    starSeed = (starSeed * 1664525 + 1013904223) & 0xffffffff;
+    var sx = ((starSeed >>> 0) % globeState.canvas.width);
+    starSeed = (starSeed * 1664525 + 1013904223) & 0xffffffff;
+    var sy = ((starSeed >>> 0) % globeState.canvas.height);
+    starSeed = (starSeed * 1664525 + 1013904223) & 0xffffffff;
+    var sa = 0.1 + ((starSeed >>> 0) % 100) / 180;
+    ctx.fillStyle = 'rgba(255,255,255,' + sa + ')';
+    ctx.fillRect(sx, sy, 1, 1);
+  }
+  ctx.restore();
+
+  // Atmosphere glow
+  var atmo = ctx.createRadialGradient(cx, cy, r * 0.92, cx, cy, r * 1.18);
+  atmo.addColorStop(0, 'rgba(78,205,196,0.18)');
+  atmo.addColorStop(0.5, 'rgba(78,205,196,0.05)');
+  atmo.addColorStop(1, 'rgba(78,205,196,0)');
+  ctx.beginPath(); ctx.arc(cx, cy, r * 1.18, 0, Math.PI * 2);
+  ctx.fillStyle = atmo; ctx.fill();
+
+  // Globe base
+  var grad = ctx.createRadialGradient(cx - r*0.25, cy - r*0.2, r*0.05, cx, cy, r);
+  grad.addColorStop(0, '#1a2340');
+  grad.addColorStop(0.5, '#0d1520');
+  grad.addColorStop(1, '#070a12');
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = grad; ctx.fill();
+
+  // Grid lines
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.clip();
+
+  ctx.strokeStyle = 'rgba(78,205,196,0.06)';
+  ctx.lineWidth = 0.6;
+
+  // Latitude lines
+  for (var lat = -60; lat <= 60; lat += 30) {
+    var latR = lat * Math.PI / 180;
+    var ry = cy - r * Math.sin(latR);
+    var rx = r * Math.cos(latR);
+    if (rx > 0) {
+      ctx.beginPath();
+      ctx.ellipse(cx, ry, rx, rx * 0.15, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
+
+  // Longitude lines
+  for (var lon = 0; lon < 360; lon += 30) {
+    var lonR = (lon * Math.PI / 180) + globeState.rotation;
+    var cosL = Math.cos(lonR);
+    ctx.beginPath();
+    for (var lt = -90; lt <= 90; lt += 3) {
+      var p = latlngToXY(lt, lon, globeState.rotation);
+      if (lt === -90) ctx.moveTo(p.x, p.y);
+      else if (p.visible) ctx.lineTo(p.x, p.y);
+      else ctx.moveTo(p.x, p.y);
+    }
+    ctx.stroke();
+  }
+
+  // Specular highlight
+  var spec = ctx.createRadialGradient(cx - r*0.3, cy - r*0.3, 0, cx - r*0.1, cy - r*0.1, r*0.65);
+  spec.addColorStop(0, 'rgba(255,255,255,0.06)');
+  spec.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = spec; ctx.fill();
+
+  ctx.restore();
+
+  // Edge ring
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(78,205,196,0.25)'; ctx.lineWidth = 1; ctx.stroke();
+
+  // Story dots
+  var marqs = allMarqs.length > 0 ? allMarqs : SEED;
+  var dots = marqs.filter(function(m) { return m.lat && m.lng; });
+  // Sort by depth so front dots render on top
+  var mapped = dots.map(function(m) {
+    var p = latlngToXY(m.lat, m.lng, globeState.rotation);
+    return { m: m, p: p };
+  }).sort(function(a, b) { return a.p.depth - b.p.depth; });
+
+  mapped.forEach(function(item) {
+    var p = item.p;
+    if (!p.visible) return;
+    var brightness = 0.4 + p.depth * 0.6;
+    var dotR = 3 + p.depth * 2;
+
+    // Glow
+    var glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, dotR * 4);
+    glow.addColorStop(0, 'rgba(232,201,122,' + (brightness * 0.4) + ')');
+    glow.addColorStop(1, 'rgba(232,201,122,0)');
+    ctx.beginPath(); ctx.arc(p.x, p.y, dotR * 4, 0, Math.PI * 2);
+    ctx.fillStyle = glow; ctx.fill();
+
+    // Dot
+    ctx.beginPath(); ctx.arc(p.x, p.y, dotR, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(232,201,122,' + brightness + ')';
+    ctx.fill();
+  });
+}
+
+function globeXYToLatLng(mx, my) {
+  var cx = globeState.cx, cy = globeState.cy, r = globeState.radius;
+  var dx = mx - cx, dy = my - cy;
+  if (dx*dx + dy*dy > r*r) return null;
+  var lat = Math.asin(Math.max(-1, Math.min(1, -dy / r))) * 180 / Math.PI;
+  var cosLat = Math.cos(lat * Math.PI / 180);
+  if (cosLat < 0.001) return { lat: lat, lng: 0 };
+  var sinLng = Math.max(-1, Math.min(1, dx / (r * cosLat)));
+  var lngRaw = Math.asin(sinLng) - globeState.rotation;
+  // Determine correct quadrant
+  var cosLng = Math.sqrt(Math.max(0, 1 - sinLng * sinLng));
+  // Check front hemisphere
+  var lng = lngRaw * 180 / Math.PI;
+  return { lat: lat, lng: lng };
+}
+
+function handleGlobeClick(mx, my) {
+  // First check if clicking a story dot
+  var hit = getClickedMarq(mx, my);
+  if (hit) { openDrawer(hit); return; }
+  // Otherwise check if on globe surface → pin drop
+  var ll = globeXYToLatLng(mx, my);
+  if (!ll) return;
+  showPinPrompt(ll.lat, ll.lng, mx, my);
+}
+
+// ── PIN DROP PROMPT ───────────────────────────────────────────────────
+var pinPrompt = null;
+function showPinPrompt(lat, lng, px, py) {
+  removePinPrompt();
+  var prompt = document.createElement('div');
+  prompt.id = 'pin-prompt';
+  prompt.style.cssText = [
+    'position:fixed',
+    'z-index:200',
+    'background:#0e1118',
+    'border:1px solid rgba(232,201,122,0.4)',
+    'border-radius:2px',
+    'padding:16px 20px',
+    'min-width:220px',
+    'box-shadow:0 8px 32px rgba(0,0,0,0.6)',
+    'pointer-events:auto'
+  ].join(';');
+  // Position near click but keep on screen
+  var left = Math.min(px + 16, window.innerWidth - 260);
+  var top = Math.min(py + 16, window.innerHeight - 140);
+  prompt.style.left = left + 'px';
+  prompt.style.top = (top + 64) + 'px'; // offset for fixed nav
+
+  var latD = lat.toFixed(3), lngD = lng.toFixed(3);
+  prompt.innerHTML = [
+    '<div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;text-transform:uppercase;letter-spacing:0.16em;color:#4ecdc4;margin-bottom:8px;">Pin dropped</div>',
+    '<div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:#e8c97a;margin-bottom:14px;">' + latD + ', ' + lngD + '</div>',
+    '<div style="font-size:0.82rem;color:#a8a5a0;line-height:1.6;margin-bottom:16px;">Something happen here?<br>Leave your Marq.</div>',
+    '<div style="display:flex;gap:8px;">',
+    '<a href="submit.html?lat=' + lat.toFixed(5) + '&lng=' + lng.toFixed(5) + '" style="flex:1;background:#e8c97a;color:#07090f;font-family:'JetBrains Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;padding:9px 0;border-radius:2px;text-align:center;text-decoration:none;">Leave a Marq</a>',
+    '<button onclick="removePinPrompt()" style="width:36px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:2px;color:#7a7d8a;font-size:1rem;cursor:pointer;">✕</button>',
+    '</div>'
+  ].join('');
+  document.body.appendChild(prompt);
+  pinPrompt = prompt;
+  setTimeout(function() { document.addEventListener('click', removePinOnOutside); }, 10);
+}
+function removePinPrompt() {
+  if (pinPrompt) { pinPrompt.remove(); pinPrompt = null; }
+  document.removeEventListener('click', removePinOnOutside);
+}
+function removePinOnOutside(e) {
+  if (pinPrompt && !pinPrompt.contains(e.target)) removePinPrompt();
+}
+
+function getClickedMarq(mx, my) {
+  var marqs = allMarqs.length > 0 ? allMarqs : SEED;
+  var hitRadius = 18;
+  for (var i = marqs.length - 1; i >= 0; i--) {
+    var m = marqs[i];
+    if (!m.lat || !m.lng) continue;
+    var p = latlngToXY(m.lat, m.lng, globeState.rotation);
+    if (!p.visible) continue;
+    var dx = mx - p.x, dy = my - p.y;
+    if (Math.sqrt(dx*dx + dy*dy) < hitRadius) return m;
+  }
+  return null;
+}
+
+function drawLoop() {
+  if (!globeState.dragging) {
+    globeState.rotation += globeState.rotationSpeed;
+  }
+  drawGlobe();
+  globeState.animFrame = requestAnimationFrame(drawLoop);
+}
+
+function updateGlobe() {
+  // Dots will update on next frame automatically since drawGlobe reads allMarqs
+}
+
+// ── DRAWER ────────────────────────────────────────────────────────────
+function openDrawer(marq) {
+  currentMarq = marq;
+  var num = String(marq.record_number || 0).padStart(6,'0');
+  document.getElementById('drawer-id').textContent = '#MQ-' + num;
+  document.getElementById('drawer-location').textContent = marq.location_withheld ? 'Location withheld' : (marq.location_display || 'Unknown location');
+
+  // Meta
+  var date = marq.submitted_at ? new Date(marq.submitted_at).getFullYear() : '';
+  var words = marq.story ? Math.ceil(marq.story.split(' ').length / 200) : 1;
+  document.getElementById('drawer-meta').textContent = (date ? date + '  ·  ' : '') + words + ' min read' + (marq.audio_url ? '  ·  ▶ Audio' : '');
+
+  // Tags
+  var tagsEl = document.getElementById('drawer-tags');
+  tagsEl.innerHTML = '';
+  (marq.tags || []).forEach(function(t) {
+    var s = document.createElement('span');
+    s.className = 'drawer-tag';
+    s.textContent = '[' + t + ']';
+    tagsEl.appendChild(s);
+  });
+
+  // Photo
+  var photoEl = document.getElementById('drawer-photo');
+  if (marq.photo_url) {
+    photoEl.src = marq.photo_url;
+    photoEl.style.display = 'block';
+  } else {
+    photoEl.style.display = 'none';
+  }
+
+  // Audio
+  var audioPlayer = document.getElementById('drawer-audio-player');
+  var audioEl = document.getElementById('audio-el');
+  if (marq.audio_url) {
+    audioEl.src = marq.audio_url;
+    audioPlayer.style.display = 'flex';
+  } else {
+    audioPlayer.style.display = 'none';
+    audioEl.src = '';
+  }
+
+  // Story
+  document.getElementById('drawer-story-text').textContent = marq.story || '';
+
+  // Reactions
+  document.getElementById('r-fire').textContent = marq.reactions_fire || 0;
+  document.getElementById('r-eyes').textContent = marq.views || 0;
+  document.getElementById('r-heart').textContent = marq.reactions_heart || 0;
+
+  document.getElementById('story-drawer').classList.add('open');
+  document.getElementById('drawer-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Increment view count
+  if (marq.id && !String(marq.id).startsWith('seed')) {
+    var newViews = (marq.views || 0) + 1;
+    db.from('marqs').update({ views: newViews }).eq('id', marq.id).then(function() {
+      marq.views = newViews;
+      document.getElementById('r-eyes').textContent = newViews;
+    });
+  }
+}
+
+function closeDrawer() {
+  document.getElementById('story-drawer').classList.remove('open');
+  document.getElementById('drawer-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+  var audioEl = document.getElementById('audio-el');
+  audioEl.pause();
+  audioEl.currentTime = 0;
+  document.getElementById('audio-play-btn').textContent = '▶';
+  document.getElementById('audio-progress').style.width = '0%';
+}
+
+document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
+
+// Audio controls
+var audioEl = document.getElementById('audio-el');
+var playBtn = document.getElementById('audio-play-btn');
+var progressEl = document.getElementById('audio-progress');
+
+playBtn.addEventListener('click', function() {
+  if (audioEl.paused) { audioEl.play(); playBtn.textContent = '⏸'; }
+  else { audioEl.pause(); playBtn.textContent = '▶'; }
+});
+audioEl.addEventListener('timeupdate', function() {
+  if (audioEl.duration) progressEl.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
+});
+audioEl.addEventListener('ended', function() { playBtn.textContent = '▶'; progressEl.style.width = '0%'; });
+
+document.getElementById('audio-bar').addEventListener('click', function(e) {
+  var rect = this.getBoundingClientRect();
+  audioEl.currentTime = ((e.clientX - rect.left) / rect.width) * audioEl.duration;
+});
+
+// Reactions
+document.querySelectorAll('.reaction-btn').forEach(function(btn) {
+  btn.addEventListener('click', async function() {
+    if (!currentMarq || String(currentMarq.id).startsWith('seed')) return;
+    var type = this.dataset.reaction;
+    if (type === 'eyes') return; // eyes = views, read-only
+    var col = 'reactions_' + type;
+    var current = currentMarq[col] || 0;
+    await db.from('marqs').update({ [col]: current + 1 }).eq('id', currentMarq.id);
+    currentMarq[col] = current + 1;
+    document.getElementById('r-' + type).textContent = current + 1;
+  });
+});
+
+// Cite
+document.getElementById('cite-btn').addEventListener('click', function() {
+  if (!currentMarq) return;
+  var num = String(currentMarq.record_number || 0).padStart(6,'0');
+  var loc = currentMarq.location_withheld ? 'Location withheld' : (currentMarq.location_display || 'Unknown');
+  var year = currentMarq.submitted_at ? new Date(currentMarq.submitted_at).getFullYear() : 'n.d.';
+  var citation = 'Marq\'d Archive. Field Record #MQ-' + num + '. ' + loc + '. ' + year + '. marqd.archive. Accessed ' + new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'}) + '.';
+  navigator.clipboard.writeText(citation).then(function() {
+    var toast = document.getElementById('cite-toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 2500);
+  });
+});
+
+// ── IN-PAGE SUBMIT PANEL ─────────────────────────────────────────────
+var pCurrentStep = 0;
+var pSelectedTags = [];
+var pSelectedAudio = 'none';
+var pSelectedVoice = '21m00Tcm4TlvDq8ikWAM';
+var pGeoLat = null, pGeoLng = null;
+var pPhotoFile = null;
+var pMediaRecorder = null, pRecordedChunks = [], pIsRecording = false;
+var pCitationText = '';
+
+function openPanel(e) {
+  if (e) e.preventDefault();
+  document.getElementById('submit-panel').classList.add('open');
+  document.getElementById('drawer-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  globeState.rotationSpeed = 0;
+  pResetPanel();
+}
+
+function closePanel() {
+  document.getElementById('submit-panel').classList.remove('open');
+  document.getElementById('drawer-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+  globeState.rotationSpeed = 0.002;
+}
+
+document.getElementById('panel-close').addEventListener('click', closePanel);
+
+// Close on backdrop only if drawer isn't open
+document.getElementById('drawer-backdrop').addEventListener('click', function() {
+  if (document.getElementById('submit-panel').classList.contains('open')) closePanel();
+  else closeDrawer();
+});
+
+function pResetPanel() {
+  pCurrentStep = 0;
+  pSelectedTags = [];
+  pSelectedAudio = 'none';
+  pGeoLat = null; pGeoLng = null;
+  pPhotoFile = null;
+  pRecordedChunks = [];
+  document.getElementById('p-location').value = '';
+  document.getElementById('p-year').value = '';
+  document.getElementById('p-story').value = '';
+  document.getElementById('p-word-count').textContent = '0';
+  document.getElementById('p-withheld').checked = false;
+  document.getElementById('p-photo-preview').style.display = 'none';
+  document.getElementById('p-remove-photo').style.display = 'none';
+  document.getElementById('p-rec-playback').style.display = 'none';
+  document.getElementById('p-success').classList.remove('show');
+  document.getElementById('p-submitting').classList.remove('show');
+  document.querySelectorAll('.p-tag').forEach(function(t){ t.classList.remove('selected'); });
+  document.querySelectorAll('.p-audio-opt[data-audio]').forEach(function(o){ o.classList.toggle('selected', o.dataset.audio === 'none'); });
+  document.getElementById('p-voice-wrap').style.display = 'none';
+  document.getElementById('p-record-wrap').style.display = 'none';
+  document.getElementById('p-upload-wrap').style.display = 'none';
+  pShowStep(0);
+}
+
+function pShowStep(n) {
+  document.querySelectorAll('.panel-step').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('ps-' + n).classList.add('active');
+  pCurrentStep = n;
+  // Dots
+  document.querySelectorAll('.p-step-dot').forEach(function(d, i){
+    d.classList.remove('active','done');
+    if (i < n) d.classList.add('done');
+    if (i === n) d.classList.add('active');
+  });
+  // Buttons
+  var backBtn = document.getElementById('p-back-btn');
+  var nextBtn = document.getElementById('p-next-btn');
+  backBtn.style.display = n > 0 ? 'inline-flex' : 'none';
+  nextBtn.textContent = n === 4 ? 'Archive this Marq →' : 'Next →';
+  // Scroll body to top
+  document.querySelector('.panel-body').scrollTop = 0;
+  // If going to review, build it
+  if (n === 4) pBuildReview();
+}
+
+function pGoStep(n) { pShowStep(Math.max(0, Math.min(4, n))); }
+
+function pNextStep() {
+  if (pCurrentStep === 0) {
+    var withheld = document.getElementById('p-withheld').checked;
+    var loc = document.getElementById('p-location').value.trim();
+    if (!withheld && !pGeoLat && !loc) {
+      document.getElementById('p-location').style.borderColor = '#c97a8e';
+      return;
+    }
+    document.getElementById('p-location').style.borderColor = '';
+  }
+  if (pCurrentStep === 1) {
+    var story = document.getElementById('p-story').value.trim();
+    if (story.length < 20) {
+      document.getElementById('p-story').style.borderColor = '#c97a8e';
+      return;
+    }
+    document.getElementById('p-story').style.borderColor = '';
+  }
+  if (pCurrentStep === 4) { pSubmit(); return; }
+  pShowStep(pCurrentStep + 1);
+}
+
+// Tags
+document.querySelectorAll('.p-tag').forEach(function(el) {
+  el.addEventListener('click', function() {
+    var tag = this.dataset.tag;
+    this.classList.toggle('selected');
+    if (this.classList.contains('selected')) pSelectedTags.push(tag);
+    else pSelectedTags = pSelectedTags.filter(function(t){ return t !== tag; });
+  });
+});
+
+// Geocode
+async function pGeocode() {
+  var loc = document.getElementById('p-location').value.trim();
+  if (!loc) return;
+  try {
+    var res = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(loc));
+    var data = await res.json();
+    if (data && data[0]) {
+      pGeoLat = parseFloat(data[0].lat);
+      pGeoLng = parseFloat(data[0].lon);
+      document.getElementById('p-location').style.borderColor = 'rgba(78,205,196,0.5)';
+    }
+  } catch(e) {}
+}
+document.getElementById('p-location').addEventListener('keydown', function(e){
+  if (e.key === 'Enter') { e.preventDefault(); pGeocode(); }
+});
+
+// Word count
+function pUpdateCount() {
+  var words = document.getElementById('p-story').value.trim().split(/\s+/).filter(Boolean).length;
+  document.getElementById('p-word-count').textContent = words;
+}
+
+// Audio
+function pSelectAudio(type) {
+  pSelectedAudio = type;
+  document.querySelectorAll('.p-audio-opt[data-audio]').forEach(function(o){ o.classList.toggle('selected', o.dataset.audio === type); });
+  document.getElementById('p-voice-wrap').style.display = type === 'ai' ? 'block' : 'none';
+  document.getElementById('p-record-wrap').style.display = type === 'record' ? 'block' : 'none';
+  document.getElementById('p-upload-wrap').style.display = type === 'upload' ? 'block' : 'none';
+}
+function pSelectVoice(el, id) {
+  pSelectedVoice = id;
+  document.querySelectorAll('#p-voices .p-audio-opt').forEach(function(v){ v.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+// Recording
+async function pToggleRecording() {
+  if (pIsRecording) {
+    pMediaRecorder.stop(); pIsRecording = false;
+    document.getElementById('p-rec-btn').classList.remove('recording');
+    document.getElementById('p-rec-txt').textContent = 'Start Recording';
+  } else {
+    try {
+      var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      pRecordedChunks = [];
+      pMediaRecorder = new MediaRecorder(stream);
+      pMediaRecorder.ondataavailable = function(e){ if (e.data.size > 0) pRecordedChunks.push(e.data); };
+      pMediaRecorder.onstop = function() {
+        var blob = new Blob(pRecordedChunks, { type: 'audio/webm' });
+        var pb = document.getElementById('p-rec-playback');
+        pb.src = URL.createObjectURL(blob); pb.style.display = 'block';
+        stream.getTracks().forEach(function(t){ t.stop(); });
+      };
+      pMediaRecorder.start(); pIsRecording = true;
+      document.getElementById('p-rec-btn').classList.add('recording');
+      document.getElementById('p-rec-txt').textContent = 'Stop Recording';
+    } catch(e) { alert('Microphone access denied.'); }
+  }
+}
+
+// Photo
+function pHandlePhoto(e) {
+  var file = e.target.files[0]; if (!file) return;
+  pPhotoFile = file;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = document.getElementById('p-photo-preview');
+    img.src = ev.target.result; img.style.display = 'block';
+    document.getElementById('p-remove-photo').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+function pRemovePhoto() {
+  pPhotoFile = null;
+  document.getElementById('p-photo-preview').style.display = 'none';
+  document.getElementById('p-remove-photo').style.display = 'none';
+  document.getElementById('p-photo-input').value = '';
+}
+
+// Review
+async function pBuildReview() {
+  var withheld = document.getElementById('p-withheld').checked;
+  var loc = withheld ? 'Location withheld' : (document.getElementById('p-location').value.trim() || 'Location withheld');
+  var year = document.getElementById('p-year').value.trim();
+  var story = document.getElementById('p-story').value.trim();
+  var words = story.split(/\s+/).filter(Boolean).length;
+  var readTime = Math.max(1, Math.ceil(words / 200));
+  var audioLbl = pSelectedAudio === 'ai' ? ' · ▶ AI Audio' : pSelectedAudio === 'record' ? ' · ▶ Your Voice' : pSelectedAudio === 'upload' ? ' · ▶ Audio' : '';
+
+  document.getElementById('p-review-loc').textContent = loc;
+  document.getElementById('p-review-meta').textContent = (year ? year + '  ·  ' : '') + readTime + ' min read' + audioLbl;
+  document.getElementById('p-review-tags').textContent = pSelectedTags.map(function(t){ return '['+t+']'; }).join(' ');
+  document.getElementById('p-review-story').textContent = story.substring(0, 220) + (story.length > 220 ? '...' : '');
+
+  // Entry number preview
+  var badge = document.getElementById('p-entry-badge');
+  badge.innerHTML = 'Loading entry number...';
+  try {
+    var countRes = await db.from('marqs').select('record_number', { count: 'exact', head: false }).order('record_number', { ascending: false }).limit(1);
+    var nextNum = 1;
+    if (countRes.data && countRes.data.length > 0) nextNum = (countRes.data[0].record_number || 0) + 1;
+    var padded = String(nextNum).padStart(6, '0');
+    badge.innerHTML = 'Your entry will be <span>#MQ-' + padded + '</span>';
+    document.getElementById('p-review-id').textContent = '#MQ-' + padded;
+  } catch(e) {
+    badge.innerHTML = 'Entry number assigned on submission';
+  }
+
+  // Audio preview
+  var revAudioWrap = document.getElementById('p-review-audio-wrap');
+  var revAudio = document.getElementById('p-rev-audio');
+  revAudio.pause(); revAudio.src = '';
+  document.getElementById('p-rev-play').textContent = '▶';
+  document.getElementById('p-rev-prog').style.width = '0%';
+
+  if (pSelectedAudio === 'record' && pRecordedChunks.length > 0) {
+    var blob = new Blob(pRecordedChunks, { type: 'audio/webm' });
+    revAudio.src = URL.createObjectURL(blob);
+    document.getElementById('p-rev-audio-lbl').textContent = 'Your voice recording';
+    revAudioWrap.style.display = 'block';
+  } else if (pSelectedAudio === 'upload') {
+    var uf = document.getElementById('p-audio-file').files[0];
+    if (uf) { revAudio.src = URL.createObjectURL(uf); document.getElementById('p-rev-audio-lbl').textContent = uf.name; revAudioWrap.style.display = 'block'; }
+    else revAudioWrap.style.display = 'none';
+  } else { revAudioWrap.style.display = 'none'; }
+
+  revAudio.ontimeupdate = function() {
+    if (revAudio.duration) document.getElementById('p-rev-prog').style.width = (revAudio.currentTime/revAudio.duration*100)+'%';
+  };
+  revAudio.onended = function() { document.getElementById('p-rev-play').textContent = '▶'; document.getElementById('p-rev-prog').style.width='0%'; };
+}
+
+function pToggleReviewAudio() {
+  var el = document.getElementById('p-rev-audio'), btn = document.getElementById('p-rev-play');
+  if (el.paused) { el.play(); btn.textContent = '⏸'; } else { el.pause(); btn.textContent = '▶'; }
+}
+function pSeekReview(e) {
+  var el = document.getElementById('p-rev-audio');
+  var bar = e.currentTarget;
+  var rect = bar.getBoundingClientRect();
+  if (el.duration) el.currentTime = ((e.clientX-rect.left)/rect.width)*el.duration;
+}
+
+// Submit
+async function pSubmit() {
+  document.getElementById('p-submitting').classList.add('show');
+  try {
+    var photoUrl = null;
+    if (pPhotoFile) {
+      var ext = pPhotoFile.name.split('.').pop();
+      var fn = 'marq-' + Date.now() + '.' + ext;
+      var upRes = await db.storage.from('marq-photos').upload(fn, pPhotoFile, { cacheControl: '3600', upsert: false });
+      if (!upRes.error) photoUrl = db.storage.from('marq-photos').getPublicUrl(fn).data.publicUrl;
+    }
+    var audioUrl = null;
+    if (pSelectedAudio === 'record' && pRecordedChunks.length > 0) {
+      var blob = new Blob(pRecordedChunks, { type: 'audio/webm' });
+      var an = 'marq-audio-' + Date.now() + '.webm';
+      var aRes = await db.storage.from('marq-audio').upload(an, blob);
+      if (!aRes.error) audioUrl = db.storage.from('marq-audio').getPublicUrl(an).data.publicUrl;
+    } else if (pSelectedAudio === 'upload') {
+      var uf = document.getElementById('p-audio-file').files[0];
+      if (uf) {
+        var ae = uf.name.split('.').pop();
+        var an2 = 'marq-audio-' + Date.now() + '.' + ae;
+        var aRes2 = await db.storage.from('marq-audio').upload(an2, uf);
+        if (!aRes2.error) audioUrl = db.storage.from('marq-audio').getPublicUrl(an2).data.publicUrl;
+      }
+    }
+    var withheld = document.getElementById('p-withheld').checked;
+    var payload = {
+      lat: withheld ? null : (pGeoLat || 0),
+      lng: withheld ? null : (pGeoLng || 0),
+      location_display: withheld ? null : document.getElementById('p-location').value.trim(),
+      location_withheld: withheld,
+      story: document.getElementById('p-story').value.trim(),
+      tags: pSelectedTags,
+      year_occurred: document.getElementById('p-year').value.trim() || null,
+      photo_url: photoUrl,
+      audio_url: audioUrl,
+      audio_type: pSelectedAudio !== 'none' ? pSelectedAudio : null,
+      voice_id: pSelectedAudio === 'ai' ? pSelectedVoice : null,
+      views: 0, reactions_fire: 0, reactions_heart: 0
+    };
+    var res = await db.from('marqs').insert([payload]).select();
+    if (res.error) throw res.error;
+    var newMarq = res.data[0];
+    allMarqs.unshift(newMarq);
+    // Show success
+    document.getElementById('p-submitting').classList.remove('show');
+    var num = String(newMarq.record_number).padStart(6,'0');
+    document.getElementById('p-success-id').textContent = 'FIELD RECORD · #MQ-' + num;
+    var loc2 = newMarq.location_withheld ? 'Location withheld' : (newMarq.location_display || 'Unknown');
+    var year2 = new Date(newMarq.submitted_at).getFullYear();
+    pCitationText = "Marq\'d Archive. Field Record #MQ-" + num + ". " + loc2 + ". " + year2 + ". marqd.archive. Accessed " + new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) + ".";
+    document.getElementById('p-cite-text').textContent = pCitationText;
+    // Hide steps, show success
+    document.querySelectorAll('.panel-step').forEach(function(s){ s.classList.remove('active'); });
+    document.querySelector('.panel-footer').style.display = 'none';
+    document.getElementById('p-success').classList.add('show');
+    document.getElementById('marq-count').textContent = allMarqs.filter(function(m){ return !String(m.id).startsWith('seed'); }).length;
+  } catch(e) {
+    console.error(e);
+    document.getElementById('p-submitting').classList.remove('show');
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+function pCopyCitation() {
+  navigator.clipboard.writeText(pCitationText).then(function() {
+    document.querySelector('.p-cite-lbl').textContent = 'Copied! ✓';
+    setTimeout(function(){ document.querySelector('.p-cite-lbl').textContent = 'Click to copy citation'; }, 2000);
+  });
+}
+
+// Also reopen footer on panel reset
+function closePanel() {
+  document.getElementById('submit-panel').classList.remove('open');
+  document.getElementById('drawer-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+  globeState.rotationSpeed = 0.002;
+  document.querySelector('.panel-footer').style.display = 'flex';
+}
+
+// ── NAV ───────────────────────────────────────────────────────────────
+window.addEventListener('scroll', function() {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+document.getElementById('nav-toggle').addEventListener('click', function() {
+  document.getElementById('nav-mobile').classList.toggle('open');
+});
+document.querySelectorAll('.nav-mobile a').forEach(function(a) {
+  a.addEventListener('click', function() { document.getElementById('nav-mobile').classList.remove('open'); });
+});
+
+// ── REVEAL ────────────────────────────────────────────────────────────
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+// ── REVEAL ────────────────────────────────────────────────────────────
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+// ── INIT ──────────────────────────────────────────────────────────────
+window.addEventListener('load', function() {
+  initGlobe();
+  loadMarqs();
+});
+</script>
+</body>
+</html>
