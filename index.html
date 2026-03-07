@@ -4,6 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07090f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Marq'd — Q Marks the Spot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,10 +37,13 @@
 –font-mono:      ‘JetBrains Mono’, monospace;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; background: #07090f; }
+
+a { color: inherit; -webkit-tap-highlight-color: transparent; }
 
 body {
-background: var(–bg-base);
+background: #07090f;
+background-color: #07090f !important;
 color: var(–text-primary);
 font-family: var(–font-ui);
 font-weight: 300;
@@ -65,7 +71,8 @@ padding: 24px 48px;
 display: flex;
 justify-content: space-between;
 align-items: center;
-background: linear-gradient(to bottom, rgba(7,9,15,0.9) 0%, transparent 100%);
+background: linear-gradient(to bottom, rgba(7,9,15,0.95) 0%, rgba(7,9,15,0) 100%);
+-webkit-backdrop-filter: none;
 transition: background 0.4s;
 }
 
@@ -104,6 +111,7 @@ transition: color 0.2s;
 position: relative;
 width: 100%;
 height: 100vh;
+background: #07090f;
 display: flex;
 flex-direction: column;
 align-items: center;
@@ -172,6 +180,7 @@ animation: hero-in 1.8s 0.5s cubic-bezier(0.16,1,0.3,1) both;
 }
 
 .btn-primary {
+-webkit-appearance: none;
 padding: 14px 32px;
 background: var(–accent-gold);
 color: var(–bg-base);
@@ -195,6 +204,7 @@ box-shadow: 0 8px 32px rgba(232,201,122,0.25);
 }
 
 .btn-ghost {
+-webkit-appearance: none;
 padding: 13px 32px;
 background: transparent;
 color: var(–text-secondary);
@@ -339,7 +349,7 @@ font-weight: 400;
 
 /* ── STAT SECTION ── */
 #stat {
-background: var(–bg-surface);
+background: #0e1118;
 border-top: 1px solid var(–border-subtle);
 border-bottom: 1px solid var(–border-subtle);
 text-align: center;
@@ -397,13 +407,13 @@ border: 1px solid var(–border-subtle);
 }
 
 .step-card {
-background: var(–bg-surface);
+background: #0e1118;
 padding: 48px 40px;
 position: relative;
 transition: background 0.3s;
 }
 
-.step-card:hover { background: var(–bg-elevated); }
+.step-card:hover { background: #161b27; }
 
 .step-lambda {
 font-family: var(–font-display);
@@ -477,21 +487,22 @@ border: 1px solid var(–border-subtle);
 }
 
 .archive-card {
-background: var(–bg-surface);
+background: #0e1118;
 padding: 0;
 position: relative;
 transition: background 0.3s;
 overflow: hidden;
 }
 
-.archive-card:hover { background: var(–bg-elevated); }
+.archive-card:hover { background: #161b27; }
 
 .card-header {
 padding: 18px 24px 14px;
-border-bottom: 1px solid var(–border-subtle);
+border-bottom: 1px solid rgba(255,255,255,0.07);
 display: flex;
 justify-content: space-between;
 align-items: center;
+background: #0e1118;
 }
 
 .record-id {
@@ -617,7 +628,7 @@ border-radius: 2px;
 
 /* ── GET INVOLVED ── */
 #get-involved {
-background: var(–bg-surface);
+background: #0e1118;
 border-top: 1px solid var(–border-subtle);
 border-bottom: 1px solid var(–border-subtle);
 max-width: none;
@@ -666,12 +677,12 @@ border: 1px solid var(–border-subtle);
 }
 
 .role-card {
-background: var(–bg-base);
+background: #07090f;
 padding: 36px 32px;
 transition: background 0.3s;
 }
 
-.role-card:hover { background: var(–bg-elevated); }
+.role-card:hover { background: #161b27; }
 
 .role-icon {
 font-size: 1.4rem;
@@ -739,12 +750,12 @@ text-align: left;
 }
 
 .tier-card {
-background: var(–bg-surface);
+background: #0e1118;
 padding: 28px 24px;
 transition: background 0.3s;
 }
 
-.tier-card:hover { background: var(–bg-elevated); }
+.tier-card:hover { background: #161b27; }
 
 .tier-name {
 font-family: var(–font-mono);
@@ -1119,7 +1130,7 @@ footer { flex-direction: column; align-items: flex-start; padding: 36px 24px; }
 </div>
 
 <div style="text-align:center; margin-top:48px;" class="reveal">
-  <a href="mailto:marqd.official@gmail.com?subject=Get Involved" class="btn-primary">Get in Touch</a>
+  <a href="/cdn-cgi/l/email-protection#2944485b584d07464f4f404a404845694e44484045074a4644165a5c4b434c4a5d146e4c5d0960475f46455f4c4d" class="btn-primary">Get in Touch</a>
 </div>
 ```
 
@@ -1167,7 +1178,7 @@ footer { flex-direction: column; align-items: flex-start; padding: 36px 24px; }
 
 <div class="support-ctas reveal">
   <a href="https://opencollective.com/marqd" target="_blank" rel="noopener" class="btn-primary">Donate via Open Collective</a>
-  <a href="mailto:marqd.official@gmail.com?subject=Partnership" class="btn-ghost">Institutional Inquiry</a>
+  <a href="/cdn-cgi/l/email-protection#2e434f5c5f4a00414848474d474f426e49434f4742004d4143115d5b4c444b4d5a137e4f5c5a404b5c5d46475e" class="btn-ghost">Institutional Inquiry</a>
 </div>
 <p class="support-note reveal">Every dollar goes toward keeping the record intact.</p>
 ```
@@ -1186,188 +1197,179 @@ footer { flex-direction: column; align-items: flex-start; padding: 36px 24px; }
     <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#get-involved">Get Involved</a></li>
     <li><a href="#support">Support</a></li>
-    <li><a href="mailto:marqd.official@gmail.com">Contact</a></li>
+    <li><a href="/cdn-cgi/l/email-protection#204d415251440e4f4646494349414c60474d41494c0e434f4d">Contact</a></li>
   </ul>
   <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
 </footer>
 
 <!-- GLOBE CANVAS -->
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
 (function() {
-  const canvas = document.getElementById('globe-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, cx, cy, R, rot = 0;
+const canvas = document.getElementById(‘globe-canvas’);
+const ctx = canvas.getContext(‘2d’);
+let W, H, cx, cy, R, rot = 0;
 
-  const LOCATIONS = [
-    [37.77,-122.41],[40.74,-73.99],[34.05,-118.24],[51.51,-0.12],
-    [48.85,2.35],[52.52,13.40],[41.39,2.15],[59.33,18.06],
-    [-23.55,-46.63],[-34.60,-58.38],[35.68,139.69],[-33.87,151.21],
-    [-26.20,28.04],[-1.29,36.82],[6.36,2.42],[31.77,35.21],
-    [30.04,31.24],[33.89,35.50],[28.61,77.21],[55.75,37.62],
-    [1.35,103.82],[4.71,-74.07],[19.08,72.88],[22.28,114.16],
-    [64.13,-21.93],[39.92,116.39],[25.20,55.27],[41.01,28.96]
-  ];
+const LOCATIONS = [
+[37.77,-122.41],[40.74,-73.99],[34.05,-118.24],[51.51,-0.12],
+[48.85,2.35],[52.52,13.40],[41.39,2.15],[59.33,18.06],
+[-23.55,-46.63],[-34.60,-58.38],[35.68,139.69],[-33.87,151.21],
+[-26.20,28.04],[-1.29,36.82],[6.36,2.42],[31.77,35.21],
+[30.04,31.24],[33.89,35.50],[28.61,77.21],[55.75,37.62],
+[1.35,103.82],[4.71,-74.07],[19.08,72.88],[22.28,114.16],
+[64.13,-21.93],[39.92,116.39],[25.20,55.27],[41.01,28.96]
+];
 
-  function resize() {
-    W = canvas.width  = canvas.offsetWidth;
-    H = canvas.height = canvas.offsetHeight;
-    cx = W / 2; cy = H / 2;
-    R = Math.min(W, H) * 0.38;
+function resize() {
+W = canvas.width  = canvas.offsetWidth;
+H = canvas.height = canvas.offsetHeight;
+cx = W / 2; cy = H / 2;
+R = Math.min(W, H) * 0.38;
+}
+
+function latLngTo3D(lat, lng, r) {
+const phi   = (90 - lat)  * Math.PI / 180;
+const theta = (lng + 180) * Math.PI / 180;
+return {
+x: -r * Math.sin(phi) * Math.cos(theta),
+y:  r * Math.cos(phi),
+z:  r * Math.sin(phi) * Math.sin(theta)
+};
+}
+
+function project(p) {
+const cosR = Math.cos(rot), sinR = Math.sin(rot);
+const x = p.x * cosR - p.z * sinR;
+const z = p.x * sinR + p.z * cosR;
+return { x: cx + x, y: cy - p.y, z };
+}
+
+function drawGlobe() {
+ctx.clearRect(0, 0, W, H);
+
+```
+// Atmosphere glow
+const atm = ctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R * 1.3);
+atm.addColorStop(0, 'rgba(78,205,196,0.06)');
+atm.addColorStop(0.5, 'rgba(78,205,196,0.02)');
+atm.addColorStop(1, 'rgba(78,205,196,0)');
+ctx.fillStyle = atm;
+ctx.beginPath();
+ctx.arc(cx, cy, R * 1.3, 0, Math.PI * 2);
+ctx.fill();
+
+// Globe base
+const globe = ctx.createRadialGradient(cx - R*0.25, cy - R*0.2, R*0.1, cx, cy, R);
+globe.addColorStop(0, '#1a2e3a');
+globe.addColorStop(0.5, '#0d1b2a');
+globe.addColorStop(1, '#07090f');
+ctx.fillStyle = globe;
+ctx.beginPath();
+ctx.arc(cx, cy, R, 0, Math.PI * 2);
+ctx.fill();
+
+// Grid lines
+ctx.strokeStyle = 'rgba(78,205,196,0.06)';
+ctx.lineWidth = 0.5;
+
+// Latitude lines
+for (let lat = -60; lat <= 60; lat += 30) {
+  ctx.beginPath();
+  let first = true;
+  for (let lng = -180; lng <= 180; lng += 3) {
+    const p3 = latLngTo3D(lat, lng, R);
+    const p  = project(p3);
+    if (p.z < 0) { first = true; continue; }
+    first ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    first = false;
   }
+  ctx.stroke();
+}
 
-  function latLngTo3D(lat, lng, r) {
-    const phi   = (90 - lat)  * Math.PI / 180;
-    const theta = (lng + 180) * Math.PI / 180;
-    return {
-      x: -r * Math.sin(phi) * Math.cos(theta),
-      y:  r * Math.cos(phi),
-      z:  r * Math.sin(phi) * Math.sin(theta)
-    };
+// Longitude lines
+for (let lng = 0; lng < 360; lng += 30) {
+  ctx.beginPath();
+  let first = true;
+  for (let lat = -90; lat <= 90; lat += 3) {
+    const p3 = latLngTo3D(lat, lng, R);
+    const p  = project(p3);
+    if (p.z < 0) { first = true; continue; }
+    first ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+    first = false;
   }
+  ctx.stroke();
+}
 
-  function project(p) {
-    const cosR = Math.cos(rot), sinR = Math.sin(rot);
-    const x = p.x * cosR - p.z * sinR;
-    const z = p.x * sinR + p.z * cosR;
-    return { x: cx + x, y: cy - p.y, z };
-  }
+// Story dots
+const t = Date.now() / 1000;
+LOCATIONS.forEach((loc, i) => {
+  const p3 = latLngTo3D(loc[0], loc[1], R);
+  const p  = project(p3);
+  if (p.z < 0) return;
 
-  function drawGlobe() {
-    ctx.clearRect(0, 0, W, H);
+  const depth  = (p.z / R + 1) / 2;
+  const pulse  = (Math.sin(t * 1.4 + i * 0.7) + 1) / 2;
+  const radius = 2.5 + depth * 1.5;
+  const alpha  = 0.4 + depth * 0.6;
 
-    // Atmosphere glow
-    const atm = ctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R * 1.3);
-    atm.addColorStop(0, 'rgba(78,205,196,0.06)');
-    atm.addColorStop(0.5, 'rgba(78,205,196,0.02)');
-    atm.addColorStop(1, 'rgba(78,205,196,0)');
-    ctx.fillStyle = atm;
-    ctx.beginPath();
-    ctx.arc(cx, cy, R * 1.3, 0, Math.PI * 2);
-    ctx.fill();
+  // Pulse ring
+  const ringR = radius + pulse * 8;
+  const ring  = ctx.createRadialGradient(p.x, p.y, radius, p.x, p.y, ringR);
+  ring.addColorStop(0, `rgba(78,205,196,${0.3 * pulse * depth})`);
+  ring.addColorStop(1, 'rgba(78,205,196,0)');
+  ctx.fillStyle = ring;
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, ringR, 0, Math.PI * 2);
+  ctx.fill();
 
-    // Globe base
-    const globe = ctx.createRadialGradient(cx - R*0.25, cy - R*0.2, R*0.1, cx, cy, R);
-    globe.addColorStop(0, '#1a2e3a');
-    globe.addColorStop(0.5, '#0d1b2a');
-    globe.addColorStop(1, '#07090f');
-    ctx.fillStyle = globe;
-    ctx.beginPath();
-    ctx.arc(cx, cy, R, 0, Math.PI * 2);
-    ctx.fill();
+  // Dot glow
+  const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius * 3);
+  glow.addColorStop(0, `rgba(78,205,196,${alpha * 0.8})`);
+  glow.addColorStop(1, 'rgba(78,205,196,0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, radius * 3, 0, Math.PI * 2);
+  ctx.fill();
 
-    // Grid lines
-    ctx.strokeStyle = 'rgba(78,205,196,0.06)';
-    ctx.lineWidth = 0.5;
+  // Core dot
+  ctx.fillStyle = `rgba(200,245,242,${alpha})`;
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+  ctx.fill();
+});
 
-    // Latitude lines
-    for (let lat = -60; lat <= 60; lat += 30) {
-      ctx.beginPath();
-      let first = true;
-      for (let lng = -180; lng <= 180; lng += 3) {
-        const p3 = latLngTo3D(lat, lng, R);
-        const p  = project(p3);
-        if (p.z < 0) { first = true; continue; }
-        first ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
-        first = false;
-      }
-      ctx.stroke();
-    }
+// Globe edge shadow
+const edge = ctx.createRadialGradient(cx, cy, R * 0.7, cx, cy, R);
+edge.addColorStop(0, 'rgba(0,0,0,0)');
+edge.addColorStop(1, 'rgba(0,0,0,0.55)');
+ctx.fillStyle = edge;
+ctx.beginPath();
+ctx.arc(cx, cy, R, 0, Math.PI * 2);
+ctx.fill();
 
-    // Longitude lines
-    for (let lng = 0; lng < 360; lng += 30) {
-      ctx.beginPath();
-      let first = true;
-      for (let lat = -90; lat <= 90; lat += 3) {
-        const p3 = latLngTo3D(lat, lng, R);
-        const p  = project(p3);
-        if (p.z < 0) { first = true; continue; }
-        first ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
-        first = false;
-      }
-      ctx.stroke();
-    }
+// Specular highlight
+const spec = ctx.createRadialGradient(cx - R*0.3, cy - R*0.3, 0, cx - R*0.3, cy - R*0.3, R*0.6);
+spec.addColorStop(0, 'rgba(255,255,255,0.04)');
+spec.addColorStop(1, 'rgba(255,255,255,0)');
+ctx.fillStyle = spec;
+ctx.beginPath();
+ctx.arc(cx, cy, R, 0, Math.PI * 2);
+ctx.fill();
+```
 
-    // Story dots
-    const t = Date.now() / 1000;
-    LOCATIONS.forEach((loc, i) => {
-      const p3 = latLngTo3D(loc[0], loc[1], R);
-      const p  = project(p3);
-      if (p.z < 0) return;
+}
 
-      const depth  = (p.z / R + 1) / 2;
-      const pulse  = (Math.sin(t * 1.4 + i * 0.7) + 1) / 2;
-      const radius = 2.5 + depth * 1.5;
-      const alpha  = 0.4 + depth * 0.6;
+function animate() {
+rot += 0.0015;
+drawGlobe();
+requestAnimationFrame(animate);
+}
 
-      // Pulse ring
-      const ringR = radius + pulse * 8;
-      const ring  = ctx.createRadialGradient(p.x, p.y, radius, p.x, p.y, ringR);
-      ring.addColorStop(0, `rgba(78,205,196,${0.3 * pulse * depth})`);
-      ring.addColorStop(1, 'rgba(78,205,196,0)');
-      ctx.fillStyle = ring;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, ringR, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Dot glow
-      const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius * 3);
-      glow.addColorStop(0, `rgba(78,205,196,${alpha * 0.8})`);
-      glow.addColorStop(1, 'rgba(78,205,196,0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, radius * 3, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Core dot
-      ctx.fillStyle = `rgba(200,245,242,${alpha})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Globe edge shadow
-    const edge = ctx.createRadialGradient(cx, cy, R * 0.7, cx, cy, R);
-    edge.addColorStop(0, 'rgba(0,0,0,0)');
-    edge.addColorStop(1, 'rgba(0,0,0,0.55)');
-    ctx.fillStyle = edge;
-    ctx.beginPath();
-    ctx.arc(cx, cy, R, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Specular highlight
-    const spec = ctx.createRadialGradient(cx - R*0.3, cy - R*0.3, 0, cx - R*0.3, cy - R*0.3, R*0.6);
-    spec.addColorStop(0, 'rgba(255,255,255,0.04)');
-    spec.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = spec;
-    ctx.beginPath();
-    ctx.arc(cx, cy, R, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  function animate() {
-    rot += 0.0015;
-    drawGlobe();
-    requestAnimationFrame(animate);
-  }
-
-  window.addEventListener('resize', resize);
-  resize();
-  animate();
+window.addEventListener(‘resize’, resize);
+resize();
+animate();
 })();
 
 // Scroll reveal
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      observer.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.12 });
-
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-</script>
-
-</body>
-</html>
+const observer = new IntersectionOb
