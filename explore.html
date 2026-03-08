@@ -629,9 +629,13 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 
       <div class="sp-group">
         <label class="sp-label">City, neighborhood, or address</label>
-        <div style="display:grid; grid-template-columns:1fr auto; gap:8px;">
-          <input class="sp-input" type="text" id="sp-loc" placeholder="e.g. West Hollywood, CA" autocomplete="off">
-          <button class="btn btn-ghost" style="font-size:0.6rem; padding:10px 14px;" onclick="spGeocode()">Find</button>
+        <div style="position:relative;">
+          <div style="display:grid; grid-template-columns:1fr auto; gap:8px;">
+            <input class="sp-input" type="text" id="sp-loc" placeholder="e.g. San Diego, CA" autocomplete="off">
+            <button class="btn btn-ghost" style="font-size:0.6rem; padding:10px 14px;" id="sp-find-btn" onclick="spGeocode()">Find</button>
+          </div>
+          <div id="sp-loc-suggestions" style="display:none; position:absolute; top:100%; left:0; right:0; background:#0e1118; border:1px solid rgba(255,255,255,0.12); border-top:none; z-index:20; max-height:200px; overflow-y:auto;"></div>
+          <div id="sp-geo-error" style="display:none; font-family:'JetBrains Mono',monospace; font-size:0.56rem; color:#c97a8e; margin-top:6px; letter-spacing:0.06em;"></div>
         </div>
         <label class="sp-withheld" style="margin-top:10px;">
           <input type="checkbox" id="sp-withheld">
@@ -906,9 +910,12 @@ function initGlobe() {
     .pointLat('lat')
     .pointLng('lng')
     .pointColor(function() { return '#e8c97a'; })
-    .pointAltitude(0.01)
-    .pointRadius(0.4)
+    .pointAltitude(0.015)
+    .pointRadius(0.7)
     .pointLabel(function(d) { return d.location_display || 'Location withheld'; })
+    .onPointHover(function(point) {
+      document.getElementById('globe-container').style.cursor = point ? 'pointer' : 'default';
+    })
     .onPointClick(function(point) {
       if (globeMode === 'marq') {
         spLat = point.lat;
@@ -1138,10 +1145,12 @@ window.addEventListener('load', function() {
     });
   });
 
-  // Location enter key
+  // Location enter key + autocomplete
   document.getElementById('sp-loc').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') { e.preventDefault(); spGeocode(); }
+    if (e.key === 'Escape') { spHideSuggestions(); }
   });
+  spInitAutocomplete();
 });
 
 // ── IN-PAGE SUBMIT PANEL ─────────────────────────────────────────────
@@ -1235,19 +1244,99 @@ function spNext() {
   spGoStep(spStep + 1);
 }
 
-// Geocode
+// Geocode — Find button
 async function spGeocode() {
   var loc = document.getElementById('sp-loc').value.trim();
   if (!loc) return;
+  var btn = document.getElementById('sp-find-btn');
+  var errEl = document.getElementById('sp-geo-error');
+  var inputEl = document.getElementById('sp-loc');
+  btn.textContent = '...';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+  spHideSuggestions();
   try {
-    var r = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(loc));
+    var r = await fetch(
+      'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(loc),
+      { headers: { 'Accept-Language': 'en', 'User-Agent': 'Marqd-Archive/1.0 (contact@marqd.org)' } }
+    );
     var d = await r.json();
     if (d && d[0]) {
       spLat = parseFloat(d[0].lat);
       spLng = parseFloat(d[0].lon);
-      document.getElementById('sp-loc').style.borderColor = 'rgba(78,205,196,0.5)';
+      inputEl.value = d[0].display_name.split(',').slice(0,3).join(',');
+      inputEl.style.borderColor = 'rgba(78,205,196,0.5)';
+    } else {
+      inputEl.style.borderColor = 'rgba(201,122,142,0.5)';
+      errEl.textContent = 'Location not found — try a city name or full address.';
+      errEl.style.display = 'block';
     }
+  } catch(e) {
+    errEl.textContent = 'Could not reach location service — check your connection.';
+    errEl.style.display = 'block';
+  } finally {
+    btn.textContent = 'Find';
+    btn.disabled = false;
+  }
+}
+
+// Autocomplete — fires as user types
+var spGeoTimer = null;
+function spInitAutocomplete() {
+  var input = document.getElementById('sp-loc');
+  input.addEventListener('input', function() {
+    clearTimeout(spGeoTimer);
+    var val = this.value.trim();
+    if (val.length < 3) { spHideSuggestions(); return; }
+    spGeoTimer = setTimeout(function() { spFetchSuggestions(val); }, 350);
+  });
+  // Close suggestions when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#sp-loc') && !e.target.closest('#sp-loc-suggestions')) {
+      spHideSuggestions();
+    }
+  });
+}
+
+async function spFetchSuggestions(q) {
+  try {
+    var r = await fetch(
+      'https://nominatim.openstreetmap.org/search?format=json&limit=5&q=' + encodeURIComponent(q),
+      { headers: { 'Accept-Language': 'en', 'User-Agent': 'Marqd-Archive/1.0 (contact@marqd.org)' } }
+    );
+    var d = await r.json();
+    spShowSuggestions(d);
   } catch(e) {}
+}
+
+function spShowSuggestions(results) {
+  var box = document.getElementById('sp-loc-suggestions');
+  if (!results || results.length === 0) { box.style.display = 'none'; return; }
+  box.innerHTML = '';
+  results.forEach(function(item) {
+    var parts = item.display_name.split(',');
+    var label = parts.slice(0,3).join(',').trim();
+    var div = document.createElement('div');
+    div.style.cssText = 'padding:10px 12px; font-family:"JetBrains Mono",monospace; font-size:0.58rem; color:#a8a5a0; cursor:pointer; border-bottom:1px solid rgba(255,255,255,0.06); letter-spacing:0.04em;';
+    div.textContent = label;
+    div.addEventListener('mouseenter', function() { this.style.background = 'rgba(232,201,122,0.07)'; this.style.color = '#e8c97a'; });
+    div.addEventListener('mouseleave', function() { this.style.background = ''; this.style.color = '#a8a5a0'; });
+    div.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      spLat = parseFloat(item.lat);
+      spLng = parseFloat(item.lon);
+      document.getElementById('sp-loc').value = label;
+      document.getElementById('sp-loc').style.borderColor = 'rgba(78,205,196,0.5)';
+      document.getElementById('sp-geo-error').style.display = 'none';
+      spHideSuggestions();
+    });
+    box.appendChild(div);
+  });
+  box.style.display = 'block';
+}
+
+function spHideSuggestions() {
+  document.getElementById('sp-loc-suggestions').style.display = 'none';
 }
 // Word count
 function spWordCount() {
