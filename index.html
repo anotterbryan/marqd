@@ -98,7 +98,7 @@ nav.scrolled {
     inset 0 0 80px rgba(0,0,0,0.7);
   border: 1px solid rgba(78,205,196,0.15);
   position: relative;
-  animation: globe-breathe 8s ease-in-out infinite;
+  animation: globe-breathe 8s ease-in-out infinite, globe-spin 90s linear infinite;
 }
 .mock-dot {
   position: absolute;
@@ -107,11 +107,16 @@ nav.scrolled {
   border-radius: 50%;
   background: #e8c97a;
   box-shadow: 0 0 6px rgba(232,201,122,0.9), 0 0 14px rgba(232,201,122,0.35);
+  /* dot-pulse uses transform:scale — combine with the sphere's rotation via will-change */
   animation: dot-pulse 3s ease-in-out infinite;
 }
 .mock-dot:nth-child(odd)  { animation-delay: 0s; }
 .mock-dot:nth-child(even) { animation-delay: 1.5s; }
 .mock-dot:nth-child(3n)   { animation-delay: 0.8s; }
+@keyframes globe-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 @keyframes globe-breathe {
   0%,100% { box-shadow: 0 0 80px rgba(78,205,196,0.12), 0 0 200px rgba(78,205,196,0.05), inset 0 0 80px rgba(0,0,0,0.7); }
   50%     { box-shadow: 0 0 110px rgba(78,205,196,0.2), 0 0 260px rgba(78,205,196,0.09), inset 0 0 80px rgba(0,0,0,0.7); }
@@ -607,12 +612,8 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">A Living Queer Archive &nbsp;·&nbsp; Est. 2025</div>
     <h1 class="hero-title">Marq<span>'</span>d</h1>
     <p class="hero-tagline">Q marks the spot.</p>
-    <p class="hero-mission">
-      A <strong>living archive of queer existence</strong> — geographically indexed, anonymously contributed, and built to last. Every dot on this globe is a firsthand story. Every story is a primary source.
-    </p>
     <div class="hero-ctas">
       <a href="explore.html" class="btn btn-gold">Explore the Archive →</a>
       <a href="about.html" class="btn btn-outline">Why This Exists</a>
