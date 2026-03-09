@@ -754,6 +754,26 @@ async function submitMarq() {
           audioUrl = pubAudio2.data.publicUrl;
         }
       }
+    } else if (selectedAudio === 'ai' && selectedVoice) {
+      try {
+        var storyText = document.getElementById('story-input').value.trim();
+        var voiceRes = await fetch(SUPABASE_URL + '/functions/v1/generate-voice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+          body: JSON.stringify({ text: storyText, voice_id: selectedVoice })
+        });
+        if (voiceRes.ok) {
+          var audioBlob = await voiceRes.blob();
+          var aiAudioName = 'marq-audio-' + Date.now() + '.mp3';
+          var aiUpload = await db.storage.from('marq-audio').upload(aiAudioName, audioBlob, { contentType: 'audio/mpeg' });
+          if (!aiUpload.error) {
+            audioUrl = db.storage.from('marq-audio').getPublicUrl(aiAudioName).data.publicUrl;
+          }
+        }
+      } catch(voiceErr) {
+        console.warn('Voice generation failed, continuing without audio:', voiceErr);
+        // Non-fatal — submission continues without audio_url
+      }
     }
 
     var withheld = document.getElementById('withheld-check').checked;

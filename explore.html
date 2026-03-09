@@ -1497,6 +1497,23 @@ async function spSubmit() {
         var ar2 = await db.storage.from('marq-audio').upload(an2, uf);
         if (!ar2.error) audioUrl = db.storage.from('marq-audio').getPublicUrl(an2).data.publicUrl;
       }
+    } else if (spAudioType === 'ai' && spVoiceId) {
+      try {
+        var aiStory = document.getElementById('sp-story').value.trim();
+        var vRes = await fetch(SUPABASE_URL + '/functions/v1/generate-voice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+          body: JSON.stringify({ text: aiStory, voice_id: spVoiceId })
+        });
+        if (vRes.ok) {
+          var vBlob = await vRes.blob();
+          var vName = 'marq-audio-' + Date.now() + '.mp3';
+          var vUp = await db.storage.from('marq-audio').upload(vName, vBlob, { contentType: 'audio/mpeg' });
+          if (!vUp.error) audioUrl = db.storage.from('marq-audio').getPublicUrl(vName).data.publicUrl;
+        }
+      } catch(vErr) {
+        console.warn('Voice generation failed, continuing without audio:', vErr);
+      }
     }
     var withheld = document.getElementById('sp-withheld').checked;
     var payload = {
