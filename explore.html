@@ -524,19 +524,20 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 <nav id="nav">
   <a href="index.html" class="wordmark">Marq<span>'</span>d</a>
   <ul class="nav-links">
+    <li><a href="explore.html" class="active">Explore</a></li>
     <li><a href="about.html">About</a></li>
     <li><a href="support.html">Support</a></li>
     <li><a href="contact.html">Contact</a></li>
-    <li><a href="#" class="nav-submit-btn" onclick="spOpen(event)">Leave a Marq</a></li>
   </ul>
+  <a href="#" class="btn btn-gold nav-submit-btn" onclick="spOpen(event)">Leave a Marq</a>
   <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
 </nav>
 <div class="nav-mobile" id="nav-mobile">
-  <a href="index.html">Home</a>
+  <a href="explore.html">Explore</a>
   <a href="about.html">About</a>
   <a href="support.html">Support</a>
   <a href="contact.html">Contact</a>
-  <a href="#" onclick="spOpen(event)">Leave a Marq →</a>
+  <a href="#" onclick="spOpen(event)">Leave a Marq</a>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════
@@ -824,8 +825,8 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────────────────
-var SUPABASE_URL  = 'https://aeazbkmrtjsizrjytuwz.supabase.co';
-var SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFlYXpia21ydGpzaXpyanl0dXd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NjYzNTUsImV4cCI6MjA4ODQ0MjM1NX0.1cA_UiHZckcTV_Wdh58ASoigs_ADIKpu5wmDIirfMUk';
+var SUPABASE_URL  = 'https://llsfwdwjygdjwgvtskpx.supabase.co';
+var SUPABASE_KEY  = 'sb_publishable_v-ezH58URDnW60txjWuawg_KRwWiahQ';
 var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Seed data shown before real stories arrive
@@ -938,7 +939,7 @@ function initGlobe() {
 
   globeInstance.controls().autoRotate = true;
   globeInstance.controls().autoRotateSpeed = 0.4;
-  globeInstance.controls().enableZoom = false; // Disabled: allows page to scroll when hovering globe
+  globeInstance.controls().enableZoom = true;
 
   // Sizing
   function sizeGlobe() {
@@ -1546,5 +1547,17 @@ function spCopyCite() {
 }
 
 </script>
+
+<footer>
+  <div class="footer-mark">Marq<span>'</span>d</div>
+  <ul class="footer-links">
+    <li><a href="explore.html">Explore</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="support.html">Support</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="mailto:marqd.official@gmail.com">Email</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
+</footer>
 </body>
 </html>
