@@ -345,12 +345,12 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
       <div id="voice-selector">
         <label class="form-label">Choose a voice</label>
         <div class="voice-options">
-          <div class="voice-option selected" data-voice="21m00Tcm4TlvDq8ikWAM" onclick="selectVoice(this, '21m00Tcm4TlvDq8ikWAM')"><div class="voice-name">Rachel</div></div>
-          <div class="voice-option" data-voice="AZnzlk1XvdvUeBnXmlld" onclick="selectVoice(this, 'AZnzlk1XvdvUeBnXmlld')"><div class="voice-name">Domi</div></div>
-          <div class="voice-option" data-voice="EXAVITQu4vr4xnSDxMaL" onclick="selectVoice(this, 'EXAVITQu4vr4xnSDxMaL')"><div class="voice-name">Bella</div></div>
-          <div class="voice-option" data-voice="ErXwobaYiN019PkySvjV" onclick="selectVoice(this, 'ErXwobaYiN019PkySvjV')"><div class="voice-name">Antoni</div></div>
-          <div class="voice-option" data-voice="VR6AewLTigWG4xSOukaG" onclick="selectVoice(this, 'VR6AewLTigWG4xSOukaG')"><div class="voice-name">Arnold</div></div>
-          <div class="voice-option" data-voice="pNInz6obpgDQGcFmaJgB" onclick="selectVoice(this, 'pNInz6obpgDQGcFmaJgB')"><div class="voice-name">Adam</div></div>
+          <div class="voice-option selected" data-voice="en-US-Neural2-F" onclick="selectVoice(this, 'en-US-Neural2-F')"><div class="voice-name">Aria</div></div>
+          <div class="voice-option" data-voice="en-US-Neural2-D" onclick="selectVoice(this, 'en-US-Neural2-D')"><div class="voice-name">Marcus</div></div>
+          <div class="voice-option" data-voice="en-US-Neural2-C" onclick="selectVoice(this, 'en-US-Neural2-C')"><div class="voice-name">Sofia</div></div>
+          <div class="voice-option" data-voice="en-US-Neural2-A" onclick="selectVoice(this, 'en-US-Neural2-A')"><div class="voice-name">Jade</div></div>
+          <div class="voice-option" data-voice="en-US-Wavenet-D" onclick="selectVoice(this, 'en-US-Wavenet-D')"><div class="voice-name">River</div></div>
+          <div class="voice-option" data-voice="en-US-Wavenet-B" onclick="selectVoice(this, 'en-US-Wavenet-B')"><div class="voice-name">Owen</div></div>
         </div>
       </div>
 
@@ -491,7 +491,7 @@ var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var currentStep = 0;
 var selectedTags = [];
 var selectedAudio = 'ai';
-var selectedVoice = '21m00Tcm4TlvDq8ikWAM';
+var selectedVoice = 'en-US-Neural2-F';
 var geocodedLat = null, geocodedLng = null;
 
 // Pre-fill from globe pin drop
