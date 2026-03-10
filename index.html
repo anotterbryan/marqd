@@ -12,358 +12,217 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { background: #07090f; scroll-behavior: smooth; }
-body {
-  background: #07090f;
-  color: #f0ece4;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
+body { background: #07090f; color: #f0ece4; font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
 
-/* NAV */
+/* ── NAV ─────────────────────────────────────────────── */
 nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 500;
-  padding: 0 48px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(7,9,15,0);
-  transition: background 0.4s, border-color 0.4s;
-  border-bottom: 1px solid rgba(255,255,255,0);
-}
-nav.scrolled {
-  background: rgba(7,9,15,0.96);
-  border-bottom-color: rgba(255,255,255,0.07);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7,9,15,0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-}
-.wordmark { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; font-style: italic; font-weight: 600; color: #f0ece4; }
-.wordmark span { color: #e8c97a; }
-.nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
-.nav-links a { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.13em; color: rgba(240,236,228,0.6); transition: color 0.2s; }
-.nav-links a:hover { color: #e8c97a; }
-.nav-submit-btn {
-  padding: 8px 18px;
-  background: #e8c97a;
-  color: #07090f;
-  border-radius: 2px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.62rem;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.13em;
-  transition: background 0.2s;
-}
-.nav-submit-btn:hover { background: #f0d896; color: #07090f; }
-.nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-.nav-toggle span { display: block; width: 22px; height: 1px; background: #f0ece4; }
-.nav-mobile { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(7,9,15,0.98); border-bottom: 1px solid rgba(255,255,255,0.07); z-index: 499; padding: 20px 48px; flex-direction: column; }
-.nav-mobile.open { display: flex; }
-.nav-mobile a { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.13em; color: #a8a5a0; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.2s; }
-.nav-mobile a:last-child { border-bottom: none; }
-.nav-mobile a:hover { color: #e8c97a; }
-
-/* HERO */
-#hero {
-  width: 100%;
-  height: 100vh;
-  height: 100svh;
-  min-height: 640px;
-  background: #07090f;
-  position: relative;
-  overflow: hidden;
-}
-.mock-globe {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-  pointer-events: none;
-}
-.mock-globe-sphere {
-  width: min(82vw, 82vh, 680px);
-  height: min(82vw, 82vh, 680px);
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%,
-    #1a2035 0%, #0d1220 40%, #07090f 70%, #030508 100%);
-  box-shadow:
-    0 0 80px rgba(78,205,196,0.12),
-    0 0 200px rgba(78,205,196,0.05),
-    inset 0 0 80px rgba(0,0,0,0.7);
-  border: 1px solid rgba(78,205,196,0.15);
-  position: relative;
-  animation: globe-breathe 8s ease-in-out infinite, globe-spin 90s linear infinite;
-}
-.mock-dot {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #e8c97a;
-  box-shadow: 0 0 6px rgba(232,201,122,0.9), 0 0 14px rgba(232,201,122,0.35);
-  /* dot-pulse uses transform:scale — combine with the sphere's rotation via will-change */
-  animation: dot-pulse 3s ease-in-out infinite;
-}
-.mock-dot:nth-child(odd)  { animation-delay: 0s; }
-.mock-dot:nth-child(even) { animation-delay: 1.5s; }
-.mock-dot:nth-child(3n)   { animation-delay: 0.8s; }
-@keyframes globe-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes globe-breathe {
-  0%,100% { box-shadow: 0 0 80px rgba(78,205,196,0.12), 0 0 200px rgba(78,205,196,0.05), inset 0 0 80px rgba(0,0,0,0.7); }
-  50%     { box-shadow: 0 0 110px rgba(78,205,196,0.2), 0 0 260px rgba(78,205,196,0.09), inset 0 0 80px rgba(0,0,0,0.7); }
-}
-@keyframes dot-pulse {
-  0%,100% { opacity: 0.45; transform: scale(1); }
-  50%     { opacity: 1;    transform: scale(1.5); }
-}
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: radial-gradient(ellipse at center, rgba(7,9,15,0.15) 0%, rgba(7,9,15,0.55) 100%);
-  pointer-events: none;
-}
-.hero-content {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0 32px;
-  pointer-events: none;
-}
-.hero-content > * { pointer-events: auto; }
-.hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.22em; color: #4ecdc4; margin-bottom: 20px; opacity: 0; animation: rise 1.4s 0.3s cubic-bezier(0.16,1,0.3,1) forwards; }
-.hero-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(5rem, 14vw, 9rem); font-weight: 600; font-style: italic; line-height: 1; letter-spacing: -0.02em; color: #f0ece4; margin-bottom: 16px; opacity: 0; animation: rise 1.4s 0.1s cubic-bezier(0.16,1,0.3,1) forwards; }
-.hero-title span { color: #e8c97a; }
-.hero-tagline { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1rem, 2.5vw, 1.35rem); font-style: italic; color: rgba(240,236,228,0.65); margin-bottom: 28px; opacity: 0; animation: rise 1.4s 0.45s cubic-bezier(0.16,1,0.3,1) forwards; }
-.hero-mission { font-size: clamp(0.85rem, 1.5vw, 0.98rem); font-weight: 300; line-height: 1.85; color: rgba(240,236,228,0.7); max-width: 560px; margin: 0 auto 40px; opacity: 0; animation: rise 1.4s 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
-.hero-mission strong { color: #f0ece4; font-weight: 400; }
-.hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: rise 1.4s 0.75s cubic-bezier(0.16,1,0.3,1) forwards; }
-@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Live counter */
-.live-counter {
-  position: absolute;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
-  color: rgba(240,236,228,0.5);
-  letter-spacing: 0.1em;
-  white-space: nowrap;
-  opacity: 0;
-  animation: rise 1.4s 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.live-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ecdc4; animation: live-pulse 2s ease-in-out infinite; }
-@keyframes live-pulse { 0%,100%{opacity:0.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
-#marq-count { color: #e8c97a; }
-
-.scroll-cue { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: rise 1.4s 1.4s cubic-bezier(0.16,1,0.3,1) forwards; }
-.scroll-cue-label { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(240,236,228,0.3); }
-.scroll-cue-bar { width: 1px; height: 36px; background: linear-gradient(to bottom, rgba(232,201,122,0.5), transparent); animation: scroll-bob 2.2s ease-in-out infinite; }
-@keyframes scroll-bob { 0%,100%{opacity:0.4} 50%{opacity:1} }
-
-/* BUTTONS */
-.btn { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.14em; border-radius: 2px; padding: 13px 28px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; }
-.btn-gold { background: #e8c97a; color: #07090f; border: 1px solid #e8c97a; }
-.btn-gold:hover { background: #f0d896; border-color: #f0d896; transform: translateY(-1px); }
-.btn-outline { background: transparent; color: rgba(240,236,228,0.7); border: 1px solid rgba(255,255,255,0.2); }
-.btn-outline:hover { border-color: #e8c97a; color: #e8c97a; transform: translateY(-1px); }
-
-/* PRIDE RULE */
-.pride-rule { display: block; width: 100%; height: 1px; border: none; background: linear-gradient(to right, #c0392b, #d4651a, #c9a227, #2e7d52, #2471a3, #7d3c98); opacity: 0.3; }
-
-/* SECTIONS */
-.page-section { padding: 108px 0; }
-.page-section-alt { background: #0a0c13; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 108px 0; }
-.container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
-.eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.2em; color: #7a7d8a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-.eyebrow::before { content: 'λ'; color: #e8c97a; font-family: 'Playfair Display', serif; font-size: 0.95rem; font-style: italic; }
-.section-heading { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; line-height: 1.2; color: #f0ece4; margin-bottom: 24px; }
-.section-heading em { font-style: italic; color: #e8c97a; }
-.body-text { font-size: 0.95rem; font-weight: 300; line-height: 1.9; color: #a8a5a0; margin-bottom: 18px; }
-.body-text strong { color: #f0ece4; font-weight: 400; }
-
-/* STORY DRAWER */
-#drawer-backdrop {
-  position: fixed; inset: 0; z-index: 800;
-  background: rgba(7,9,15,0.7);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.35s;
-}
-#drawer-backdrop.open { opacity: 1; pointer-events: auto; }
-
-#story-drawer {
-  position: fixed;
-  top: 0; right: 0; bottom: 0;
-  width: 100%;
-  max-width: 520px;
-  z-index: 900;
-  background: #0e1118;
-  border-left: 1px solid rgba(255,255,255,0.08);
-  transform: translateX(100%);
-  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-#story-drawer.open { transform: translateX(0); }
-
-.drawer-header {
-  padding: 24px 28px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 0 48px;
+}
+.nav-inner {
+  max-width: 1160px;
+  margin: 0 auto;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-start;
+  height: 64px;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: #e8c97a;
+  text-decoration: none;
+  letter-spacing: 0.02em;
   flex-shrink: 0;
 }
-.drawer-record-id { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #7a7d8a; letter-spacing: 0.08em; margin-bottom: 6px; }
-.drawer-record-id span { color: #e8c97a; }
-.drawer-location { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 1.2rem; color: #e8c97a; }
-.drawer-close {
-  width: 32px; height: 32px; border-radius: 2px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #7a7d8a; font-size: 1.1rem;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; flex-shrink: 0;
-  transition: all 0.2s;
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.drawer-close:hover { background: rgba(255,255,255,0.1); color: #f0ece4; }
+.nav-links a {
+  color: #7a7d8a;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.nav-links a:hover { color: #f0ece4; }
+.nav-links a.active { color: #e8c97a; }
+@media (max-width: 900px) {
+  nav { padding: 0 24px; }
+  .nav-links { gap: 16px; }
+  .nav-links a { font-size: 0.8rem; }
+}
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+}
 
-.drawer-body { flex: 1; overflow-y: auto; padding: 24px 28px; -webkit-overflow-scrolling: touch; }
-.drawer-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #7a7d8a; margin-bottom: 20px; display: flex; gap: 16px; flex-wrap: wrap; }
-.drawer-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
-.drawer-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; border: 1px solid rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 1px; }
+/* ── UTILITIES ───────────────────────────────────────── */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #e8c97a;
+}
+.eyebrow::before { content: 'λ '; }
+.pride-rule { display: block; width: 100%; height: 1px; border: none; background: linear-gradient(to right, #c0392b, #d4651a, #c9a227, #2e7d52, #2471a3, #7d3c98); opacity: 0.3; }
 
-.drawer-photo { width: 100%; border-radius: 2px; margin-bottom: 20px; max-height: 220px; object-fit: cover; border: 1px solid rgba(255,255,255,0.07); }
+/* ── BUTTONS ─────────────────────────────────────────── */
+.btn-primary {
+  display: inline-block;
+  background: #e8c97a;
+  color: #07090f;
+  padding: 14px 28px;
+  border-radius: 2px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-secondary {
+  display: inline-block;
+  color: #4ecdc4;
+  padding: 14px 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(78,205,196,0.3);
+  transition: border-color 0.2s;
+}
+.btn-secondary:hover { border-color: #4ecdc4; }
 
-.drawer-story { position: relative; padding-left: 20px; margin-bottom: 28px; }
-.drawer-story::before { content: '\201C'; position: absolute; left: 0; top: -4px; font-family: 'Playfair Display', serif; font-size: 2rem; color: #e8c97a; opacity: 0.5; line-height: 1; }
-.drawer-story p { font-size: 0.92rem; line-height: 1.85; color: #c8c4bc; font-style: italic; }
+/* ── HERO ────────────────────────────────────────────── */
+.hero {
+  padding: 120px 0 80px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #f0ece4;
+  margin-bottom: 24px;
+  max-width: 760px;
+}
+.hero h1 em { font-style: italic; color: #4ecdc4; }
+.hero-sub { font-size: 1.125rem; color: #f0ece4; margin-bottom: 12px; }
+.hero-body { font-size: 1rem; color: #7a7d8a; margin-bottom: 40px; max-width: 560px; line-height: 1.75; }
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
 
-/* Audio player */
-.audio-player {
+/* ── SECTIONS ────────────────────────────────────────── */
+.home-section { padding: 108px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.home-section:last-of-type { border-bottom: none; }
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 56px;
+}
+.divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
+.section-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.section-two-col.reverse { direction: rtl; }
+.section-two-col.reverse > * { direction: ltr; }
+.section-text h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #f0ece4;
+  margin-bottom: 20px;
+}
+.section-text p { color: #7a7d8a; font-size: 1rem; line-height: 1.75; margin-bottom: 14px; }
+.section-feature-card {
   background: #161b27;
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 2px;
-  padding: 16px 18px;
-  margin-bottom: 20px;
+  padding: 36px 32px;
+}
+.feature-stat { margin-bottom: 28px; }
+.feature-stat-number {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #e8c97a;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.feature-stat-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #7a7d8a; }
+.feature-legend { display: flex; flex-direction: column; gap: 10px; }
+.legend-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #7a7d8a; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.how-steps { display: flex; flex-direction: column; gap: 14px; }
+.how-step { display: flex; align-items: center; gap: 16px; font-size: 0.9rem; color: #7a7d8a; }
+.step-num { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #e8c97a; width: 28px; flex-shrink: 0; }
+.history-categories { display: flex; flex-wrap: wrap; gap: 8px; }
+.cat-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e8c97a;
+  background: rgba(232,201,122,0.08);
+  border: 1px solid rgba(232,201,122,0.15);
+  padding: 5px 12px;
+  border-radius: 2px;
+}
+.stat-stack { display: flex; flex-direction: column; gap: 24px; }
+.stat-row { display: flex; flex-direction: column; gap: 4px; }
+.stat-big { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: #e8c97a; line-height: 1; }
+.stat-row-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #7a7d8a; }
+.mission-pull {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #c8c4bc;
+  line-height: 1.65;
+  border-left: 2px solid #e8c97a;
+  padding-left: 20px;
+  margin: 0;
+}
+.support-cta-block {
   display: flex;
   align-items: center;
-  gap: 14px;
-}
-.audio-play-btn {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: #e8c97a; border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: background 0.2s;
-  font-size: 0.9rem; color: #07090f;
-}
-.audio-play-btn:hover { background: #f0d896; }
-.audio-info { flex: 1; min-width: 0; }
-.audio-label { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.12em; color: #7a7d8a; margin-bottom: 4px; }
-.audio-bar { height: 2px; background: rgba(255,255,255,0.1); border-radius: 1px; position: relative; cursor: pointer; }
-.audio-progress { height: 100%; background: #e8c97a; border-radius: 1px; width: 0%; transition: width 0.1s; }
-audio { display: none; }
-
-.drawer-footer {
-  padding: 16px 28px;
-  border-top: 1px solid rgba(255,255,255,0.07);
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-  background: #0e1118;
+  gap: 48px;
+  flex-wrap: wrap;
 }
-.drawer-reactions { display: flex; gap: 16px; }
-.reaction-btn { background: none; border: none; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #7a7d8a; display: flex; align-items: center; gap: 5px; transition: color 0.2s; padding: 4px; }
-.reaction-btn:hover { color: #f0ece4; }
-.cite-btn {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
-  color: #7a7d8a; background: none; border: none; cursor: pointer;
-  letter-spacing: 0.06em; transition: color 0.2s; padding: 4px;
+.support-cta-block h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  font-weight: 700;
+  color: #f0ece4;
+  margin-bottom: 12px;
 }
-.cite-btn:hover { color: #e8c97a; }
-.cite-toast {
-  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-  background: #161b27; border: 1px solid rgba(232,201,122,0.3);
-  color: #e8c97a; font-family: 'JetBrains Mono', monospace;
-  font-size: 0.62rem; padding: 10px 20px; border-radius: 2px;
-  z-index: 1000; opacity: 0; pointer-events: none;
-  transition: opacity 0.3s; white-space: nowrap;
-}
-.cite-toast.show { opacity: 1; }
+.support-cta-block p { color: #7a7d8a; font-size: 1rem; line-height: 1.7; max-width: 480px; }
+.support-actions { display: flex; align-items: center; gap: 24px; flex-shrink: 0; flex-wrap: wrap; }
 
-/* MISSION */
-#mission { background: #07090f; }
-.mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
-
-/* STAT */
-#stat { background: #0e1118; border-top: 1px solid rgba(255,255,255,0.07); border-bottom: 1px solid rgba(255,255,255,0.07); }
-.stat-inner { max-width: 760px; margin: 0 auto; text-align: center; padding: 100px 48px; }
-.stat-number { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(5rem, 16vw, 10rem); font-weight: 600; color: #e8c97a; line-height: 1; margin-bottom: 16px; }
-.stat-label { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 400; color: #f0ece4; margin-bottom: 24px; line-height: 1.4; }
-.stat-sub { font-size: 0.95rem; line-height: 1.85; color: #a8a5a0; }
-.stat-sub em { font-family: 'Playfair Display', serif; font-style: italic; color: #f0ece4; }
-
-/* HOW IT WORKS */
-.steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); margin-top: 56px; }
-.step { background: #0e1118; padding: 44px 36px; transition: background 0.25s; }
-.step:hover { background: #161b27; }
-.step-lambda { font-family: 'Playfair Display', serif; font-size: 2rem; color: #e8c97a; opacity: 0.25; display: block; margin-bottom: 18px; transition: opacity 0.25s; }
-.step:hover .step-lambda { opacity: 0.65; }
-.step-num { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.18em; color: #7a7d8a; margin-bottom: 10px; }
-.step-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.1rem; font-weight: 400; color: #f0ece4; margin-bottom: 12px; line-height: 1.3; }
-.step-body { font-size: 0.85rem; line-height: 1.75; color: #7a7d8a; }
-
-/* SUPPORT */
-#support { background: #07090f; text-align: center; }
-.support-inner { max-width: 800px; margin: 0 auto; }
-.tiers { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.07); margin: 40px 0 36px; text-align: left; }
-.tier { background: #0e1118; padding: 28px 22px; transition: background 0.25s; }
-.tier:hover { background: #161b27; }
-.tier-name { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.16em; color: #e8c97a; margin-bottom: 8px; }
-.tier-amount { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; color: #f0ece4; margin-bottom: 8px; }
-.tier-desc { font-size: 0.75rem; line-height: 1.6; color: #7a7d8a; }
-.support-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
-.support-note { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: #7a7d8a; }
-
-/* CONTACT */
-#contact { background: #0a0c13; border-top: 1px solid rgba(255,255,255,0.06); }
-.contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: start; }
-.contact-note { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #7a7d8a; margin-top: 28px; line-height: 1.8; }
-.contact-note a { color: #e8c97a; }
-.form-group { margin-bottom: 18px; }
-.form-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.16em; color: #7a7d8a; margin-bottom: 7px; }
-.form-input, .form-select, .form-textarea { width: 100%; background: #0e1118; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; padding: 11px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 300; color: #f0ece4; transition: border-color 0.2s; -webkit-appearance: none; appearance: none; }
-.form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #e8c97a; }
-.form-input::placeholder, .form-textarea::placeholder { color: #7a7d8a; }
-.form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7d8a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-.form-textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
-
-/* FOOTER */
+/* ── FOOTER ──────────────────────────────────────────── */
 footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padding: 44px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
 .footer-mark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: #7a7d8a; }
 .footer-mark span { color: #e8c97a; }
@@ -372,484 +231,247 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 .footer-links a:hover { color: #e8c97a; }
 .footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #7a7d8a; opacity: 0.4; }
 
-/* REVEAL */
-.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
-.reveal.visible { opacity: 1; transform: none; }
+/* ── REVEAL ANIMATION ────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 
-/* RESPONSIVE */
-@media (max-width: 960px) {
-  nav { padding: 0 24px; }
-  .nav-links { display: none; }
-  .nav-toggle { display: flex; }
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .section-two-col { grid-template-columns: 1fr; gap: 40px; }
+  .section-two-col.reverse { direction: ltr; }
+  .support-cta-block { flex-direction: column; align-items: flex-start; }
   .container { padding: 0 24px; }
-  .page-section, .page-section-alt { padding: 72px 0; }
-  .mission-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
-  .steps-grid { grid-template-columns: 1fr; }
-  .tiers { grid-template-columns: 1fr 1fr; }
-  footer { padding: 36px 24px; flex-direction: column; align-items: flex-start; }
-  .stat-inner { padding: 72px 24px; }
+  footer { padding: 44px 24px; }
 }
-@media (max-width: 560px) {
-  .hero-ctas { flex-direction: column; align-items: center; }
-  .tiers { grid-template-columns: 1fr 1fr; }
-  .support-ctas { flex-direction: column; align-items: center; }
-  #story-drawer { max-width: 100%; }
+@media (max-width: 640px) {
+  .hero { padding: 80px 0 60px; }
+  .home-section { padding: 72px 0; }
 }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .reveal { opacity: 1; transform: none; }
-}
-
-/* ── IN-PAGE SUBMIT PANEL ─────────────────────────────────────────── */
-#submit-panel {
-  position: fixed; top: 0; right: 0; bottom: 0;
-  width: 100%; max-width: 560px; z-index: 900;
-  background: #0e1118; border-left: 1px solid rgba(255,255,255,0.08);
-  transform: translateX(100%);
-  transition: transform 0.42s cubic-bezier(0.16,1,0.3,1);
-  display: flex; flex-direction: column; overflow: hidden;
-}
-#submit-panel.open { transform: translateX(0); }
-.sp-header {
-  padding: 20px 28px; border-bottom: 1px solid rgba(255,255,255,0.07);
-  display: flex; justify-content: space-between; align-items: center;
-  flex-shrink: 0;
-}
-.sp-title { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem; color: #f0ece4; }
-.sp-title span { color: #e8c97a; }
-.sp-close {
-  width: 32px; height: 32px; border-radius: 2px;
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-  color: #7a7d8a; font-size: 1rem; display: flex; align-items: center;
-  justify-content: center; cursor: pointer; transition: all 0.2s;
-}
-.sp-close:hover { background: rgba(255,255,255,0.1); color: #f0ece4; }
-.sp-body { flex: 1; overflow-y: auto; padding: 24px 28px; position: relative; -webkit-overflow-scrolling: touch; }
-.sp-footer {
-  padding: 14px 28px; border-top: 1px solid rgba(255,255,255,0.07);
-  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-}
-.sp-step { display: none; }
-.sp-step.active { display: block; }
-.sp-step-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400; color: #f0ece4; margin-bottom: 4px; line-height: 1.25; }
-.sp-step-title em { font-style: italic; color: #e8c97a; }
-.sp-step-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; color: #7a7d8a; letter-spacing: 0.06em; margin-bottom: 24px; }
-.sp-group { margin-bottom: 18px; }
-.sp-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; text-transform: uppercase; letter-spacing: 0.16em; color: #7a7d8a; margin-bottom: 7px; }
-.sp-input, .sp-textarea {
-  width: 100%; background: #161b27; border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 2px; padding: 11px 14px; font-family: 'DM Sans', sans-serif;
-  font-size: 0.88rem; font-weight: 300; color: #f0ece4; transition: border-color 0.2s;
-}
-.sp-input:focus, .sp-textarea:focus { outline: none; border-color: #e8c97a; }
-.sp-input::placeholder, .sp-textarea::placeholder { color: #7a7d8a; }
-.sp-textarea { resize: vertical; min-height: 160px; line-height: 1.7; }
-.sp-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
-.sp-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; color: #7a7d8a; border: 1px solid rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 2px; cursor: pointer; transition: all 0.2s; user-select: none; }
-.sp-tag.on { color: #e8c97a; border-color: rgba(232,201,122,0.4); background: rgba(232,201,122,0.05); }
-.sp-audio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.sp-audio-opt { background: #161b27; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; padding: 14px 12px; cursor: pointer; text-align: center; transition: all 0.2s; }
-.sp-audio-opt.on { border-color: rgba(232,201,122,0.4); background: rgba(232,201,122,0.04); }
-.sp-audio-opt-icon { font-size: 1.2rem; margin-bottom: 6px; }
-.sp-audio-opt-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a5a0; }
-.sp-audio-opt.on .sp-audio-opt-lbl { color: #e8c97a; }
-.sp-voice-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-top: 10px; }
-.sp-voice-opt { background: #161b27; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; padding: 10px 8px; cursor: pointer; text-align: center; transition: all 0.2s; }
-.sp-voice-opt.on { border-color: rgba(232,201,122,0.4); }
-.sp-voice-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; color: #a8a5a0; }
-.sp-voice-opt.on .sp-voice-lbl { color: #e8c97a; }
-.sp-rec-btn { width: 100%; margin-top: 12px; padding: 12px; background: #161b27; border: 1px solid rgba(255,255,255,0.1); border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: #a8a5a0; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; transition: all 0.2s; }
-.sp-rec-btn.recording { border-color: #c97a8e; color: #c97a8e; }
-.sp-rec-dot { width: 7px; height: 7px; border-radius: 50%; background: #c97a8e; display: none; }
-.sp-rec-btn.recording .sp-rec-dot { display: block; animation: sp-pulse 1s ease-in-out infinite; }
-@keyframes sp-pulse { 0%,100%{opacity:.3} 50%{opacity:1} }
-.sp-photo-drop { border: 1px dashed rgba(255,255,255,0.15); border-radius: 2px; padding: 28px; text-align: center; cursor: pointer; transition: border-color 0.2s; position: relative; }
-.sp-photo-drop:hover { border-color: rgba(232,201,122,0.3); }
-.sp-photo-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
-.sp-photo-preview { width: 100%; border-radius: 2px; margin-top: 10px; display: none; max-height: 180px; object-fit: cover; }
-.sp-dots { display: flex; gap: 6px; align-items: center; }
-.sp-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: all 0.2s; }
-.sp-dot.active { background: #e8c97a; width: 18px; border-radius: 3px; }
-.sp-dot.done { background: #4ecdc4; }
-.sp-review-card { background: #161b27; border: 1px solid rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; margin-bottom: 16px; }
-.sp-review-hdr { padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; }
-.sp-review-body { padding: 18px; }
-.sp-safety { background: #161b27; border-left: 3px solid #4ecdc4; padding: 14px 16px; margin-bottom: 16px; }
-.sp-safety-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.14em; color: #4ecdc4; margin-bottom: 6px; }
-.sp-safety-txt { font-size: 0.76rem; line-height: 1.65; color: #a8a5a0; }
-.sp-consent { border-left: 3px solid rgba(232,201,122,0.35); padding: 14px 16px; margin-bottom: 16px; font-size: 0.76rem; line-height: 1.65; color: #a8a5a0; }
-.sp-entry-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #7a7d8a; background: #161b27; border: 1px solid rgba(255,255,255,0.07); padding: 6px 12px; border-radius: 2px; display: inline-block; margin-bottom: 16px; }
-.sp-entry-badge span { color: #e8c97a; }
-.sp-overlay { display: none; position: absolute; inset: 0; background: rgba(14,17,24,0.92); z-index: 10; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
-.sp-overlay.show { display: flex; }
-.sp-spinner { width: 36px; height: 36px; border: 2px solid rgba(232,201,122,0.2); border-top-color: #e8c97a; border-radius: 50%; animation: sp-spin 0.8s linear infinite; }
-@keyframes sp-spin { to { transform: rotate(360deg); } }
-.sp-success { display: none; text-align: center; padding: 40px 16px; }
-.sp-success.show { display: block; }
-.sp-success-lambda { font-family: 'Playfair Display', serif; font-size: 3rem; color: #e8c97a; margin-bottom: 16px; }
-.sp-success-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 400; color: #f0ece4; margin-bottom: 10px; line-height: 1.3; }
-.sp-success-title em { font-style: italic; color: #e8c97a; }
-.sp-success-id { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #e8c97a; margin: 16px 0; }
-.sp-success-body { font-size: 0.82rem; line-height: 1.8; color: #a8a5a0; margin-bottom: 18px; }
-.sp-cite-box { background: #07090f; border: 1px solid rgba(255,255,255,0.07); padding: 12px 14px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #a8a5a0; line-height: 1.6; margin-bottom: 18px; cursor: pointer; transition: border-color 0.2s; }
-.sp-cite-box:hover { border-color: rgba(232,201,122,0.3); }
-.sp-cite-lbl { font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.14em; color: #7a7d8a; margin-bottom: 5px; }
-.sp-withheld { display: flex; align-items: center; gap: 9px; margin-top: 10px; cursor: pointer; }
-.sp-withheld input[type=checkbox] { width: 14px; height: 14px; accent-color: #e8c97a; cursor: pointer; }
-.sp-withheld-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; color: #a8a5a0; }
-.sp-audio-preview { background: #0e1118; border: 1px solid rgba(255,255,255,0.07); border-radius: 2px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; margin-top: 12px; }
-.sp-audio-play-btn { width: 30px; height: 30px; border-radius: 50%; background: #e8c97a; border: none; cursor: pointer; font-size: 0.8rem; color: #07090f; flex-shrink: 0; }
-
-/* ── GLOBE MODE TOGGLE ─────────────────────────────────────────── */
-.globe-toggle {
-  position: absolute;
-  bottom: 90px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  background: rgba(14,17,24,0.88);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 2px;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  opacity: 0;
-  animation: rise 1.4s 1.5s cubic-bezier(0.16,1,0.3,1) forwards;
-}
-.gt-btn {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.58rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(240,236,228,0.45);
-  background: none;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: all 0.22s;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  white-space: nowrap;
-}
-.gt-btn + .gt-btn { border-left: 1px solid rgba(255,255,255,0.08); }
-.gt-btn:hover { color: rgba(240,236,228,0.75); }
-.gt-btn.active { color: #e8c97a; background: rgba(232,201,122,0.08); }
-.gt-mode-hint {
-  position: absolute;
-  bottom: 140px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.56rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(240,236,228,0.4);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.gt-mode-hint.show { opacity: 1; }
-
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     SECTION: NAV
-     Edit links here. To add/remove nav items, add/remove <li> elements.
-     The "Leave a Marq" button opens the submission panel.
-     ═══════════════════════════════════════════════════════════════════ -->
-<nav id="nav">
-  <a href="#" class="wordmark">Marq<span>'</span>d</a>
-  <ul class="nav-links">
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Marq'd</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="explore.html">Explore</a></li>
+      <li><a href="analytics.html">Data</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="submit.html">Leave a Marq</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="pride-rule" style="margin-bottom: 40px;"></div>
+    <span class="eyebrow">Living Archive</span>
+    <h1 style="margin-top: 16px;">Welcome to Marq'd —<br><em>your living queer history archive.</em></h1>
+    <p class="hero-sub">Stories from real places. Left by real people. Forever.</p>
+    <p class="hero-body">In 64 countries, being queer is still a crime. In every country, queer history disappears. Until now.</p>
+    <div class="hero-actions">
+      <a href="submit.html" class="btn-primary">Leave a Marq</a>
+      <a href="explore.html" class="btn-secondary">Explore the Globe →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION: EXPLORE ──────────────────────────────────────────────── -->
+<section id="section-explore" class="home-section">
+  <div class="container">
+    <div class="section-divider reveal">
+      <span class="eyebrow">Explore</span>
+      <div class="divider-line"></div>
+    </div>
+    <div class="section-two-col">
+      <div class="section-text reveal">
+        <h2>Every pin is a person.<br>Every story is real.</h2>
+        <p>The globe holds every Marq — user-submitted stories and curated historical events, side by side. Filter by stories, history, or both. Click any pin to read what happened there.</p>
+        <p>The map grows with every submission. The more people leave their Marq, the more complete the picture of queer life around the world becomes.</p>
+        <a href="explore.html" class="btn-primary" style="margin-top: 32px; display: inline-block;">Open the Globe →</a>
+      </div>
+      <div class="section-feature-card reveal" style="transition-delay: 0.1s;">
+        <div class="feature-stat">
+          <span class="feature-stat-number" id="hp-stat-total">—</span>
+          <span class="feature-stat-label">Stories on the globe</span>
+        </div>
+        <div class="feature-legend">
+          <div class="legend-row">
+            <span class="legend-dot" style="background:#4ecdc4"></span>
+            <span>User submissions</span>
+          </div>
+          <div class="legend-row">
+            <span class="legend-dot" style="background:#e8c97a"></span>
+            <span>Historical events</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION: LEAVE A MARQ ─────────────────────────────────────────── -->
+<section id="section-submit" class="home-section" style="background: #0e1118;">
+  <div class="container">
+    <div class="section-divider reveal">
+      <span class="eyebrow">Leave a Marq</span>
+      <div class="divider-line"></div>
+    </div>
+    <div class="section-two-col reverse">
+      <div class="section-text reveal">
+        <h2>Your story belongs here.<br>No name required.</h2>
+        <p>You don't need an account. You don't need to share your name. Just a story and a place — anywhere something mattered to you. A bar, a city, a country road. A moment that was yours.</p>
+        <p>Every Marq is permanently part of the archive. Yours will be too.</p>
+        <a href="submit.html" class="btn-primary" style="margin-top: 32px; display: inline-block;">Leave your Marq</a>
+      </div>
+      <div class="section-feature-card reveal" style="transition-delay: 0.1s;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #7a7d8a; margin-bottom: 20px; letter-spacing: 0.06em;">// How it works</div>
+        <div class="how-steps">
+          <div class="how-step"><span class="step-num">01</span><span>Choose a location</span></div>
+          <div class="how-step"><span class="step-num">02</span><span>Tell your story</span></div>
+          <div class="how-step"><span class="step-num">03</span><span>Add a voice (optional)</span></div>
+          <div class="how-step"><span class="step-num">04</span><span>Submit — forever</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION: HISTORY ───────────────────────────────────────────────── -->
+<section id="section-history" class="home-section">
+  <div class="container">
+    <div class="section-divider reveal">
+      <span class="eyebrow">History</span>
+      <div class="divider-line"></div>
+    </div>
+    <div class="section-two-col">
+      <div class="section-text reveal">
+        <h2>300 years of queer history,<br>on one globe.</h2>
+        <p>Alongside user stories, Marq'd maps documented moments from queer history — legislative firsts, uprisings, tragedies, and cultural landmarks — sourced from academic research and verified historical records.</p>
+        <p>From France's 1791 decriminalization to India's 2018 Supreme Court ruling to events happening right now, the archive spans centuries and continents.</p>
+        <a href="explore.html" class="btn-secondary" style="margin-top: 32px; display: inline-block;">Explore history on the globe →</a>
+      </div>
+      <div class="section-feature-card reveal" style="transition-delay: 0.1s;">
+        <div class="history-categories">
+          <span class="cat-tag">Legislative</span>
+          <span class="cat-tag">Uprisings</span>
+          <span class="cat-tag">Tragedies</span>
+          <span class="cat-tag">Cultural</span>
+          <span class="cat-tag">Trans History</span>
+          <span class="cat-tag">International</span>
+        </div>
+        <div style="margin-top: 24px; font-size: 0.85rem; color: #7a7d8a; line-height: 1.65;">
+          Historical events are sourced from academic research, Wikipedia, Human Rights Watch, ILGA World, OutHistory, and other verified sources.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION: DATA & IMPACT ─────────────────────────────────────────── -->
+<section id="data-impact" class="home-section" style="background: #0e1118;">
+  <div class="container">
+    <div class="section-divider reveal">
+      <span class="eyebrow">Data &amp; Impact</span>
+      <div class="divider-line"></div>
+    </div>
+    <div class="section-two-col reverse">
+      <div class="section-text reveal">
+        <h2>Queer geography,<br>in real time.</h2>
+        <p>Every Marq is a data point. Together, they build something no survey has ever captured — a living, ground-level map of where queer life is happening and where silence is the only safe option.</p>
+        <p>Researchers, advocates, and journalists can access anonymized aggregate data to support the work of documenting and protecting queer lives globally.</p>
+        <a href="analytics.html" class="btn-secondary" style="margin-top: 32px; display: inline-block;">Explore the data →</a>
+      </div>
+      <div class="section-feature-card reveal" style="transition-delay: 0.1s;">
+        <div class="stat-stack">
+          <div class="stat-row">
+            <span class="stat-big" id="hp-stat-countries">—</span>
+            <span class="stat-row-label">Countries represented</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-big" id="hp-stat-years">—</span>
+            <span class="stat-row-label">Years of history covered</span>
+          </div>
+        </div>
+        <div style="margin-top: 24px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #7a7d8a; opacity: 0.6;">
+          // All data anonymized and aggregated
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION: ABOUT & MISSION ──────────────────────────────────────── -->
+<section id="section-about" class="home-section">
+  <div class="container">
+    <div class="section-divider reveal">
+      <span class="eyebrow">About</span>
+      <div class="divider-line"></div>
+    </div>
+    <div class="section-two-col">
+      <div class="section-text reveal">
+        <h2>Built to last.<br>Built for everyone.</h2>
+        <p>Marq'd was created because queer history disappears. Not just in countries where it's criminalized — everywhere. Stories get lost. Places get forgotten. People die and take their memories with them.</p>
+        <p>This archive is the antidote. Anonymous, permanent, and open to anyone who has a story and a place to attach it to.</p>
+        <a href="about.html" class="btn-secondary" style="margin-top: 32px; display: inline-block;">Read the full mission →</a>
+      </div>
+      <div class="section-feature-card reveal" style="transition-delay: 0.1s;">
+        <blockquote class="mission-pull">
+          "In 64 countries, being queer is still a crime. In every country, queer history disappears. Marq'd exists to change that."
+        </blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION: SUPPORT ───────────────────────────────────────────────── -->
+<section id="section-support" class="home-section" style="background: #0e1118;">
+  <div class="container">
+    <div class="section-divider reveal">
+      <span class="eyebrow">Support</span>
+      <div class="divider-line"></div>
+    </div>
+    <div class="support-cta-block reveal">
+      <div>
+        <h2>Keep the archive alive.</h2>
+        <p>Marq'd is free, open, and independent. It runs on community support. Every contribution keeps the servers on and the stories permanent.</p>
+      </div>
+      <div class="support-actions">
+        <a href="support.html" class="btn-primary">Support Marq'd</a>
+        <a href="contact.html" class="btn-secondary" style="padding: 14px 0;">Partner with us →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-mark">Marq<span>'</span>d</div>
+  <ul class="footer-links">
     <li><a href="about.html">About</a></li>
-    <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="support.html">Support</a></li>
     <li><a href="contact.html">Contact</a></li>
     <li><a href="analytics.html">Data</a></li>
-    <li><a href="explore.html" class="nav-submit-btn">Explore →</a></li>
+    <li><a href="explore.html">Explore the Archive</a></li>
   </ul>
-  <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
-</nav>
-<div class="nav-mobile" id="nav-mobile">
-  <a href="about.html">About</a>
-  <a href="#how-it-works">How It Works</a>
-  <a href="support.html">Support</a>
-  <a href="contact.html">Contact</a>
-  <a href="analytics.html">Data</a>
-  <a href="explore.html">Explore the Archive →</a>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     SECTION: HERO (Full-screen globe + tagline)
-     EDITABLE TEXT:
-       - .hero-eyebrow  → the small line above the wordmark ("A Living Queer Archive · Est. 2025")
-       - .hero-tagline  → italic tagline under the wordmark ("Q marks the spot.")
-       - .hero-mission  → the short mission paragraph
-       - .btn-gold text → primary CTA button label
-       - .btn-outline text → secondary CTA button label
-     ═══════════════════════════════════════════════════════════════════ -->
-<section id="hero">
-  <div class="mock-globe" aria-hidden="true">
-    <div class="mock-globe-sphere">
-      <div class="mock-dot" style="top:30%;left:18%"></div>
-      <div class="mock-dot" style="top:28%;left:25%"></div>
-      <div class="mock-dot" style="top:22%;left:47%"></div>
-      <div class="mock-dot" style="top:21%;left:52%"></div>
-      <div class="mock-dot" style="top:25%;left:58%"></div>
-      <div class="mock-dot" style="top:35%;left:38%"></div>
-      <div class="mock-dot" style="top:60%;left:32%"></div>
-      <div class="mock-dot" style="top:55%;left:42%"></div>
-      <div class="mock-dot" style="top:38%;left:76%"></div>
-      <div class="mock-dot" style="top:42%;left:68%"></div>
-      <div class="mock-dot" style="top:65%;left:78%"></div>
-      <div class="mock-dot" style="top:52%;left:56%"></div>
-      <div class="mock-dot" style="top:32%;left:65%"></div>
-      <div class="mock-dot" style="top:45%;left:28%"></div>
-      <div class="mock-dot" style="top:18%;left:35%"></div>
-    </div>
-  </div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <h1 class="hero-title">Welcome to Marq<span>'</span>d —<br><em>your living queer history archive.</em></h1>
-    <p class="hero-tagline">Stories from real places. Left by real people. Forever.</p>
-    <p class="hero-mission">In 64 countries, being queer is still a crime. In every country, queer history disappears. <strong>Until now.</strong></p>
-    <div class="hero-ctas">
-      <a href="explore.html" class="btn btn-gold">Explore the Archive →</a>
-      <a href="about.html" class="btn btn-outline">Why This Exists</a>
-    </div>
-  </div>
-  <div class="scroll-cue">
-    <span class="scroll-cue-label">Scroll</span>
-    <div class="scroll-cue-bar"></div>
-  </div>
-</section>
-
-
-<hr class="pride-rule">
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     SECTION: MISSION ("What is Marq'd?")
-     EDITABLE TEXT:
-       - .eyebrow text → "About the Archive"
-       - .section-heading → main heading
-       - .body-text paragraphs → the three body paragraphs below the heading
-       - The "Read more about why this exists →" link text
-     ═══════════════════════════════════════════════════════════════════ -->
-<section id="mission" class="page-section">
-  <div class="container">
-    <div class="mission-grid">
-      <div class="reveal">
-        <div class="eyebrow">About the Archive</div>
-        <h2 class="section-heading">Every dot is a story.<br>Every story is <em>evidence.</em></h2>
-      </div>
-      <div class="reveal" style="transition-delay:0.12s; padding-top:8px;">
-        <p class="body-text">Marq'd is a <strong>living archive of queer existence</strong> — geographically indexed, anonymously contributed, and built to last. People share firsthand stories tied to real-world coordinates, preserved as primary source history.</p>
-        <p class="body-text">Primary sources are the most valuable form of historical evidence. For queer history, they have always been scarce — because they were dangerous to create. Letters burned. Diaries written in code. Meeting places demolished.</p>
-        <p class="body-text"><strong>Marq'd is an act of preservation.</strong> Every story submitted joins a permanent, geographic record of queer life as it was actually lived.</p>
-        <a href="about.html" style="display:inline-block; margin-top:24px; font-family:'JetBrains Mono',monospace; font-size:0.65rem; text-transform:uppercase; letter-spacing:0.14em; color:#e8c97a; border-bottom:1px solid rgba(232,201,122,0.3); padding-bottom:2px;">Read more about why this exists →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="pride-rule">
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     SECTION: STAT (Big number + impact statement)
-     EDITABLE TEXT:
-       - .eyebrow text → "Why This Matters"
-       - .stat-number  → the big "64" number
-       - .stat-label   → "countries criminalize same-sex relationships."
-       - .stat-sub     → the supporting paragraph beneath
-     ═══════════════════════════════════════════════════════════════════ -->
-<div id="stat">
-  <div class="stat-inner reveal">
-    <div class="eyebrow" style="justify-content:center;">Why This Matters</div>
-    <div class="stat-number">64</div>
-    <div class="stat-label">countries criminalize same-sex relationships.</div>
-    <p class="stat-sub">In most of them, no official record of queer life exists.<br>The record says: <em>we were not there.</em><br><br>We were there. Marq'd is the proof.</p>
-  </div>
-</div>
-
-<hr class="pride-rule">
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     SECTION: HOW IT WORKS (Three-step explainer)
-     EDITABLE TEXT:
-       - .section-heading → main heading
-       - Each .step block → .step-num / .step-title / .step-body
-         Step 01, Step 02, Step 03 — edit title and description paragraph
-     ═══════════════════════════════════════════════════════════════════ -->
-<section id="how-it-works" class="page-section">
-  <div class="container">
-    <div class="reveal" style="text-align:center;">
-      <div class="eyebrow" style="justify-content:center;">How It Works</div>
-      <h2 class="section-heading" style="text-align:center;">Leave your Marq.<br><em>Anonymously. Permanently.</em></h2>
-    </div>
-    <div class="steps-grid">
-      <div class="step reveal">
-        <span class="step-lambda">λ</span>
-        <div class="step-num">Step 01</div>
-        <div class="step-title">Drop a pin anywhere on the globe</div>
-        <p class="step-body">Search for a place or use your coordinates. A city, a neighborhood, a specific corner. Anywhere something happened.</p>
-      </div>
-      <div class="step reveal" style="transition-delay:0.1s;">
-        <span class="step-lambda">λ</span>
-        <div class="step-num">Step 02</div>
-        <div class="step-title">Tell us what happened</div>
-        <p class="step-body">Write your story. Record your own voice or choose an AI reading. Add a photo of the place — never the people. No account required.</p>
-      </div>
-      <div class="step reveal" style="transition-delay:0.2s;">
-        <span class="step-lambda">λ</span>
-        <div class="step-num">Step 03</div>
-        <div class="step-title">Receive a Field Record number</div>
-        <p class="step-body">Your Marq is assigned a permanent ID — citable, searchable, part of the archive forever. The record exists now.</p>
-      </div>
-    </div>
-    <div style="text-align:center; margin-top:48px;" class="reveal">
-      <a href="explore.html" class="btn btn-gold">Leave a Marq</a>
-    </div>
-  </div>
-</section>
-
-<hr class="pride-rule">
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     SECTION: SUPPORT (Donation tiers)
-     EDITABLE TEXT:
-       - .section-heading → "Free to use. Not free to run."
-       - .body-text → the paragraph below the heading
-       - Each .tier block → .tier-name / .tier-amount / .tier-desc
-         (Reader, Contributor, Archivist, Patron)
-       - .support-note → "Every dollar goes toward keeping the record intact."
-     EDITABLE LINKS:
-       - "Donate via Open Collective" → href points to your Open Collective URL
-       - "Institutional Inquiry" → href is a mailto link
-     ═══════════════════════════════════════════════════════════════════ -->
-<section id="support" class="page-section">
-  <div class="container">
-    <div class="support-inner" style="margin:0 auto;">
-      <div class="reveal">
-        <div class="eyebrow" style="justify-content:center;">Support the Archive</div>
-        <h2 class="section-heading" style="text-align:center;">Free to use.<br><em>Not free to run.</em></h2>
-        <p class="body-text" style="text-align:center; max-width:520px; margin:0 auto 0;">Marq'd will always be free to read and contribute to. Hosting, storage, and development cost real money. Your support keeps the archive alive and independent.</p>
-      </div>
-      <div class="tiers reveal">
-        <div class="tier"><div class="tier-name">Reader</div><div class="tier-amount">Any amount</div><p class="tier-desc">One-time. You found us and you believe in us.</p></div>
-        <div class="tier"><div class="tier-name">Contributor</div><div class="tier-amount">$5 / mo</div><p class="tier-desc">You're part of keeping the lights on.</p></div>
-        <div class="tier"><div class="tier-name">Archivist</div><div class="tier-amount">$15 / mo</div><p class="tier-desc">You understand what this is for.</p></div>
-        <div class="tier"><div class="tier-name">Patron</div><div class="tier-amount">$50 / mo</div><p class="tier-desc">You're investing in queer history.</p></div>
-      </div>
-      <div class="support-ctas reveal">
-        <a href="https://opencollective.com/marqdthespot" target="_blank" rel="noopener" class="btn btn-gold">Donate via Open Collective</a>
-        <a href="mailto:marqd.official@gmail.com?subject=Institutional%20Inquiry" class="btn btn-outline">Institutional Inquiry</a>
-      </div>
-      <p class="support-note reveal">Every dollar goes toward keeping the record intact.</p>
-    </div>
-  </div>
-</section>
-
-<hr class="pride-rule">
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     SECTION: CONTACT (Form + direct email)
-     EDITABLE TEXT:
-       - .section-heading → "We're listening."
-       - .body-text → the intro sentence below the heading
-       - .contact-note → the "Direct: [email]" line and note below form
-       - Form subject <option> values → edit the dropdown choices
-       - Submit button text → "Send it"
-     EDITABLE LINKS:
-       - The mailto href in .contact-note → change the email address
-       - form action → your Formspree endpoint (https://formspree.io/f/...)
-     ═══════════════════════════════════════════════════════════════════ -->
-<section id="contact" class="page-section-alt">
-  <div class="container">
-    <div class="contact-grid">
-      <div class="reveal">
-        <div class="eyebrow">Contact</div>
-        <h2 class="section-heading">We're <em>listening.</em></h2>
-        <p class="body-text">Whether you want to get involved, propose a partnership, or just say something — reach out.</p>
-        <div class="contact-note">
-          Direct: <a href="mailto:marqd.official@gmail.com">marqd.official@gmail.com</a><br><br>
-          We read everything.
-        </div>
-      </div>
-      <div class="reveal" style="transition-delay:0.12s;">
-        <form action="https://formspree.io/f/xreygoeq" method="POST">
-          <div class="form-group"><label class="form-label">Name <span style="opacity:0.5; font-size:0.55rem;">(optional)</span></label><input class="form-input" type="text" name="name" placeholder="Your name"></div>
-          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" name="email" placeholder="your@email.com" required></div>
-          <div class="form-group"><label class="form-label">Subject</label>
-            <select class="form-select" name="subject" required>
-              <option value="" disabled selected>Select a subject</option>
-              <option>General</option><option>Get Involved</option><option>Partnership</option>
-              <option>Press</option><option>Advertising</option><option>Safety Report</option><option>Other</option>
-            </select>
-          </div>
-          <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" name="message" placeholder="Tell us what's on your mind..." required></textarea></div>
-          <button type="submit" class="btn btn-gold" style="width:100%; text-align:center;">Send it</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="pride-rule">
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     SECTION: DATA & IMPACT
-     Live stat counters fetched from Supabase.
-     Links to analytics.html for full data view.
-     ═══════════════════════════════════════════════════════════════════ -->
-<section id="data-impact" style="padding:108px 0;border-top:1px solid rgba(255,255,255,0.07);background:#0e1118;">
-  <div style="max-width:1160px;margin:0 auto;padding:0 48px;">
-
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:80px;flex-wrap:wrap;margin-bottom:64px;">
-      <div style="max-width:560px;">
-        <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:#e8c97a;margin-bottom:16px;">λ The Archive Speaks</span>
-        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-height:1.2;letter-spacing:-0.01em;color:#f0ece4;margin-bottom:20px;">Queer geography,<br>in real time.</h2>
-        <p style="color:#7a7d8a;font-size:1rem;line-height:1.75;margin-bottom:16px;">Every Marq is a data point. Together, they build something no survey has ever captured — a living, ground-level map of where queer life is happening, where it's thriving, and where silence is the only safe option.</p>
-        <p style="color:#7a7d8a;font-size:1rem;line-height:1.75;">Researchers, advocates, and journalists can access anonymized aggregate data to support the work of documenting and protecting queer lives globally.</p>
-        <a href="analytics.html" style="display:inline-block;margin-top:32px;color:#4ecdc4;text-decoration:none;font-size:0.875rem;font-weight:500;letter-spacing:0.04em;border-bottom:1px solid rgba(78,205,196,0.3);padding-bottom:2px;">Explore the data →</a>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:2px;min-width:260px;flex:1;max-width:360px;">
-        <div style="background:#161b27;padding:28px 24px;border-radius:2px;">
-          <div id="hp-stat-total" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#e8c97a;line-height:1;margin-bottom:6px;">—</div>
-          <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:#7a7d8a;">Stories in the archive</div>
-        </div>
-        <div style="background:#161b27;padding:28px 24px;border-radius:2px;">
-          <div id="hp-stat-countries" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#e8c97a;line-height:1;margin-bottom:6px;">—</div>
-          <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:#7a7d8a;">Countries represented</div>
-        </div>
-        <div style="background:#161b27;padding:28px 24px;border-radius:2px;">
-          <div id="hp-stat-years" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#e8c97a;line-height:1;margin-bottom:6px;">—</div>
-          <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:#7a7d8a;">Years of history covered</div>
-        </div>
-      </div>
-    </div>
-
-    <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
-      <p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#7a7d8a;opacity:0.6;">// All data is anonymized and aggregated. No individual stories are shared with third parties.</p>
-      <a href="analytics.html" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:#7a7d8a;padding:10px 20px;border-radius:2px;font-size:0.8rem;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;">Full data page</a>
-    </div>
-
-  </div>
-</section>
+  <div class="footer-copy">© 2026 Marq'd · Built for the record</div>
+</footer>
 
 <script>
+// ── HOMEPAGE STATS ────────────────────────────────────────────────────
 (function() {
   var SUPABASE_URL = 'https://llsfwdwjygdjwgvtskpx.supabase.co';
   var SUPABASE_KEY = 'sb_publishable_v-ezH58URDnW60txjWuawg_KRwWiahQ';
 
   function loadHomeStats() {
     try {
-      var client = (typeof sb !== 'undefined') ? sb : supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      var client = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+      if (!client) return;
 
       client.from('marqs').select('*', { count: 'exact', head: true }).then(function(res) {
         var totalEl = document.getElementById('hp-stat-total');
@@ -884,42 +506,13 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
     loadHomeStats();
   }
 })();
-</script>
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     SECTION: FOOTER
-     EDITABLE TEXT:
-       - .footer-copy → "© 2025 Marq'd · Built for the record" (update year here)
-       - .footer-links → page navigation links
-     ═══════════════════════════════════════════════════════════════════ -->
-<footer>
-  <div class="footer-mark">Marq<span>'</span>d</div>
-  <ul class="footer-links">
-    <li><a href="about.html">About</a></li>
-    <li><a href="support.html">Support</a></li>
-    <li><a href="contact.html">Contact</a></li>
-    <li><a href="analytics.html">Data</a></li>
-    <li><a href="explore.html">Explore the Archive</a></li>
-  </ul>
-  <div class="footer-copy">© 2025 Marq'd · Built for the record</div>
-</footer>
-
-<script>
-// Nav mobile toggle
-document.getElementById('nav-toggle').addEventListener('click', function() {
-  document.getElementById('nav-mobile').classList.toggle('open');
-});
-// Scroll-aware nav
-window.addEventListener('scroll', function() {
-  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
-});
-// Reveal on scroll
+// ── SCROLL REVEAL ────────────────────────────────────────────────────
 var reveals = document.querySelectorAll('.reveal');
 var io = new IntersectionObserver(function(entries) {
   entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-}, { threshold: 0.15 });
+}, { threshold: 0.1 });
 reveals.forEach(function(el) { io.observe(el); });
 </script>
-
 </body>
 </html>
