@@ -10,37 +10,33 @@ serve(async (req) => {
 
   try {
     const { text, voice_id } = await req.json();
-    if (!text || !voice_id) {
-      return new Response('Missing text or voice_id', { status: 400, headers: CORS });
-    }
+    if (!text || !voice_id) return new Response('Missing text or voice_id', { status: 400, headers: CORS });
 
-    const apiKey = Deno.env.get('ELEVENLABS_API_KEY');
-    if (!apiKey) {
-      return new Response('API key not configured', { status: 500, headers: CORS });
-    }
+    const apiKey = Deno.env.get('GOOGLE_TTS_API_KEY');
+    if (!apiKey) return new Response('API key not configured', { status: 500, headers: CORS });
 
-    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice_id}`, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': apiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text,
-        model_id: 'eleven_monolingual_v1',
-        voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-      }),
-    });
+    const res = await fetch(
+      `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          input: { text },
+          voice: { languageCode: 'en-US', name: voice_id },
+          audioConfig: { audioEncoding: 'MP3' },
+        }),
+      }
+    );
 
     if (!res.ok) {
       const err = await res.text();
-      return new Response(`ElevenLabs error: ${err}`, { status: res.status, headers: CORS });
+      return new Response(`Google TTS error: ${err}`, { status: res.status, headers: CORS });
     }
 
-    const audio = await res.arrayBuffer();
-    return new Response(audio, {
-      headers: { ...CORS, 'Content-Type': 'audio/mpeg' },
-    });
+    const { audioContent } = await res.json();
+    // audioContent is base64-encoded MP3 — decode to binary
+    const binary = Uint8Array.from(atob(audioContent), (c) => c.charCodeAt(0));
+    return new Response(binary, { headers: { ...CORS, 'Content-Type': 'audio/mpeg' } });
   } catch (e) {
     return new Response(String(e), { status: 500, headers: CORS });
   }
