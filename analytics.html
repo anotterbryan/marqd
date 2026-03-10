@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data & Impact — Marq'd</title>
+  <meta name="description" content="Every story is a data point. Every silence is too. Marq'd tracks queer geography in real time for researchers, advocates, and communities." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-base: #07090f;
+      --bg-surface: #0e1118;
+      --bg-elevated: #161b27;
+      --gold: #e8c97a;
+      --teal: #4ecdc4;
+      --rose: #c97a8e;
+      --text-primary: #f0ece4;
+      --text-muted: #7a7d8a;
+      --border: rgba(255,255,255,0.07);
+      --radius: 2px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* PRIDE RULE */
+    .pride-rule {
+      height: 1px;
+      background: linear-gradient(to right, #FF6B6B, #FF9F43, #F7DC6F, #2ECC71, #3498DB, #9B59B6);
+      opacity: 0.3;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7,9,15,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+    }
+    .nav-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+    .nav-links a.active { color: var(--gold); }
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold) !important;
+      padding: 8px 18px;
+      border-radius: var(--radius);
+      font-size: 0.8rem !important;
+      letter-spacing: 0.08em;
+      transition: background 0.2s, color 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--gold) !important; color: var(--bg-base) !important; }
+
+    /* CONTAINER */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+
+    /* EYEBROW */
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: block;
+    }
+    .eyebrow::before { content: 'λ '; }
+
+    /* HERO */
+    .hero {
+      padding: 120px 0 80px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(78,205,196,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { max-width: 720px; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+    .hero h1 em { font-style: italic; color: var(--teal); }
+    .hero p {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      max-width: 600px;
+    }
+    .hero-note {
+      margin-top: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--rose);
+      opacity: 0.7;
+      letter-spacing: 0.06em;
+    }
+
+    /* LIVE STATS */
+    .stats-section {
+      padding: 72px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .stat-card {
+      background: var(--bg-surface);
+      padding: 40px 32px;
+      position: relative;
+    }
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--teal);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .stat-card:hover::after { opacity: 1; }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-number.loading { color: var(--text-muted); font-size: 2rem; }
+    .stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .stat-sub {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.6;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* SECTIONS */
+    section { padding: 108px 0; border-bottom: 1px solid var(--border); }
+    section:last-of-type { border-bottom: none; }
+
+    .section-header { max-width: 640px; margin-bottom: 64px; }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    /* WHAT WE COLLECT */
+    .collect-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .collect-card {
+      background: var(--bg-elevated);
+      padding: 32px 28px;
+      transition: background 0.2s;
+    }
+    .collect-card:hover { background: var(--bg-surface); }
+    .collect-icon {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.25rem;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+    .collect-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.125rem;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+    .collect-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+    .collect-card .data-field {
+      display: inline-block;
+      margin-top: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--gold);
+      background: rgba(232,201,122,0.08);
+      padding: 3px 8px;
+      border-radius: var(--radius);
+      letter-spacing: 0.04em;
+    }
+
+    /* SILENCE MAP */
+    .silence-section { background: var(--bg-surface); }
+    .silence-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .silence-visual {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .silence-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(201,122,142,0.06) 0%, transparent 70%);
+    }
+    .silence-globe {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      line-height: 1;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .silence-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+      position: relative;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-teal { background: var(--teal); }
+    .dot-gold { background: var(--gold); }
+    .dot-rose { background: var(--rose); }
+    .dot-muted { background: var(--text-muted); opacity: 0.3; }
+
+    .silence-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+    .silence-text h2 em { font-style: italic; color: var(--rose); }
+    .silence-text p {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.75;
+    }
+    .stat-inline {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--rose);
+      font-size: 0.875rem;
+      margin-top: 24px;
+      padding: 16px;
+      border-left: 2px solid var(--rose);
+      opacity: 0.85;
+    }
+
+    /* FOR RESEARCHERS */
+    .partner-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 64px;
+    }
+    .partner-card {
+      background: var(--bg-elevated);
+      padding: 36px 32px;
+      transition: background 0.2s;
+    }
+    .partner-card:hover { background: var(--bg-surface); }
+    .partner-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .partner-card p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      line-height: 1.65;
+    }
+    .partner-tag {
+      display: inline-block;
+      margin-top: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--teal);
+      background: rgba(78,205,196,0.08);
+      padding: 4px 10px;
+      border-radius: var(--radius);
+    }
+
+    .contact-block {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 40px;
+    }
+    .contact-block-text h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+    .contact-block-text p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .btn-gold {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--bg-base);
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+    .btn-gold:hover { opacity: 0.85; }
+    .btn-outline {
+      display: inline-block;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 14px 28px;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--text-muted); color: var(--text-primary); }
+
+    /* ANNUAL REPORT */
+    .report-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .report-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--rose), var(--gold), var(--teal));
+    }
+    .report-year {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      font-weight: 700;
+      color: var(--border);
+      line-height: 1;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      user-select: none;
+      z-index: 0;
+    }
+    .report-content { position: relative; z-index: 1; max-width: 540px; margin: 0 auto; }
+    .report-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    .report-content p {
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+    .report-badge {
+      display: inline-block;
+      background: rgba(201,122,142,0.12);
+      border: 1px solid rgba(201,122,142,0.3);
+      color: var(--rose);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 99px;
+      margin-bottom: 24px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 48px 0 32px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      font-size: 1.125rem;
+      text-decoration: none;
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text-primary); }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.5;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 0 24px; }
+      .container { padding: 0 24px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .collect-grid { grid-template-columns: 1fr; }
+      .silence-inner { grid-template-columns: 1fr; gap: 40px; }
+      .partner-grid { grid-template-columns: 1fr; }
+      .contact-block { flex-direction: column; text-align: center; }
+      .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="pride-rule"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Marq'd</a>
+    <ul class="nav-links">
+      <li><a href="explore.html">Explore</a></li>
+      <li><a href="analytics.html" class="active">Data</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="submit.html" class="nav-cta">Leave a Marq</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <span class="eyebrow">Living Data</span>
+      <h1>The archive is <em>speaking.</em></h1>
+      <p>Every story is a data point. Every silence is too. Marq'd tracks queer geography in real time — so researchers, advocates, and communities can see what the world actually looks like right now.</p>
+      <p class="hero-note">// All data is anonymized and aggregated. No individual stories are shared with third parties.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE STATS -->
+<div class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="stat-total">—</div>
+        <div class="stat-label">Stories in the archive</div>
+        <div class="stat-sub">and growing</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-countries">—</div>
+        <div class="stat-label">Countries represented</div>
+        <div class="stat-sub">across the globe</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-years">—</div>
+        <div class="stat-label">Years of history</div>
+        <div class="stat-sub">earliest story to present</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-withheld">—</div>
+        <div class="stat-label">Locations withheld</div>
+        <div class="stat-sub">safety index proxy</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT WE COLLECT -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">The Dataset</span>
+      <h2>What the archive actually knows.</h2>
+      <p>Marq'd collects only what's needed to build a meaningful picture of queer geography over time. Nothing is traceable to an individual. Everything tells a story at scale.</p>
+    </div>
+    <div class="collect-grid">
+      <div class="collect-card">
+        <div class="collect-icon">◎</div>
+        <h3>Geography</h3>
+        <p>Every story is tied to real coordinates — a neighborhood, a city, a country. Together they build a living map of where queer life is happening and where it's being suppressed.</p>
+        <span class="data-field">lat / lng / location_display</span>
+      </div>
+      <div class="collect-card">
+        <div class="collect-icon">◷</div>
+        <h3>Time</h3>
+        <p>Submission timestamps and the year a story occurred create two separate timelines: when people are telling stories, and when those stories happened. The gap between them is its own data.</p>
+        <span class="data-field">submitted_at / year_occurred</span>
+      </div>
+      <div class="collect-card">
+        <div class="collect-icon">◈</div>
+        <h3>Safety Index</h3>
+        <p>When a contributor withholds their location, that's a signal. Aggregate withheld rates by region create a proxy safety index — showing where people most fear being found.</p>
+        <span class="data-field">location_withheld</span>
+      </div>
+      <div class="collect-card">
+        <div class="collect-icon">◉</div>
+        <h3>Community Tags</h3>
+        <p>Contributors tag their own stories — joy, fear, first time, community, loss, pride. These community-generated taxonomies reveal what queer life actually looks like from the inside.</p>
+        <span class="data-field">tags[]</span>
+      </div>
+      <div class="collect-card">
+        <div class="collect-icon">◐</div>
+        <h3>Emotional Resonance</h3>
+        <p>Fire and heart reactions show which stories move people most. Aggregated by region and tag, this data reveals what kinds of stories build the most connection across communities.</p>
+        <span class="data-field">reactions_fire / reactions_heart</span>
+      </div>
+      <div class="collect-card">
+        <div class="collect-icon">◑</div>
+        <h3>Voice & Audio</h3>
+        <p>Whether a story is told in someone's own voice, AI-narrated, or text-only tells us something about access, safety, and comfort. Audio data is never transcribed or analyzed.</p>
+        <span class="data-field">audio_type / voice_id</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE SILENCE MAP -->
+<section class="silence-section">
+  <div class="container">
+    <div class="silence-inner">
+      <div class="silence-visual">
+        <div class="silence-globe">🌍</div>
+        <div class="silence-legend">
+          <div class="legend-item">
+            <span class="legend-dot dot-teal"></span>
+            <span>Active submissions — stories being told</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot dot-gold"></span>
+            <span>Historical events — documented queer history</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot dot-rose"></span>
+            <span>High withheld rate — fear is visible</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot dot-muted"></span>
+            <span>Silence — no submissions from this region</span>
+          </div>
+        </div>
+      </div>
+      <div class="silence-text">
+        <span class="eyebrow">The Silence Map</span>
+        <h2>Blank spaces on the globe <em>tell a story too.</em></h2>
+        <p>When a region has zero submissions, that absence is not neutral. It reflects the reality of 64 countries where same-sex relationships are still criminalized — where a person cannot safely say where they are, let alone what they have lived.</p>
+        <p>Marq'd makes this visible. Silence on our globe is evidence. It's the kind of geographic testimony that advocates, researchers, and policymakers have never had access to before — not from survey data, not from official records.</p>
+        <p>This is why the archive exists.</p>
+        <div class="stat-inline">// 64 countries currently criminalize same-sex relationships. 2 impose the death penalty: Iran and Afghanistan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR RESEARCHERS -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Partners & Research</span>
+      <h2>Built for the community. Available to the people who fight for it.</h2>
+      <p>Marq'd data is not for sale. It is available — anonymized and aggregated — to organizations and researchers working to document, protect, and advance queer life globally.</p>
+    </div>
+    <div class="partner-grid">
+      <div class="partner-card">
+        <h3>Academic Researchers</h3>
+        <p>Studying queer geography, digital humanities, social movements, or LGBTQ+ health outcomes? Marq'd can provide anonymized aggregate datasets, geographic summaries, and tag distributions for academic research.</p>
+        <span class="partner-tag">Data partnership</span>
+      </div>
+      <div class="partner-card">
+        <h3>Advocacy Organizations</h3>
+        <p>Organizations like ILGA World, Human Rights Watch, and OutRight Action International use geographic data to document persecution and push for policy change. Marq'd ground-level data can supplement their work.</p>
+        <span class="partner-tag">Advocacy partner</span>
+      </div>
+      <div class="partner-card">
+        <h3>Journalists & Documentarians</h3>
+        <p>Marq'd data can provide geographic and temporal context for stories about queer life, safety, and community. We can provide regional summaries and trend data to support reporting.</p>
+        <span class="partner-tag">Media partnership</span>
+      </div>
+      <div class="partner-card">
+        <h3>Community Organizations</h3>
+        <p>Local LGBTQ+ centers, health organizations, and crisis services can use regional data to understand where community need is highest and where silence signals danger.</p>
+        <span class="partner-tag">Community partner</span>
+      </div>
+    </div>
+    <div class="contact-block">
+      <div class="contact-block-text">
+        <h3>Want to work with Marq'd data?</h3>
+        <p>All data requests are reviewed personally by the founder. We are a small archive with a big mission — write to us and let's talk.</p>
+      </div>
+      <a href="mailto:marqd.official@gmail.com?subject=Data Partnership Inquiry" class="btn-gold">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- ANNUAL REPORT -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <span class="eyebrow">Annual Report</span>
+      <h2>The State of Marq'd.</h2>
+      <p>Every year, Marq'd will publish an open-access report on the state of the archive — where stories are coming from, what's being told, and what the silence is saying.</p>
+    </div>
+    <div class="report-card">
+      <div class="report-year">2025</div>
+      <div class="report-content">
+        <span class="report-badge">Coming Soon</span>
+        <h2>State of Marq'd: 2025</h2>
+        <p>Our first annual report will cover the archive's founding year — submission geography, community tags, engagement patterns, and the silence map. Free and open access.</p>
+        <a href="mailto:marqd.official@gmail.com?subject=Notify me about the State of Marqd Report" class="btn-outline">Notify me when it's ready →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="pride-rule" style="margin-bottom: 40px;"></div>
+  <div class="container">
+    <div class="footer-inner">
+      <a href="index.html" class="footer-logo">Marq'd</a>
+      <ul class="footer-links">
+        <li><a href="explore.html">Explore</a></li>
+        <li><a href="analytics.html">Data</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="support.html">Support</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="submit.html">Leave a Marq</a></li>
+      </ul>
+      <span class="footer-copy">© 2025 Marq'd</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const SUPABASE_URL = 'https://llsfwdwjygdjwgvtskpx.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_v-ezH58URDnW60txjWuawg_KRwWiahQ';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function loadStats() {
+    try {
+      // Total stories
+      const { count: total } = await sb.from('marqs').select('*', { count: 'exact', head: true });
+      document.getElementById('stat-total').textContent = total?.toLocaleString() ?? '—';
+
+      // All records for deeper stats
+      const { data: records } = await sb.from('marqs').select('location_display, year_occurred, location_withheld');
+
+      if (records) {
+        // Countries — rough parse from location_display (last comma segment)
+        const countries = new Set(records.map(r => {
+          if (!r.location_display) return null;
+          const parts = r.location_display.split(',');
+          return parts[parts.length - 1].trim();
+        }).filter(Boolean));
+        document.getElementById('stat-countries').textContent = countries.size;
+
+        // Years range
+        const years = records.map(r => parseInt(r.year_occurred)).filter(y => !isNaN(y) && y > 0);
+        if (years.length > 0) {
+          const min = Math.min(...years);
+          const span = new Date().getFullYear() - min;
+          document.getElementById('stat-years').textContent = span + '+';
+        }
+
+        // Withheld count
+        const withheld = records.filter(r => r.location_withheld).length;
+        const pct = total > 0 ? Math.round((withheld / total) * 100) : 0;
+        document.getElementById('stat-withheld').textContent = pct + '%';
+      }
+    } catch (err) {
+      console.error('Stats load error:', err);
+    }
+  }
+
+  loadStats();
+</script>
+
+</body>
+</html>
