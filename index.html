@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { background: #07090f; scroll-behavior: smooth; }
@@ -569,6 +570,7 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
     <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="support.html">Support</a></li>
     <li><a href="contact.html">Contact</a></li>
+    <li><a href="analytics.html">Data</a></li>
     <li><a href="explore.html" class="nav-submit-btn">Explore →</a></li>
   </ul>
   <div class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></div>
@@ -578,6 +580,7 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
   <a href="#how-it-works">How It Works</a>
   <a href="support.html">Support</a>
   <a href="contact.html">Contact</a>
+  <a href="analytics.html">Data</a>
   <a href="explore.html">Explore the Archive →</a>
 </div>
 
@@ -612,8 +615,9 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <h1 class="hero-title">Marq<span>'</span>d</h1>
-    <p class="hero-tagline">Q marks the spot.</p>
+    <h1 class="hero-title">Welcome to Marq<span>'</span>d —<br><em>your living queer history archive.</em></h1>
+    <p class="hero-tagline">Stories from real places. Left by real people. Forever.</p>
+    <p class="hero-mission">In 64 countries, being queer is still a crime. In every country, queer history disappears. <strong>Until now.</strong></p>
     <div class="hero-ctas">
       <a href="explore.html" class="btn btn-gold">Explore the Archive →</a>
       <a href="about.html" class="btn btn-outline">Why This Exists</a>
@@ -798,6 +802,91 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 <hr class="pride-rule">
 
 <!-- ═══════════════════════════════════════════════════════════════════
+     SECTION: DATA & IMPACT
+     Live stat counters fetched from Supabase.
+     Links to analytics.html for full data view.
+     ═══════════════════════════════════════════════════════════════════ -->
+<section id="data-impact" style="padding:108px 0;border-top:1px solid rgba(255,255,255,0.07);background:#0e1118;">
+  <div style="max-width:1160px;margin:0 auto;padding:0 48px;">
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:80px;flex-wrap:wrap;margin-bottom:64px;">
+      <div style="max-width:560px;">
+        <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:#e8c97a;margin-bottom:16px;">λ The Archive Speaks</span>
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-height:1.2;letter-spacing:-0.01em;color:#f0ece4;margin-bottom:20px;">Queer geography,<br>in real time.</h2>
+        <p style="color:#7a7d8a;font-size:1rem;line-height:1.75;margin-bottom:16px;">Every Marq is a data point. Together, they build something no survey has ever captured — a living, ground-level map of where queer life is happening, where it's thriving, and where silence is the only safe option.</p>
+        <p style="color:#7a7d8a;font-size:1rem;line-height:1.75;">Researchers, advocates, and journalists can access anonymized aggregate data to support the work of documenting and protecting queer lives globally.</p>
+        <a href="analytics.html" style="display:inline-block;margin-top:32px;color:#4ecdc4;text-decoration:none;font-size:0.875rem;font-weight:500;letter-spacing:0.04em;border-bottom:1px solid rgba(78,205,196,0.3);padding-bottom:2px;">Explore the data →</a>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;min-width:260px;flex:1;max-width:360px;">
+        <div style="background:#161b27;padding:28px 24px;border-radius:2px;">
+          <div id="hp-stat-total" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#e8c97a;line-height:1;margin-bottom:6px;">—</div>
+          <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:#7a7d8a;">Stories in the archive</div>
+        </div>
+        <div style="background:#161b27;padding:28px 24px;border-radius:2px;">
+          <div id="hp-stat-countries" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#e8c97a;line-height:1;margin-bottom:6px;">—</div>
+          <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:#7a7d8a;">Countries represented</div>
+        </div>
+        <div style="background:#161b27;padding:28px 24px;border-radius:2px;">
+          <div id="hp-stat-years" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:#e8c97a;line-height:1;margin-bottom:6px;">—</div>
+          <div style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:#7a7d8a;">Years of history covered</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#7a7d8a;opacity:0.6;">// All data is anonymized and aggregated. No individual stories are shared with third parties.</p>
+      <a href="analytics.html" style="background:transparent;border:1px solid rgba(255,255,255,0.12);color:#7a7d8a;padding:10px 20px;border-radius:2px;font-size:0.8rem;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;">Full data page</a>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function() {
+  var SUPABASE_URL = 'https://llsfwdwjygdjwgvtskpx.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_v-ezH58URDnW60txjWuawg_KRwWiahQ';
+
+  function loadHomeStats() {
+    try {
+      var client = (typeof sb !== 'undefined') ? sb : supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      client.from('marqs').select('*', { count: 'exact', head: true }).then(function(res) {
+        var totalEl = document.getElementById('hp-stat-total');
+        if (totalEl && res.count != null) totalEl.textContent = res.count.toLocaleString();
+      });
+
+      client.from('marqs').select('location_display,year_occurred').then(function(res) {
+        if (!res.data) return;
+        var countries = new Set(res.data.map(function(r) {
+          if (!r.location_display) return null;
+          var parts = r.location_display.split(',');
+          return parts[parts.length - 1].trim();
+        }).filter(Boolean));
+        var countriesEl = document.getElementById('hp-stat-countries');
+        if (countriesEl) countriesEl.textContent = countries.size;
+
+        var years = res.data.map(function(r) { return parseInt(r.year_occurred); }).filter(function(y) { return !isNaN(y) && y > 0; });
+        if (years.length > 0) {
+          var span = new Date().getFullYear() - Math.min.apply(null, years);
+          var yearsEl = document.getElementById('hp-stat-years');
+          if (yearsEl) yearsEl.textContent = span + '+';
+        }
+      });
+    } catch (err) {
+      console.error('Home stats error:', err);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadHomeStats);
+  } else {
+    loadHomeStats();
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
      SECTION: FOOTER
      EDITABLE TEXT:
        - .footer-copy → "© 2025 Marq'd · Built for the record" (update year here)
@@ -809,6 +898,7 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
     <li><a href="about.html">About</a></li>
     <li><a href="support.html">Support</a></li>
     <li><a href="contact.html">Contact</a></li>
+    <li><a href="analytics.html">Data</a></li>
     <li><a href="explore.html">Explore the Archive</a></li>
   </ul>
   <div class="footer-copy">© 2025 Marq'd · Built for the record</div>

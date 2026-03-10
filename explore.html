@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#07090f">
 <title>Marq'd — Explore the Archive</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -83,6 +83,7 @@ nav.scrolled {
   position: absolute;
   inset: 0;
   z-index: 1;
+  touch-action: none;
 }
 .hero-overlay {
   position: absolute;
@@ -512,6 +513,166 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 }
 .gt-mode-hint.show { opacity: 1; }
 
+/* ── DATA FILTER TOGGLE ─────────────────────────────── */
+#globe-toggle {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  gap: 2px;
+  background: rgba(7,9,15,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 2px;
+  padding: 4px;
+}
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: #7a7d8a;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.toggle-btn[aria-pressed="true"] { background: #e8c97a; color: #07090f; }
+.toggle-btn:hover:not([aria-pressed="true"]) { color: #f0ece4; background: rgba(255,255,255,0.05); }
+
+/* ── HISTORY DRAWER ─────────────────────────────────── */
+#history-drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 100%;
+  max-width: 520px;
+  z-index: 900;
+  background: #0e1118;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#history-drawer.open { transform: translateX(0); }
+.history-tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #e8c97a;
+  background: rgba(232,201,122,0.1);
+  border: 1px solid rgba(232,201,122,0.2);
+  padding: 4px 10px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+.history-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f0ece4;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+.history-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  font-size: 0.8rem;
+}
+.meta-date { color: #e8c97a; font-family: 'JetBrains Mono', monospace; }
+.meta-sep { color: #7a7d8a; }
+.meta-location { color: #7a7d8a; }
+.history-body { color: #c8c4bc; font-size: 0.95rem; line-height: 1.75; margin-bottom: 32px; }
+.history-source {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: #7a7d8a;
+  line-height: 1.6;
+}
+.history-source::before { content: '// source: '; color: #e8c97a; opacity: 0.6; }
+
+/* ── ZOOM CONTROLS ──────────────────────────────────── */
+#zoom-controls {
+  position: fixed;
+  right: 20px;
+  bottom: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 50;
+}
+#zoom-controls button {
+  width: 44px;
+  height: 44px;
+  background: rgba(14,17,24,0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #f0ece4;
+  font-size: 1.25rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#zoom-controls button:hover { background: rgba(232,201,122,0.15); }
+@media (min-width: 768px) { #zoom-controls { display: none; } }
+
+/* ── MOBILE OVERRIDES ───────────────────────────────── */
+@media (max-width: 600px) {
+  #globe-toggle {
+    top: auto;
+    bottom: calc(env(safe-area-inset-bottom) + 80px);
+    font-size: 0.7rem;
+  }
+  .toggle-btn { padding: 8px 12px; }
+}
+@media (max-width: 767px) {
+  #story-drawer, #history-drawer {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+    border-left: none !important;
+    border-top: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 12px 12px 0 0 !important;
+    transform: translateY(100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1) !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  #story-drawer.open, #history-drawer.open {
+    transform: translateY(0) !important;
+  }
+  #story-drawer::before, #history-drawer::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    margin: 12px auto 4px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -570,6 +731,15 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
     <button class="gt-btn active" id="gt-explore" onclick="setGlobeMode('explore')">◎ &nbsp;Explore</button>
     <button class="gt-btn" id="gt-marq" onclick="setGlobeMode('marq')">+ &nbsp;Leave a Marq</button>
   </div>
+  <div id="globe-toggle" role="group" aria-label="Filter globe data">
+    <button class="toggle-btn" data-filter="both" aria-pressed="true">λ Both</button>
+    <button class="toggle-btn" data-filter="story" aria-pressed="false">λ Stories</button>
+    <button class="toggle-btn" data-filter="history" aria-pressed="false">λ History</button>
+  </div>
+  <div id="zoom-controls">
+    <button id="zoom-in" aria-label="Zoom in">+</button>
+    <button id="zoom-out" aria-label="Zoom out">−</button>
+  </div>
 </section>
 
 <!-- STORY DRAWER -->
@@ -608,6 +778,26 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
   </div>
 </div>
 <div class="cite-toast" id="cite-toast">Citation copied to clipboard</div>
+
+<!-- HISTORY EVENT DRAWER -->
+<div id="history-drawer">
+  <div class="drawer-header">
+    <div>
+      <div id="hd-category" class="history-tag">Historical Event</div>
+      <h2 id="hd-name" class="history-title"></h2>
+      <div class="history-meta">
+        <span id="hd-date" class="meta-date"></span>
+        <span class="meta-sep" id="hd-sep">·</span>
+        <span id="hd-location" class="meta-location"></span>
+      </div>
+    </div>
+    <button class="drawer-close" onclick="closeHistoryDrawer()">✕</button>
+  </div>
+  <div class="drawer-body">
+    <p id="hd-description" class="history-body"></p>
+    <div id="hd-source" class="history-source"></div>
+  </div>
+</div>
 
 <!-- SUBMIT PANEL -->
 <div id="submit-panel">
@@ -886,17 +1076,31 @@ function setGlobeMode(mode) {
 }
 
 // ── SUPABASE ─────────────────────────────────────────────────────────
+var storyPoints = [];
+var historyPoints = [];
+var allPoints = [];
+var activeFilter = 'both';
+
 async function loadMarqs() {
   try {
-    var res = await db.from('marqs').select('*').order('submitted_at', { ascending: false });
-    var live = (res.data || []);
-    allMarqs = live.length > 0 ? live.concat(SEED) : SEED;
+    var results = await Promise.all([
+      db.from('marqs').select('lat, lng, id, record_number, location_display, location_withheld, story, tags, submitted_at, views, reactions_fire, reactions_heart, audio_url, photo_url, is_founder, is_mock').order('submitted_at', { ascending: false }),
+      db.from('history_events').select('lat, lng, id, name, date, year, location_display, description, category, source')
+    ]);
+    var live = (results[0].data || []);
+    storyPoints = (live.length > 0 ? live.concat(SEED) : SEED).map(function(s) { return Object.assign({}, s, { _type: 'story' }); });
+    historyPoints = (results[1].data || []).map(function(h) { return Object.assign({}, h, { _type: 'history' }); });
+    allPoints = storyPoints.concat(historyPoints);
+    allMarqs = storyPoints;
   } catch(e) {
-    allMarqs = SEED;
+    storyPoints = SEED.map(function(s) { return Object.assign({}, s, { _type: 'story' }); });
+    historyPoints = [];
+    allPoints = storyPoints;
+    allMarqs = storyPoints;
   }
-  var count = allMarqs.filter(function(m){ return !m.id || !m.id.startsWith('seed'); }).length;
+  var count = storyPoints.filter(function(m){ return !m.id || !String(m.id).startsWith('seed'); }).length;
   document.getElementById('marq-count').textContent = count > 0 ? count : SEED.length;
-  if (globeInstance) updateGlobe();
+  if (globeInstance) applyFilter();
 }
 
 // ── GLOBE ─────────────────────────────────────────────────────────────
@@ -907,12 +1111,16 @@ function initGlobe() {
     .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
     .atmosphereColor('#4ecdc4')
     .atmosphereAltitude(0.18)
-    .pointsData(SEED)
+    .pointsData(SEED.map(function(s){ return Object.assign({}, s, { _type: 'story' }); }))
     .pointLat('lat')
     .pointLng('lng')
-    .pointColor(function() { return '#e8c97a'; })
-    .pointAltitude(0.015)
-    .pointRadius(0.7)
+    .pointColor(function(d) { return d._type === 'history' ? '#e8c97a' : '#4ecdc4'; })
+    .pointAltitude(function(d) { return d._type === 'history' ? 0.015 : 0.01; })
+    .pointRadius(function(d) {
+      var isMobile = window.innerWidth < 768;
+      var base = d._type === 'history' ? 0.45 : 0.35;
+      return isMobile ? base * 1.8 : base;
+    })
     .pointLabel(function(d) { return d.location_display || 'Location withheld'; })
     .onPointHover(function(point) {
       document.getElementById('globe-container').style.cursor = point ? 'pointer' : 'default';
@@ -923,6 +1131,8 @@ function initGlobe() {
         spLng = point.lng;
         document.getElementById('sp-loc').value = point.location_display || '';
         spOpen(null);
+      } else if (point._type === 'history') {
+        openHistoryDrawer(point);
       } else {
         openDrawer(point);
       }
@@ -941,6 +1151,19 @@ function initGlobe() {
   globeInstance.controls().autoRotateSpeed = 0.4;
   globeInstance.controls().enableZoom = true;
 
+  // Pause auto-rotation on touch so users can tap dots accurately
+  var globeEl = document.getElementById('globe-container');
+  var rotateTimer;
+  globeEl.addEventListener('touchstart', function() {
+    globeInstance.controls().autoRotate = false;
+  }, { passive: true });
+  globeEl.addEventListener('touchend', function() {
+    clearTimeout(rotateTimer);
+    rotateTimer = setTimeout(function() {
+      globeInstance.controls().autoRotate = true;
+    }, 5000);
+  }, { passive: true });
+
   // Sizing
   function sizeGlobe() {
     var W = window.innerWidth, H = window.innerHeight;
@@ -951,9 +1174,21 @@ function initGlobe() {
   window.addEventListener('load', function() { setTimeout(sizeGlobe, 200); });
 }
 
-function updateGlobe() {
+function applyFilter() {
   if (!globeInstance) return;
-  globeInstance.pointsData(allMarqs);
+  var isMobile = window.innerWidth < 768;
+  var filtered;
+  if (activeFilter === 'story') filtered = storyPoints;
+  else if (activeFilter === 'history') filtered = historyPoints;
+  else filtered = allPoints;
+  globeInstance
+    .pointsData(filtered)
+    .pointColor(function(d) { return d._type === 'history' ? '#e8c97a' : '#4ecdc4'; })
+    .pointRadius(function(d) {
+      var base = d._type === 'history' ? 0.45 : 0.35;
+      return isMobile ? base * 1.8 : base;
+    })
+    .pointAltitude(function(d) { return d._type === 'history' ? 0.015 : 0.01; });
 }
 
 // ── DRAWER ────────────────────────────────────────────────────────────
@@ -1049,7 +1284,58 @@ function closeDrawer() {
 }
 
 document.getElementById('drawer-close').addEventListener('click', closeDrawer);
-document.getElementById('drawer-backdrop').addEventListener('click', closeDrawer);
+document.getElementById('drawer-backdrop').addEventListener('click', function() {
+  closeDrawer();
+  closeHistoryDrawer();
+});
+
+// ── HISTORY DRAWER ───────────────────────────────────────────────────
+function openHistoryDrawer(evt) {
+  document.getElementById('hd-category').textContent = evt.category || 'Historical Event';
+  document.getElementById('hd-name').textContent = evt.name || '';
+  var dateStr = evt.year ? String(evt.year) : (evt.date || '');
+  document.getElementById('hd-date').textContent = dateStr;
+  var loc = evt.location_display || '';
+  document.getElementById('hd-location').textContent = loc;
+  document.getElementById('hd-sep').style.display = (dateStr && loc) ? '' : 'none';
+  document.getElementById('hd-description').textContent = evt.description || '';
+  var srcEl = document.getElementById('hd-source');
+  srcEl.textContent = evt.source || '';
+  srcEl.style.display = evt.source ? '' : 'none';
+  // Close story drawer if open
+  document.getElementById('story-drawer').classList.remove('open');
+  // Open history drawer + backdrop
+  document.getElementById('history-drawer').classList.add('open');
+  document.getElementById('drawer-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeHistoryDrawer() {
+  document.getElementById('history-drawer').classList.remove('open');
+  document.getElementById('drawer-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── DATA FILTER TOGGLE ───────────────────────────────────────────────
+document.querySelectorAll('.toggle-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    activeFilter = btn.dataset.filter;
+    document.querySelectorAll('.toggle-btn').forEach(function(b) { b.setAttribute('aria-pressed', 'false'); });
+    btn.setAttribute('aria-pressed', 'true');
+    applyFilter();
+  });
+});
+
+// ── ZOOM CONTROLS ────────────────────────────────────────────────────
+document.getElementById('zoom-in').addEventListener('click', function() {
+  var controls = globeInstance.controls();
+  controls.dollyIn(1.3);
+  controls.update();
+});
+document.getElementById('zoom-out').addEventListener('click', function() {
+  var controls = globeInstance.controls();
+  controls.dollyOut(1.3);
+  controls.update();
+});
 
 // Audio controls
 var audioEl = document.getElementById('audio-el');
