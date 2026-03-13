@@ -458,6 +458,9 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
 .sp-withheld-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; color: #a8a5a0; }
 .sp-audio-preview { background: #0e1118; border: 1px solid rgba(255,255,255,0.07); border-radius: 2px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; margin-top: 12px; }
 .sp-audio-play-btn { width: 30px; height: 30px; border-radius: 50%; background: #e8c97a; border: none; cursor: pointer; font-size: 0.8rem; color: #07090f; flex-shrink: 0; }
+.sp-preview-btn { background: transparent; border: 1px solid rgba(232,201,122,0.3); color: #e8c97a; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; padding: 7px 14px; border-radius: 2px; cursor: pointer; transition: background 0.2s; }
+.sp-preview-btn:hover { background: rgba(232,201,122,0.08); }
+.sp-preview-btn:disabled { opacity: 0.5; cursor: default; }
 
 /* ── GLOBE MODE TOGGLE ─────────────────────────────────────────── */
 .globe-toggle {
@@ -1092,12 +1095,26 @@ footer { background: #07090f; border-top: 1px solid rgba(255,255,255,0.06); padd
       <div id="sp-voice-wrap" style="display:none;">
         <label class="sp-label">Choose a voice</label>
         <div class="sp-voice-grid">
-          <div class="sp-voice-opt on" onclick="spSetVoice(this, '21m00Tcm4TlvDq8ikWAM')"><div class="sp-voice-lbl">Rachel</div></div>
-          <div class="sp-voice-opt" onclick="spSetVoice(this, 'AZnzlk1XvdvUeBnXmlld')"><div class="sp-voice-lbl">Domi</div></div>
-          <div class="sp-voice-opt" onclick="spSetVoice(this, 'EXAVITQu4vr4xnSDxMaL')"><div class="sp-voice-lbl">Bella</div></div>
-          <div class="sp-voice-opt" onclick="spSetVoice(this, 'ErXwobaYiN019PkySvjV')"><div class="sp-voice-lbl">Antoni</div></div>
-          <div class="sp-voice-opt" onclick="spSetVoice(this, 'VR6AewLTigWG4xSOukaG')"><div class="sp-voice-lbl">Arnold</div></div>
-          <div class="sp-voice-opt" onclick="spSetVoice(this, 'pNInz6obpgDQGcFmaJgB')"><div class="sp-voice-lbl">Adam</div></div>
+          <div class="sp-voice-opt on" onclick="spSetVoice(this, 'en-US-Neural2-F')"><div class="sp-voice-lbl">Aria</div></div>
+          <div class="sp-voice-opt" onclick="spSetVoice(this, 'en-US-Neural2-D')"><div class="sp-voice-lbl">Marcus</div></div>
+          <div class="sp-voice-opt" onclick="spSetVoice(this, 'en-US-Neural2-C')"><div class="sp-voice-lbl">Sofia</div></div>
+          <div class="sp-voice-opt" onclick="spSetVoice(this, 'en-US-Neural2-A')"><div class="sp-voice-lbl">Jade</div></div>
+          <div class="sp-voice-opt" onclick="spSetVoice(this, 'en-US-Wavenet-D')"><div class="sp-voice-lbl">River</div></div>
+          <div class="sp-voice-opt" onclick="spSetVoice(this, 'en-US-Wavenet-B')"><div class="sp-voice-lbl">Owen</div></div>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="sp-preview-btn" id="sp-preview-btn" onclick="spPreviewVoice()">▶ Preview voice</button>
+          <span id="sp-preview-hint" style="font-family:'JetBrains Mono',monospace; font-size:0.58rem; color:#7a7d8a; margin-left:10px;">Write your story first, then preview.</span>
+        </div>
+        <div class="sp-audio-preview" id="sp-ai-preview-player" style="display:none; margin-top:10px;">
+          <button class="sp-audio-play-btn" id="sp-ai-play-btn" onclick="spToggleAiPreview()">▶</button>
+          <div style="flex:1;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:0.52rem; text-transform:uppercase; letter-spacing:0.1em; color:#7a7d8a; margin-bottom:5px;" id="sp-ai-preview-lbl">AI voice preview</div>
+            <div style="height:2px; background:rgba(255,255,255,0.1); border-radius:1px; cursor:pointer;" onclick="spSeekAiPreview(event)">
+              <div id="sp-ai-preview-progress" style="height:100%; background:#e8c97a; border-radius:1px; width:0%; transition:width 0.1s linear;"></div>
+            </div>
+          </div>
+          <audio id="sp-ai-preview-el"></audio>
         </div>
       </div>
 
@@ -1772,11 +1789,12 @@ window.addEventListener('load', function() {
 var spStep = 0;
 var spTags = [];
 var spAudioType = 'none';
-var spVoiceId = '21m00Tcm4TlvDq8ikWAM';
+var spVoiceId = 'en-US-Neural2-F';
 var spLat = null, spLng = null;
 var spPhotoFile = null;
 var spMediaRec = null, spRecChunks = [], spRecording = false, spAudioMime = 'audio/webm';
 var spCiteStr = '';
+var spAiCacheBlob = null, spAiCacheText = '', spAiCacheVoice = '';
 
 function spOpen(e) {
   if (e) e.preventDefault();
@@ -1822,6 +1840,11 @@ function spReset() {
   document.getElementById('sp-rec-wrap').style.display = 'none';
   document.getElementById('sp-upload-wrap').style.display = 'none';
   document.getElementById('sp-footer').style.display = 'flex';
+  document.getElementById('sp-ai-preview-player').style.display = 'none';
+  document.getElementById('sp-ai-preview-el').pause();
+  document.getElementById('sp-preview-hint').textContent = 'Write your story first, then preview.';
+  document.getElementById('sp-preview-hint').style.color = '#7a7d8a';
+  spAiCacheBlob = null; spAiCacheText = ''; spAiCacheVoice = '';
   spGoStep(0);
 }
 
@@ -1971,10 +1994,72 @@ function spSetAudio(type, el) {
 
 // Voice
 function spSetVoice(el, id) {
+  if (spVoiceId !== id) { spAiCacheBlob = null; }
   spVoiceId = id;
   document.querySelectorAll('.sp-voice-opt').forEach(function(v) { v.classList.remove('on'); });
   el.classList.add('on');
 }
+
+// AI voice preview
+async function spPreviewVoice() {
+  var story = document.getElementById('sp-story').value.trim();
+  var hintEl = document.getElementById('sp-preview-hint');
+  var btn = document.getElementById('sp-preview-btn');
+  if (!story || story.length < 10) {
+    hintEl.textContent = 'Write your story first — then preview.';
+    hintEl.style.color = '#c97a8e';
+    return;
+  }
+  if (spAiCacheBlob && spAiCacheText === story && spAiCacheVoice === spVoiceId) {
+    spPlayAiPreviewBlob(spAiCacheBlob); return;
+  }
+  btn.disabled = true; btn.textContent = '⏳ Generating...';
+  hintEl.textContent = 'Calling voice API...'; hintEl.style.color = '#7a7d8a';
+  try {
+    var res = await fetch(SUPABASE_URL + '/functions/v1/generate-voice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+      body: JSON.stringify({ text: story, voice_id: spVoiceId })
+    });
+    if (!res.ok) throw new Error('Voice API ' + res.status);
+    var blob = await res.blob();
+    spAiCacheBlob = blob; spAiCacheText = story; spAiCacheVoice = spVoiceId;
+    spPlayAiPreviewBlob(blob);
+    hintEl.textContent = 'Playing. Select another voice to compare.'; hintEl.style.color = '#7a7d8a';
+  } catch(e) {
+    hintEl.textContent = 'Preview failed — check console.'; hintEl.style.color = '#c97a8e';
+    console.error('Voice preview error:', e);
+  } finally {
+    btn.disabled = false; btn.textContent = '▶ Preview voice';
+  }
+}
+function spPlayAiPreviewBlob(blob) {
+  var url = URL.createObjectURL(blob);
+  var el = document.getElementById('sp-ai-preview-el');
+  el.src = url; el.play();
+  document.getElementById('sp-ai-play-btn').textContent = '⏸';
+  document.getElementById('sp-ai-preview-player').style.display = 'flex';
+  document.getElementById('sp-ai-preview-lbl').textContent = spVoiceId.replace('en-US-', '') + ' — preview';
+}
+function spToggleAiPreview() {
+  var el = document.getElementById('sp-ai-preview-el');
+  var btn = document.getElementById('sp-ai-play-btn');
+  if (el.paused) { el.play(); btn.textContent = '⏸'; }
+  else { el.pause(); btn.textContent = '▶'; }
+}
+function spSeekAiPreview(e) {
+  var el = document.getElementById('sp-ai-preview-el');
+  if (!el.duration) return;
+  var rect = e.currentTarget.getBoundingClientRect();
+  el.currentTime = ((e.clientX - rect.left) / rect.width) * el.duration;
+}
+document.getElementById('sp-ai-preview-el').addEventListener('timeupdate', function() {
+  if (this.duration) document.getElementById('sp-ai-preview-progress').style.width = (this.currentTime / this.duration * 100) + '%';
+});
+document.getElementById('sp-ai-preview-el').addEventListener('ended', function() {
+  document.getElementById('sp-ai-play-btn').textContent = '▶';
+  document.getElementById('sp-ai-preview-progress').style.width = '0%';
+});
 
 // Record
 async function spToggleRec() {
@@ -2114,13 +2199,17 @@ async function spSubmit() {
     } else if (spAudioType === 'ai' && spVoiceId) {
       try {
         var aiStory = document.getElementById('sp-story').value.trim();
-        var vRes = await fetch(SUPABASE_URL + '/functions/v1/generate-voice', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
-          body: JSON.stringify({ text: aiStory, voice_id: spVoiceId })
-        });
-        if (vRes.ok) {
-          var vBlob = await vRes.blob();
+        // Use cached preview blob if available and still valid
+        var vBlob = (spAiCacheBlob && spAiCacheText === aiStory && spAiCacheVoice === spVoiceId) ? spAiCacheBlob : null;
+        if (!vBlob) {
+          var vRes = await fetch(SUPABASE_URL + '/functions/v1/generate-voice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+            body: JSON.stringify({ text: aiStory, voice_id: spVoiceId })
+          });
+          if (vRes.ok) vBlob = await vRes.blob();
+        }
+        if (vBlob) {
           var vName = 'marq-audio-' + Date.now() + '.mp3';
           var vUp = await db.storage.from('marq-audio').upload(vName, vBlob, { contentType: 'audio/mpeg' });
           if (!vUp.error) audioUrl = db.storage.from('marq-audio').getPublicUrl(vName).data.publicUrl;
