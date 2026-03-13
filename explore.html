@@ -1754,6 +1754,12 @@ window.addEventListener('load', function() {
   initGlobe();
   loadMarqs();
 
+  // Auto-open submit panel if navigated here with #submit
+  if (window.location.hash === '#submit') {
+    spOpen(null);
+    history.replaceState(null, '', window.location.pathname);
+  }
+
   // Panel listeners — must run after panel HTML exists in DOM
   document.getElementById('sp-close-btn').addEventListener('click', spClose);
 
